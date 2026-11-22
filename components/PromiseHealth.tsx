@@ -83,7 +83,10 @@ export function PromiseHealth({ filter = {}, audience, idSuffix = "" }: PromiseH
             label: audience === "operacoes" ? "Casos na fila" : "Casos precisando de você",
             value: int(kpis.queueSize),
             alert: kpis.queueSize > 0,
-            hint: "frustração alta e produtor sem resposta há +48h",
+            hint:
+              audience === "operacoes"
+                ? "frustração alta e produtor sem resposta há +48h"
+                : "frustração alta e sem resposta sua há +48h",
           },
         ]}
       />
@@ -107,7 +110,11 @@ export function PromiseHealth({ filter = {}, audience, idSuffix = "" }: PromiseH
           cases={queue}
           audience={audience}
           title={audience === "operacoes" ? "Fila de escalonamento" : "Casos dos seus produtos"}
-          subtitle="Frustração alta e produtor sem resposta (ou que respondeu depois de 48h): casos que podem virar reclamação pública."
+          subtitle={
+            audience === "operacoes"
+              ? "Frustração alta e produtor sem resposta (ou que respondeu depois de 48h): casos que podem virar reclamação pública."
+              : "Compradores com frustração alta esperando a sua resposta. Responder em até 48h evita reclamação pública."
+          }
         />
       </section>
 

@@ -141,7 +141,7 @@ export function EscalationQueue({
                 <th className={cn(th, "w-[170px] pl-7")}>Comprador</th>
                 <th className={cn(th, "w-[190px] px-2.5")}>Produto</th>
                 <th className={cn(th, "px-2.5")}>Creator · conteúdo</th>
-                <th className={cn(th, "w-[200px] px-2.5")}>Produtor</th>
+                <th className={cn(th, "w-[200px] px-2.5")}>{audience === "produtor" ? "Sua resposta" : "Produtor"}</th>
                 <th className={cn(th, "w-[120px] px-2.5")}>Gravidade</th>
                 <th className={cn(th, "w-[124px] pr-7")}>
                   <span className="sr-only">Ações</span>
@@ -175,9 +175,14 @@ export function EscalationQueue({
                     <button
                       type="button"
                       onClick={() => openCase(c)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-[7px] text-[13px] font-semibold whitespace-nowrap text-navy transition-colors hover:bg-paper"
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-lg border px-3 py-[7px] text-[13px] font-semibold whitespace-nowrap transition-colors",
+                        audience === "produtor"
+                          ? "border-navy bg-navy text-white hover:bg-navy/90"
+                          : "border-line text-navy hover:bg-paper",
+                      )}
                     >
-                      Ver caso <ArrowRight className="size-3.5" aria-hidden />
+                      {audience === "produtor" ? "Responder" : "Ver caso"} <ArrowRight className="size-3.5" aria-hidden />
                     </button>
                   </td>
                 </tr>
