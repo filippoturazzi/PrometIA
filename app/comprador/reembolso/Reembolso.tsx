@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FRUSTRATION_LABELS, SEVERITY_META, STATUS_META, matchClaim } from "@/lib/claims-ui";
 import type { ClassifyFeedbackResult } from "@/lib/schemas";
 import type { ClaimStatus } from "@/lib/types";
+import { EXPECTATION_KEY, useSessionValue } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
 interface Order {
@@ -37,6 +38,8 @@ interface Order {
   creatorName: string;
   link: string;
   claims: { text: string; status: ClaimStatus }[];
+  /** expectativa registrada na venda da demo */
+  expectation: string | null;
 }
 
 type Step = "form" | "loading" | "classified" | "help" | "done";
@@ -56,6 +59,8 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
   const [reason, setReason] = useState(REASONS[0]);
   const [text, setText] = useState("");
   const [result, setResult] = useState<ClassifyFeedbackResult | null>(null);
+  // a marcada na página de obrigado (se o comprador passou por ela) ou a da venda da demo
+  const expectation = useSessionValue(EXPECTATION_KEY) ?? order.expectation;
 
   async function submit() {
     setStep("loading");
@@ -272,6 +277,15 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
                 </span>
               </dd>
             </div>
+
+            {expectation && (
+              <div>
+                <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Expectativa marcada na compra</dt>
+                <dd className="mt-1">
+                  <span className="rounded-full bg-primary/15 px-2.5 py-0.5 font-medium text-secondary">{expectation}</span>
+                </dd>
+              </div>
+            )}
 
             {step === "form" && (
               <p className="rounded-lg border border-dashed bg-muted/30 p-4 text-center text-muted-foreground">

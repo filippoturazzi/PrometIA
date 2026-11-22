@@ -9,3 +9,7 @@ export const brl = (v: number) =>
 export const int = (v: number) => v.toLocaleString("pt-BR");
 
 export const times = (x: number) => `${x.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}x`;
+
+/** "1 reembolso", "8 reembolsos" */
+export const plural = (n: number, singular: string, pluralForm = `${singular}s`) =>
+  `${n.toLocaleString("pt-BR")} ${n === 1 ? singular : pluralForm}`;

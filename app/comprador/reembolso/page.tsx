@@ -38,6 +38,7 @@ export default function ReembolsoPage() {
           creatorName: creator.name,
           link: contentLink(creator.handle, product.slug, content.linkId),
           claims: content.claims.map((c) => ({ text: c.text, status: c.status })),
+          expectation: sale.expectation ?? null,
         }}
         exampleText={DEMO_REFUND_TEXT}
       />

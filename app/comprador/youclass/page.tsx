@@ -1,11 +1,18 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { PageHeader } from "@/components/PageHeader";
+import { getProduct } from "@/lib/data";
+import { DEMO_PRODUCT_ID } from "@/lib/demo";
+import { YouClass } from "./YouClass";
 
-export default function Page() {
+export default function YouClassPage() {
+  const product = getProduct(DEMO_PRODUCT_ID)!;
   return (
-    <ComingSoon
-      eyebrow="Comprador"
-      title="YouClass"
-      subtitle="Check-in rápido dentro da área de membros: está sendo o que você esperava?"
-    />
+    <>
+      <PageHeader
+        eyebrow="Comprador · Depois da venda"
+        title="YouClass: check-in"
+        subtitle="Dentro da área de membros, um check-in de um toque pergunta se o produto está sendo o esperado, antes de o comprador pedir reembolso."
+      />
+      <YouClass product={{ name: product.name, producer: product.producer, modules: product.contentOutline ?? [] }} />
+    </>
   );
 }

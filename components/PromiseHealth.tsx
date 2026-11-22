@@ -17,7 +17,7 @@ import {
   type DataFilter,
   type GroupAggregate,
 } from "@/lib/data";
-import { int, pct, times } from "@/lib/format";
+import { int, plural, pct, times } from "@/lib/format";
 
 interface PromiseHealthProps {
   filter?: DataFilter;
@@ -70,7 +70,7 @@ export function PromiseHealth({ filter = {}, audience, idSuffix = "" }: PromiseH
           label="Taxa de reembolso"
           icon={Percent}
           value={pct(kpis.refundRate)}
-          hint={`${kpis.refunds} reembolsos · ${kpis.chargebacks} chargebacks`}
+          hint={`${plural(kpis.refunds, "reembolso")} · ${plural(kpis.chargebacks, "chargeback")}`}
         />
         <KpiCard
           label="Reembolsos por expectativa"

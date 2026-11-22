@@ -320,8 +320,8 @@ export function getCreatorInsightData(creatorId: string) {
       taxaReembolsoPct: pct(kpis.refundRate),
       comissaoPerdida: Math.round(kpis.commissionLost),
     },
+    // sem id: a IA deve citar os conteúdos pelo título
     conteudos: aggregateByContent({ creatorId }).map((a) => ({
-      id: a.content.id,
       titulo: a.content.title,
       canal: a.content.channel,
       produto: a.product.name,

@@ -46,7 +46,7 @@ ${reason ? `MOTIVO SELECIONADO PELO COMPRADOR: ${reason}\n` : ""}TEXTO DO COMPRA
 }
 
 export function creatorInsightPrompt(data: unknown) {
-  return `Você é um analista de performance para creators afiliados. Com base nos dados abaixo, escreva até 3 insights curtos e acionáveis (máx. 2 frases cada) mostrando quais promessas ou conteúdos estão ligados a mais reembolso e o que mudar. Tom: direto, amigável, sem julgar. Use números dos dados e cite os conteúdos pelo título (nunca pelo id). Responda em português do Brasil. Cada insight tem um título curto e descritivo (até 6 palavras, sem "Insight 1"). Deixe suggestedAction como string vazia.
+  return `Você é um analista de performance para creators afiliados. Com base nos dados abaixo, escreva até 3 insights curtos e acionáveis (máx. 2 frases cada) mostrando quais promessas ou conteúdos estão ligados a mais reembolso e o que mudar. Tom: direto, amigável, sem julgar. Use números dos dados e cite os conteúdos pelo título (nunca pelo id). Responda em português do Brasil. Cada insight tem um título curto e descritivo (até 6 palavras, sem "Insight 1"). Nunca sugira prometer mais, prazos menores ou resultados maiores do que a página do produto sustenta: o objetivo é reduzir reembolso com promessas verdadeiras. Se as promessas são sustentadas e a taxa é baixa, reconheça isso e recomende manter o tom. Deixe suggestedAction como string vazia.
 DADOS: ${JSON.stringify(data)}`;
 }
 
