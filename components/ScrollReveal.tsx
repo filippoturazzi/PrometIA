@@ -26,27 +26,26 @@ export function ScrollReveal() {
       { threshold: 0.1, rootMargin: "0px 0px -8% 0px" },
     );
 
+    // Sem marcar o DOM: atributos extras antes da hidratação geram aviso do React,
+    // e o StrictMode monta este efeito duas vezes (cada montagem tem seu próprio conjunto).
+    const seen = new WeakSet<Element>();
     const scan = () => {
-      document
-        .querySelectorAll<HTMLElement>("[data-reveal]:not([data-reveal-bound])")
-        .forEach((el) => {
-          el.setAttribute("data-reveal-bound", "");
-          if (el.dataset.reveal === "stagger") {
-            Array.from(el.children).forEach((child, i) =>
-              (child as HTMLElement).style.setProperty("--i", String(i)),
-            );
-          }
-          io.observe(el);
-        });
+      document.querySelectorAll("[data-reveal]:not(.is-revealed)").forEach((el) => {
+        if (seen.has(el)) return;
+        seen.add(el);
+        io.observe(el);
+      });
     };
 
-    scan();
+    // começa depois da hidratação, para não alterar o DOM antes do React
+    const raf = requestAnimationFrame(() => requestAnimationFrame(scan));
     // novas telas (navegação no client) e conteúdo que aparece depois
     const mo = new MutationObserver(scan);
     mo.observe(document.body, { childList: true, subtree: true });
     window.__revealReady = true;
 
     return () => {
+      cancelAnimationFrame(raf);
       io.disconnect();
       mo.disconnect();
     };

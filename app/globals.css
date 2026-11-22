@@ -313,6 +313,12 @@ html {
   [data-reveal="stagger"] > * {
     transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 90ms);
   }
+  [data-reveal="stagger"] > :nth-child(2) { --i: 1; }
+  [data-reveal="stagger"] > :nth-child(3) { --i: 2; }
+  [data-reveal="stagger"] > :nth-child(4) { --i: 3; }
+  [data-reveal="stagger"] > :nth-child(5) { --i: 4; }
+  [data-reveal="stagger"] > :nth-child(6) { --i: 5; }
+  [data-reveal="stagger"] > :nth-child(n + 7) { --i: 6; }
   .reveal-word {
     transition-duration: 550ms;
     transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 45ms);
