@@ -2,153 +2,218 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { CheckCircle2, ChevronRight, Circle, LifeBuoy, PlayCircle, X } from "lucide-react";
-import { SimulationBadge } from "@/components/SimulationBadge";
+import {
+  Check,
+  ChevronRight,
+  Frown,
+  Heart,
+  LifeBuoy,
+  Meh,
+  MessageCircle,
+  Play,
+  Target,
+  ThumbsDown,
+  ThumbsUp,
+  X,
+  type LucideIcon,
+} from "lucide-react";
+import { BrowserFrame } from "@/components/BrowserFrame";
 import { EXPECTATION_KEY, useSessionValue } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  product: { name: string; producer: string; modules: string[] };
+  product: { name: string; slug: string; producer: string; modules: string[] };
 }
 
 type Answer = "positivo" | "neutro" | "negativo";
 
-const OPTIONS: { value: Answer; emoji: string; label: string }[] = [
-  { value: "positivo", emoji: "👍", label: "Sim" },
-  { value: "neutro", emoji: "😐", label: "Mais ou menos" },
-  { value: "negativo", emoji: "👎", label: "Não" },
+const OPTIONS: { value: Answer; icon: LucideIcon; label: string }[] = [
+  { value: "positivo", icon: ThumbsUp, label: "Sim" },
+  { value: "neutro", icon: Meh, label: "Mais ou menos" },
+  { value: "negativo", icon: ThumbsDown, label: "Não" },
 ];
+
+const REPLIES: Record<Answer, { icon: LucideIcon; bg: string; fg: string; title: string; help: boolean }> = {
+  positivo: { icon: Heart, bg: "bg-status-ok-bg", fg: "text-status-ok", title: "Obrigado por contar!", help: false },
+  neutro: {
+    icon: MessageCircle,
+    bg: "bg-status-warn-bg",
+    fg: "text-status-warn",
+    title: "Obrigado pela sinceridade.",
+    help: true,
+  },
+  negativo: { icon: Frown, bg: "bg-status-bad-bg", fg: "text-status-bad", title: "Poxa, sentimos muito.", help: true },
+};
 
 export function YouClass({ product }: Props) {
   const expectation = useSessionValue(EXPECTATION_KEY);
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const done = 1; // aulas concluídas no mock
+  const total = product.modules.length;
+  const title = (m: string) => m.replace(/^M\d+\s+/, "");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg">
-      {/* barra da área de membros */}
-      <div className="flex items-center justify-between gap-3 border-b bg-neutral-50 px-5 py-3">
-        <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">Área de membros</p>
-          <p className="truncate font-semibold text-secondary">{product.name}</p>
-        </div>
-        <SimulationBadge />
-      </div>
-
-      <div className="grid min-h-[460px] md:grid-cols-[260px_minmax(0,1fr)]">
+    <BrowserFrame url={`youclass.youshop.co/${product.slug}/m${done + 1}`}>
+      <div className="grid md:grid-cols-[300px_minmax(0,1fr)]">
         {/* módulos */}
-        <nav aria-label="Módulos" className="border-b bg-white p-4 md:border-r md:border-b-0">
-          <p className="text-xs font-medium tracking-wide text-secondary/70 uppercase">
-            Seu progresso · {done}/{product.modules.length}
-          </p>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
-            <div className="h-full rounded-full bg-primary" style={{ width: `${(done / product.modules.length) * 100}%` }} />
+        <nav aria-label="Módulos" className="flex flex-col gap-6 border-b border-line px-6 py-7 md:border-r md:border-b-0">
+          <div className="flex flex-col gap-1">
+            <span className="text-[12px] text-muted-foreground">Área de membros</span>
+            <span className="font-heading text-[18px] font-semibold text-ink">{product.name}</span>
           </div>
-          <ol className="mt-4 space-y-1">
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between text-[12px]">
+              <span className="font-medium text-muted-foreground">Seu progresso</span>
+              <span className="font-semibold text-ink">
+                {done} de {total}
+              </span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-[3px] bg-[#EEF1F5]" aria-hidden>
+              <div className="h-full rounded-[3px] bg-status-ok" style={{ width: `${(done / total) * 100}%` }} />
+            </div>
+          </div>
+          <ol className="flex flex-col gap-0.5">
             {product.modules.map((m, i) => (
               <li
                 key={m}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-2 py-2 text-sm",
-                  i === done ? "bg-primary/10 font-medium text-secondary" : "text-muted-foreground",
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] leading-5",
+                  i === done ? "bg-[#EEF2F8] font-semibold text-ink" : i < done ? "text-ink" : "text-muted-foreground",
                 )}
               >
                 {i < done ? (
-                  <CheckCircle2 className="size-4 shrink-0 text-status-ok" aria-label="Concluído" />
+                  <span className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-status-ok">
+                    <Check className="size-3 text-white" strokeWidth={3} aria-label="Concluído" />
+                  </span>
                 ) : i === done ? (
-                  <PlayCircle className="size-4 shrink-0 text-secondary" aria-label="Em andamento" />
+                  <span className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-navy">
+                    <Play className="size-2.5 fill-white text-white" aria-label="Em andamento" />
+                  </span>
                 ) : (
-                  <Circle className="size-4 shrink-0" aria-hidden />
+                  <span className="flex size-[22px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-[#C5CEDA] text-[11px] font-semibold text-muted-foreground">
+                    {i + 1}
+                  </span>
                 )}
-                {m}
+                {title(m)}
               </li>
             ))}
           </ol>
         </nav>
 
         {/* aula atual */}
-        <div className="p-5">
-          <div className="bg-hero flex aspect-video max-h-72 w-full items-center justify-center rounded-xl">
-            <PlayCircle className="size-16 text-white/80" aria-hidden />
+        <div className="flex min-w-0 flex-col gap-7 p-7">
+          <div className="flex aspect-video max-h-[420px] w-full flex-col overflow-hidden rounded-xl bg-navy-deep">
+            <div className="flex flex-1 items-center justify-center">
+              <span className="flex size-[72px] items-center justify-center rounded-full bg-white">
+                <Play className="ml-1 size-7 fill-navy-deep text-navy-deep" aria-hidden />
+              </span>
+            </div>
+            <div className="flex items-center gap-3.5 px-5 py-3.5 text-[12px] text-white/70" aria-hidden>
+              0:00
+              <span className="h-1 flex-1 rounded-[2px] bg-white/20" />
+              12:00
+            </div>
           </div>
-          <p className="mt-4 text-lg font-semibold text-secondary">{product.modules[done]}</p>
-          <p className="text-sm text-muted-foreground">Aula 1 · 12 min · por {product.producer}</p>
-          {expectation && (
-            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs text-secondary">
-              Sua expectativa na compra: <strong>{expectation}</strong>
-            </p>
-          )}
+
+          <div className="flex flex-col gap-8 xl:flex-row xl:items-start">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <span className="text-[11px] font-semibold tracking-[1.4px] text-muted-foreground uppercase">
+                Módulo {done + 1} · Aula 1
+              </span>
+              <p className="font-heading text-[24px] font-semibold text-ink">{title(product.modules[done] ?? "")}</p>
+              <p className="text-[14px] text-muted-foreground">12 min · por {product.producer}</p>
+              {expectation && (
+                <p className="flex flex-wrap items-center gap-2 pt-2 text-[13px] text-muted-foreground">
+                  <Target className="size-4 text-navy" aria-hidden />
+                  Sua expectativa na compra: <strong className="font-semibold text-ink">{expectation}</strong>
+                </p>
+              )}
+            </div>
+
+            {!dismissed && (
+              <div
+                id="card-checkin"
+                role="dialog"
+                aria-label="Check-in"
+                className="flex w-full flex-col gap-4 rounded-xl border border-line bg-white p-5 shadow-[0_8px_24px_rgb(20_40_74/0.12)] xl:w-[380px] xl:shrink-0"
+              >
+                {!answer ? (
+                  <>
+                    <div className="flex justify-between gap-3">
+                      <div className="flex flex-col gap-1">
+                        <p className="text-[15px] font-semibold text-ink">Está sendo o que você esperava?</p>
+                        <p className="text-[12px] text-muted-foreground">Sua resposta vai direto para o produtor.</p>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Fechar"
+                        onClick={() => setDismissed(true)}
+                        className="self-start rounded p-0.5 text-muted-foreground hover:bg-paper"
+                      >
+                        <X className="size-4" />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {OPTIONS.map((o) => (
+                        <button
+                          key={o.value}
+                          type="button"
+                          onClick={() => setAnswer(o.value)}
+                          className="flex flex-col items-center gap-2 rounded-[10px] border border-line px-2 py-3.5 text-[13px] font-medium text-ink transition-colors hover:border-navy/40 hover:bg-paper"
+                        >
+                          <o.icon className="size-5 text-navy" aria-hidden />
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <Reply answer={answer} onClose={() => setDismissed(true)} />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
+    </BrowserFrame>
+  );
+}
 
-      {/* card flutuante de check-in */}
-      {!dismissed && (
-        <div
-          id="card-checkin"
-          role="dialog"
-          aria-label="Check-in"
-          className="absolute right-4 bottom-4 w-[min(320px,calc(100%-2rem))] rounded-xl border bg-white p-4 shadow-2xl"
-        >
-          <button
-            type="button"
-            aria-label="Fechar"
-            onClick={() => setDismissed(true)}
-            className="absolute top-2 right-2 rounded p-1 text-muted-foreground hover:bg-muted"
-          >
-            <X className="size-4" />
-          </button>
-
-          {!answer && (
-            <>
-              <p className="pr-6 font-semibold text-secondary">Está sendo o que você esperava?</p>
-              <div className="mt-3 grid grid-cols-3 gap-2">
-                {OPTIONS.map((o) => (
-                  <button
-                    key={o.value}
-                    type="button"
-                    onClick={() => setAnswer(o.value)}
-                    className="flex flex-col items-center gap-1 rounded-lg border py-2 text-xs text-muted-foreground transition-colors hover:border-primary hover:bg-primary/10"
-                  >
-                    <span className="text-2xl" aria-hidden>
-                      {o.emoji}
-                    </span>
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-
-          {answer === "positivo" && (
-            <p className="pr-6 text-sm">
-              <strong className="text-secondary">Que bom! 🎉</strong> Bons estudos. A gente pergunta de novo mais pra frente.
-            </p>
-          )}
-
-          {(answer === "neutro" || answer === "negativo") && (
-            <div className="space-y-3 pr-2 text-sm">
-              <p>
-                <strong className="text-secondary">
-                  {answer === "negativo" ? "Poxa, sentimos muito." : "Obrigado por contar."}
-                </strong>{" "}
-                Sua resposta chega ao produtor para melhorar o curso.
-              </p>
-              <Link
-                id="link-ajuda-reembolso"
-                href="/comprador/reembolso"
-                className="flex items-center justify-between gap-2 rounded-lg border border-primary/50 bg-highlight px-3 py-2 font-medium text-secondary hover:bg-primary/15"
-              >
-                <span className="flex items-center gap-2">
-                  <LifeBuoy className="size-4" aria-hidden />
-                  Precisa de ajuda ou quer solicitar reembolso?
-                </span>
-                <ChevronRight className="size-4" aria-hidden />
-              </Link>
-            </div>
-          )}
+function Reply({ answer, onClose }: { answer: Answer; onClose: () => void }) {
+  const r = REPLIES[answer];
+  return (
+    <>
+      <div className="flex gap-3">
+        <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", r.bg)}>
+          <r.icon className={cn("size-4", r.fg)} aria-hidden />
+        </span>
+        <div className="flex flex-1 flex-col gap-1">
+          <p className="text-[15px] font-semibold text-ink">{r.title}</p>
+          <p className="text-[13px] leading-5 text-muted-foreground">
+            Sua resposta chega ao produtor para melhorar o curso.
+          </p>
         </div>
+        <button
+          type="button"
+          aria-label="Fechar"
+          onClick={onClose}
+          className="self-start rounded p-0.5 text-muted-foreground hover:bg-paper"
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+      {r.help && (
+        <Link
+          id="link-ajuda-reembolso"
+          href="/comprador/reembolso"
+          className="flex items-center gap-2.5 rounded-lg bg-paper px-3.5 py-3 text-[13px] font-semibold text-navy hover:bg-[#EEF2F8]"
+        >
+          <LifeBuoy className="size-4 shrink-0" aria-hidden />
+          <span className="flex-1">Precisa de ajuda ou quer solicitar reembolso?</span>
+          <ChevronRight className="size-4 shrink-0" aria-hidden />
+        </Link>
       )}
-    </div>
+    </>
   );
 }

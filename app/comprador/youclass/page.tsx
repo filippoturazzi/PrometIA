@@ -10,9 +10,16 @@ export default function YouClassPage() {
       <PageHeader
         eyebrow="Comprador · Depois da venda"
         title="YouClass: check-in"
-        subtitle="Dentro da área de membros, um check-in de um toque pergunta se o produto está sendo o esperado, antes de o comprador pedir reembolso."
+        subtitle="Dentro da área de membros, um check-in de um toque pergunta se o produto está sendo o esperado — antes de o comprador pedir reembolso."
       />
-      <YouClass product={{ name: product.name, producer: product.producer, modules: product.contentOutline ?? [] }} />
+      <YouClass
+        product={{
+          name: product.name,
+          slug: product.slug,
+          producer: product.producer,
+          modules: product.contentOutline ?? [],
+        }}
+      />
     </>
   );
 }
