@@ -1,14 +1,19 @@
 import Link from "next/link";
 import {
+  ArrowDown,
   ArrowRight,
   Building2,
   Clapperboard,
+  Megaphone,
   MessageSquareText,
+  PackageOpen,
   ShieldCheck,
   ShoppingBag,
   Store,
   TrendingUp,
+  X,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const STEPS = [
   {
@@ -34,115 +39,199 @@ const PROFILES = [
     icon: Clapperboard,
     label: "Creator",
     text: "Checar um roteiro e ver o que gera reembolso",
+    stage: "Antes de postar",
   },
   {
     href: "/comprador/obrigado",
     icon: ShoppingBag,
     label: "Comprador",
     text: "Declarar expectativa e pedir reembolso",
+    stage: "Depois da venda",
   },
   {
     href: "/produtor",
     icon: Store,
     label: "Produtor",
     text: "Saúde da promessa dos seus produtos",
+    stage: "Aprendizado",
   },
   {
     href: "/operacoes",
     icon: Building2,
     label: "Operações YouShop",
     text: "Painel geral e fila de escalonamento",
+    stage: "Aprendizado",
   },
 ];
 
+const container = "mx-auto w-full max-w-[1248px] px-6";
+
 export default function Home() {
   return (
-    <div className="space-y-12">
-      <section
-        id="problema"
-        className="bg-hero overflow-hidden rounded-2xl px-6 py-12 text-white sm:px-10 sm:py-16"
-      >
-        <span className="text-xs font-semibold tracking-widest text-primary uppercase">
-          Um conceito para o ecossistema YouShop
-        </span>
-        <h1 className="mt-3 max-w-3xl text-3xl leading-tight font-bold text-white sm:text-4xl">
-          O que foi <span className="text-primary">prometido</span> na
-          divulgação quase nunca é conferido com o que o comprador{" "}
-          <span className="text-primary">recebe</span>.
-        </h1>
-        <p className="mt-4 max-w-2xl text-base text-white/80">
-          A diferença só aparece no fim: como reembolso, chargeback ou
-          reclamação pública. O <strong className="text-white">PrometIA</strong>{" "}
-          confere a promessa antes de postar, ouve o comprador depois da venda e
-          fecha o ciclo quando não bate.
-        </p>
-        <Link
-          href="/creator/checador"
-          className="mt-8 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 font-medium text-primary-foreground transition-colors hover:bg-primary/85"
+    <>
+      <section id="problema" className="bg-navy-deep text-white">
+        <div
+          className={cn(
+            container,
+            "flex flex-col gap-12 py-16 lg:flex-row lg:items-center lg:gap-20 lg:pt-24 lg:pb-28",
+          )}
         >
-          Começar pelo creator <ArrowRight className="size-4" />
-        </Link>
-      </section>
+          <div className="flex flex-1 flex-col items-start gap-7">
+            <span className="text-[12px] font-semibold tracking-[1.6px] text-lime uppercase">
+              Um conceito para o ecossistema YouShop
+            </span>
+            <h1 className="text-[38px] leading-[1.08] tracking-[-1.2px] text-white sm:text-[54px]">
+              O que foi prometido na divulgação quase nunca é conferido com o que o comprador
+              recebe.
+            </h1>
+            <p className="max-w-[520px] text-[17px] leading-[27px] text-white/70">
+              A diferença só aparece no fim — como reembolso, chargeback ou reclamação pública.
+              O PrometIA confere a promessa antes de postar, ouve o comprador depois da venda e
+              fecha o ciclo quando não bate.
+            </p>
+            <div className="flex flex-wrap items-center gap-6 pt-2">
+              <Link
+                href="/creator/checador"
+                className="inline-flex items-center gap-2.5 rounded-lg bg-lime px-6 py-4 text-[15px] font-semibold text-navy-deep transition-colors hover:bg-lime/85"
+              >
+                Começar pelo creator <ArrowRight className="size-4" />
+              </Link>
+              <a
+                href="#solucao"
+                className="inline-flex items-center gap-2 text-[15px] font-medium text-white hover:text-white/80"
+              >
+                Ver como funciona <ArrowDown className="size-4" />
+              </a>
+            </div>
+          </div>
 
-      <section id="solucao" aria-labelledby="solucao-titulo">
-        <span className="text-xs font-semibold tracking-widest text-secondary/70 uppercase">
-          Como funciona
-        </span>
-        <h2 id="solucao-titulo" className="mt-1 text-2xl">
-          Um ciclo em 3 passos que{" "}
-          <span className="rounded bg-primary/30 px-1">
-            transforma promessa em aprendizado
-          </span>
-        </h2>
-        <ol className="mt-6 grid gap-4 md:grid-cols-3">
-          {STEPS.map((step, i) => (
-            <li
-              key={step.title}
-              className="relative rounded-xl border bg-card p-5 shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                  {i + 1}
-                </span>
-                <step.icon className="size-5 text-secondary" aria-hidden />
-                <h3 className="text-base">{step.title}</h3>
-              </div>
-              <p className="mt-3 text-muted-foreground">{step.text}</p>
-              {i < STEPS.length - 1 && (
-                <ArrowRight
-                  aria-hidden
-                  className="absolute top-1/2 -right-3.5 hidden size-5 -translate-y-1/2 text-secondary/40 md:block"
-                />
-              )}
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section aria-labelledby="perfis-titulo">
-        <h2 id="perfis-titulo" className="text-2xl">
-          Escolha uma perspectiva
-        </h2>
-        <p className="mt-1 text-muted-foreground">
-          Cada perfil vê o mesmo problema de um ângulo diferente.
-        </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PROFILES.map((p) => (
-            <Link
-              key={p.href}
-              href={p.href}
-              className="group rounded-xl border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
-            >
-              <p.icon className="size-6 text-secondary" aria-hidden />
-              <div className="mt-3 flex items-center justify-between font-semibold text-secondary">
-                {p.label}
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{p.text}</p>
-            </Link>
-          ))}
+          <div className="w-full rounded-2xl border border-white/[0.12] bg-white/[0.04] p-8 lg:w-[460px]">
+            <div className="flex flex-col gap-2.5">
+              <span className="flex items-center gap-2 text-[11px] font-semibold tracking-[1.4px] text-white/60 uppercase">
+                <Megaphone className="size-3.5" aria-hidden /> Prometido no vídeo
+              </span>
+              <p className="font-heading text-[19px] leading-[26px] font-medium">
+                “Bateria dura 3 dias e carrega em 20 minutos.”
+              </p>
+            </div>
+            <div className="flex items-center gap-3 py-6">
+              <span className="h-px flex-1 bg-white/15" />
+              <span className="flex items-center gap-1.5 rounded-full bg-[#FF6B5A26] px-3 py-1.5 text-[12px] font-semibold text-[#FF9A8C]">
+                <X className="size-3.5" aria-hidden /> Não bate
+              </span>
+              <span className="h-px flex-1 bg-white/15" />
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <span className="flex items-center gap-2 text-[11px] font-semibold tracking-[1.4px] text-lime uppercase">
+                <PackageOpen className="size-3.5" aria-hidden /> Recebido pelo comprador
+              </span>
+              <p className="font-heading text-[19px] leading-[26px] font-medium">
+                “Dura menos de um dia. Carregar leva quase 2 horas.”
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-6 text-[13px]">
+              <span className="text-white/50">Resultado sem o PrometIA</span>
+              <span className="font-semibold">Reembolso + reclamação</span>
+            </div>
+          </div>
         </div>
       </section>
-    </div>
+
+      <section id="solucao" aria-labelledby="solucao-titulo" className="scroll-mt-24 bg-white">
+        <div className={cn(container, "flex flex-col gap-16 py-20 lg:py-28")}>
+          <div className="flex flex-wrap items-end justify-between gap-x-20 gap-y-6">
+            <div className="flex max-w-[640px] flex-col gap-4">
+              <span className="text-[12px] font-semibold tracking-[1.6px] text-muted-foreground uppercase">
+                Como funciona
+              </span>
+              <h2
+                id="solucao-titulo"
+                className="text-[32px] leading-[1.12] tracking-[-0.8px] sm:text-[40px]"
+              >
+                Um ciclo em 3 passos que transforma promessa em aprendizado.
+              </h2>
+            </div>
+            <p className="max-w-[380px] text-[16px] leading-[26px] text-muted-foreground">
+              Cada etapa alimenta a próxima: o que o comprador relata volta como sinal para quem
+              cria e para quem vende.
+            </p>
+          </div>
+          <ol className="grid gap-12 md:grid-cols-3">
+            {STEPS.map((step, i) => (
+              <li
+                key={step.title}
+                className={cn(
+                  "flex flex-col gap-5 pt-7",
+                  i === 0 ? "border-t-[3px] border-navy" : "border-t border-line",
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <span
+                    className={cn(
+                      "font-heading text-[15px] font-semibold",
+                      i === 0 ? "text-navy" : "text-muted-foreground",
+                    )}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex size-10 items-center justify-center rounded-[10px] bg-paper">
+                    <step.icon className="size-[18px] text-navy" aria-hidden />
+                  </span>
+                </div>
+                <h3 className="text-[22px]">{step.title}</h3>
+                <p className="text-[15px] leading-[25px] text-muted-foreground">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section aria-labelledby="perfis-titulo" className="bg-paper">
+        <div className={cn(container, "flex flex-col gap-12 pt-24 pb-28")}>
+          <div className="flex flex-col gap-3">
+            <h2 id="perfis-titulo" className="text-[32px] tracking-[-0.6px]">
+              Escolha uma perspectiva
+            </h2>
+            <p className="text-[16px] text-muted-foreground">
+              Cada perfil vê o mesmo problema de um ângulo diferente.
+            </p>
+          </div>
+          <ul className="border-t border-line">
+            {PROFILES.map((p, i) => (
+              <li key={p.href} className="border-b border-line">
+                <Link
+                  href={p.href}
+                  className="group flex items-center gap-4 px-2 py-7 transition-colors hover:bg-white sm:gap-7"
+                >
+                  <span className="hidden font-heading text-[14px] font-medium text-muted-foreground sm:inline">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-line bg-white">
+                    <p.icon className="size-5 text-navy" aria-hidden />
+                  </span>
+                  <span className="min-w-0 flex-1 font-heading text-[20px] font-semibold text-ink md:w-[280px] md:flex-none md:text-[22px]">
+                    {p.label}
+                  </span>
+                  <span className="hidden flex-1 text-[15px] text-muted-foreground md:block">
+                    {p.text}
+                  </span>
+                  <span className="hidden rounded-full border border-line bg-white px-3 py-1.5 text-[12px] font-medium text-muted-foreground lg:inline">
+                    {p.stage}
+                  </span>
+                  <span
+                    className={cn(
+                      "flex size-10 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-0.5",
+                      i === 0 ? "bg-lime text-navy-deep" : "bg-navy text-white",
+                    )}
+                  >
+                    <ArrowRight className="size-4" aria-hidden />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
   );
 }

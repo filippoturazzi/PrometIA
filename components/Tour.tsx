@@ -212,7 +212,7 @@ export function TourButton() {
       aria-label="Rever o tour de boas-vindas"
       title="Rever o tour"
       onClick={() => window.dispatchEvent(new Event(TOUR_EVENT))}
-      className="flex size-8 items-center justify-center rounded-full border border-white/25 text-sm font-bold text-white transition-colors hover:bg-white/10"
+      className="ml-1 flex size-[34px] items-center justify-center rounded-full border border-white/25 text-sm text-white transition-colors hover:bg-white/10"
     >
       ?
     </button>

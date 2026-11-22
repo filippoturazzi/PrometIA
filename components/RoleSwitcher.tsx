@@ -12,7 +12,7 @@ export function RoleSwitcher() {
     <nav
       id="role-switcher"
       aria-label="Trocar de perfil"
-      className="flex flex-wrap items-center gap-1 rounded-full bg-white/10 p-1"
+      className="flex flex-wrap items-center gap-1"
     >
       {ROLES.map((role) => {
         const active = pathname.startsWith(role.prefix);
@@ -22,12 +22,13 @@ export function RoleSwitcher() {
             href={role.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+              "flex items-center gap-2 rounded-full px-3.5 py-2 text-[14px] transition-colors",
               active
-                ? "bg-primary text-primary-foreground"
-                : "text-white/80 hover:bg-white/10 hover:text-white",
+                ? "bg-lime font-semibold text-navy-deep"
+                : "font-medium text-white/80 hover:bg-white/10 hover:text-white",
             )}
           >
+            <role.icon className="size-4" aria-hidden />
             {role.label}
           </Link>
         );
@@ -39,14 +40,20 @@ export function RoleSwitcher() {
 export function SubNav() {
   const pathname = usePathname();
   const role = ROLES.find((r) => pathname.startsWith(r.prefix));
-  if (!role?.subnav) return null;
+  if (!role) return null;
 
   return (
-    <div className="border-b bg-white">
+    <div className="border-b border-line bg-white">
       <nav
         aria-label={`Telas de ${role.label}`}
-        className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 sm:px-6"
+        className="mx-auto flex h-14 max-w-[1248px] items-stretch gap-2 overflow-x-auto px-6"
       >
+        <div className="flex shrink-0 items-center gap-2 pr-5">
+          <span className="text-[11px] font-bold tracking-[1.4px] text-muted-foreground uppercase">
+            {role.area}
+          </span>
+          <span className="h-5 w-px bg-line" aria-hidden />
+        </div>
         {role.subnav.map((link) => {
           const active = pathname === link.href;
           return (
@@ -55,12 +62,13 @@ export function SubNav() {
               href={link.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "border-b-2 px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
+                "flex shrink-0 items-center gap-2.5 border-b-[3px] px-4 pt-[3px] text-[15px] whitespace-nowrap transition-colors",
                 active
-                  ? "border-primary text-secondary"
-                  : "border-transparent text-muted-foreground hover:text-secondary",
+                  ? "border-navy font-semibold text-ink"
+                  : "border-transparent font-medium text-slate hover:text-ink",
               )}
             >
+              <link.icon className="size-4" aria-hidden />
               {link.label}
             </Link>
           );

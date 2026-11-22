@@ -10,15 +10,15 @@ interface PageHeaderProps {
 
 export function PageHeader({ eyebrow, title, subtitle, actions }: PageHeaderProps) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-      <div className="space-y-1">
+    <div className="mb-10 flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+      <div className="flex min-w-0 flex-1 basis-[480px] flex-col gap-2.5">
         {eyebrow && (
-          <span className="inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium tracking-wide text-secondary uppercase">
+          <span className="text-[12px] font-semibold tracking-[1.6px] text-muted-foreground uppercase">
             {eyebrow}
           </span>
         )}
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="text-muted-foreground">{subtitle}</p>
+        <h1 className="text-[36px] leading-tight tracking-[-0.8px]">{title}</h1>
+        <p className="text-[16px] text-muted-foreground">{subtitle}</p>
       </div>
       {actions}
     </div>

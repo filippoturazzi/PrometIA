@@ -1,6 +1,21 @@
+import {
+  Activity,
+  Building2,
+  Clapperboard,
+  GraduationCap,
+  LayoutList,
+  PartyPopper,
+  ScanSearch,
+  ShoppingBag,
+  Store,
+  Undo2,
+  type LucideIcon,
+} from "lucide-react";
+
 export interface NavLink {
   href: string;
   label: string;
+  icon: LucideIcon;
 }
 
 export interface Role {
@@ -9,7 +24,10 @@ export interface Role {
   href: string;
   /** prefixo de rota que marca o perfil como ativo */
   prefix: string;
-  subnav?: NavLink[];
+  icon: LucideIcon;
+  /** rótulo da área exibido na subnav */
+  area: string;
+  subnav: NavLink[];
 }
 
 export const ROLES: Role[] = [
@@ -18,9 +36,11 @@ export const ROLES: Role[] = [
     label: "Creator",
     href: "/creator/checador",
     prefix: "/creator",
+    icon: Clapperboard,
+    area: "Área do creator",
     subnav: [
-      { href: "/creator/checador", label: "Checador" },
-      { href: "/creator/conteudos", label: "Meus conteúdos" },
+      { href: "/creator/checador", label: "Checador", icon: ScanSearch },
+      { href: "/creator/conteudos", label: "Meus conteúdos", icon: LayoutList },
     ],
   },
   {
@@ -28,17 +48,30 @@ export const ROLES: Role[] = [
     label: "Comprador",
     href: "/comprador/obrigado",
     prefix: "/comprador",
+    icon: ShoppingBag,
+    area: "Área do comprador",
     subnav: [
-      { href: "/comprador/obrigado", label: "Página de obrigado" },
-      { href: "/comprador/youclass", label: "YouClass" },
-      { href: "/comprador/reembolso", label: "Solicitar reembolso" },
+      { href: "/comprador/obrigado", label: "Página de obrigado", icon: PartyPopper },
+      { href: "/comprador/youclass", label: "YouClass", icon: GraduationCap },
+      { href: "/comprador/reembolso", label: "Solicitar reembolso", icon: Undo2 },
     ],
   },
-  { id: "produtor", label: "Produtor", href: "/produtor", prefix: "/produtor" },
+  {
+    id: "produtor",
+    label: "Produtor",
+    href: "/produtor",
+    prefix: "/produtor",
+    icon: Store,
+    area: "Área do produtor",
+    subnav: [{ href: "/produtor", label: "Saúde da promessa", icon: Activity }],
+  },
   {
     id: "operacoes",
     label: "Operações YouShop",
     href: "/operacoes",
     prefix: "/operacoes",
+    icon: Building2,
+    area: "Operações YouShop",
+    subnav: [{ href: "/operacoes", label: "Saúde da promessa", icon: Activity }],
   },
 ];

@@ -1,8 +1,15 @@
+import { Logo } from "@/components/Header";
+
 export function DisclaimerFooter() {
   return (
-    <footer className="fixed inset-x-0 bottom-0 z-40 border-t bg-white/95 px-4 py-2 text-center text-xs text-muted-foreground backdrop-blur">
-      Protótipo conceitual · Desafio de Inovação YouShop 2027 · não oficial ·
-      todos os dados são fictícios.
+    <footer className="bg-navy-deep">
+      <div className="mx-auto flex max-w-[1248px] flex-wrap items-center justify-between gap-3 px-6 py-7">
+        <Logo className="text-base" />
+        <p className="text-[13px] text-white/50">
+          Protótipo conceitual · Desafio de Inovação YouShop 2027 · não oficial · todos os
+          dados são fictícios
+        </p>
+      </div>
     </footer>
   );
 }

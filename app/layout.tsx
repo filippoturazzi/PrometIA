@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 import { Header } from "@/components/Header";
 import { DisclaimerFooter } from "@/components/DisclaimerFooter";
 import { Tour } from "@/components/Tour";
@@ -12,6 +12,12 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "PrometIA — O que prometia, entrega",
   description:
@@ -20,12 +26,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${inter.variable} ${interTight.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-full flex-col">
         <Header />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-8 pb-20 sm:px-6">
-          {children}
-        </main>
+        <main className="flex w-full flex-1 flex-col">{children}</main>
         <DisclaimerFooter />
         <Toaster theme="light" position="top-right" />
         <Tour />
