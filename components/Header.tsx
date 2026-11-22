@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RoleSwitcher, SubNav } from "@/components/RoleSwitcher";
+import { TourButton } from "@/components/Tour";
 
 export function Header() {
   return (
@@ -14,7 +15,10 @@ export function Header() {
               O que prometia, entrega
             </span>
           </Link>
-          <RoleSwitcher />
+          <div className="flex items-center gap-2">
+            <RoleSwitcher />
+            <TourButton />
+          </div>
         </div>
       </div>
       <SubNav />

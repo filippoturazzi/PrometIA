@@ -3,9 +3,10 @@ import { BatteryFull, SignalHigh, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** Moldura de celular para as telas que simulam o app da plataforma (seção 10). */
-export function PhoneFrame({ children, className }: { children: ReactNode; className?: string }) {
+export function PhoneFrame({ children, className, id }: { children: ReactNode; className?: string; id?: string }) {
   return (
     <div
+      id={id}
       className={cn(
         "relative mx-auto w-full max-w-[380px] rounded-[2.75rem] border-[10px] border-neutral-900 bg-neutral-900 shadow-2xl",
         className,

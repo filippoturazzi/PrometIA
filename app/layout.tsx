@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Header } from "@/components/Header";
 import { DisclaimerFooter } from "@/components/DisclaimerFooter";
+import { Tour } from "@/components/Tour";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <DisclaimerFooter />
         <Toaster theme="light" position="top-right" />
+        <Tour />
       </body>
     </html>
   );

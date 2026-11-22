@@ -84,7 +84,7 @@ export function Checador({ creator, products, defaultProductId, exampleScript, n
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         {/* Entrada */}
-        <section aria-label="Roteiro" className="space-y-4 rounded-xl border bg-card p-5 shadow-sm lg:sticky lg:top-32">
+        <section id="checador-entrada" aria-label="Roteiro" className="space-y-4 rounded-xl border bg-card p-5 shadow-sm lg:sticky lg:top-32">
           <p className="text-sm text-muted-foreground">
             Você está como <strong className="text-secondary">{creator.name}</strong> (@{creator.handle})
           </p>

@@ -103,7 +103,7 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
           <SimulationBadge /> O que o comprador vê
         </div>
-        <PhoneFrame>
+        <PhoneFrame id="phone-frame">
           <div id="phone-reembolso" className="flex min-h-full flex-col text-[13px] text-neutral-800">
             <div className="sticky top-0 z-10 border-b bg-white px-4 py-3">
               <div className="flex items-center gap-2">
