@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx scripts/generate-seed.ts"
+    "seed": "tsx scripts/generate-seed.ts",
+    "check-data": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/check-data.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -19,6 +20,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "recharts": "^3.11.0",
+    "server-only": "^0.0.1",
     "shadcn": "^4.23.0",
     "sonner": "^2.0.8",
     "tw-animate-css": "^1.4.0"
