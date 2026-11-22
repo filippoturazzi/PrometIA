@@ -8,12 +8,14 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/generate-seed.ts",
-    "check-data": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/check-data.ts"
+    "check-data": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/check-data.ts",
+    "try-ai": "tsx --env-file=.env.local --conditions=react-server --tsconfig tsconfig.json scripts/try-ai.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
+    "groq-sdk": "^1.6.0",
     "lucide-react": "^1.77.0",
     "next": "16.4.6",
     "next-themes": "^0.4.6",

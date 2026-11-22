@@ -35,7 +35,7 @@ O protótipo precisa rodar este roteiro de 2–3 minutos sem falhas:
 - **Tailwind CSS + shadcn/ui** (Card, Table, Badge, Button, Tabs, Textarea, Select, Dialog, Progress)
 - **Recharts** para os gráficos
 - **Dados:** arquivos JSON em `/data` (lidos no servidor). Sem banco.
-- **IA:** Groq via SDK oficial `groq-sdk`, chamado **apenas em Route Handlers do servidor**. Chave em `GROQ_API_KEY` (`.env.local`). Modelo em `GROQ_MODEL` (padrão: `openai/gpt-oss-20b`, o mais rápido e barato com structured outputs estritos; se a qualidade em português não bastar, usar `openai/gpt-oss-120b`).
+- **IA:** Groq via SDK oficial `groq-sdk`, chamado **apenas em Route Handlers do servidor**. Chave em `GROQ_API_KEY` (`.env.local`). Modelo em `GROQ_MODEL` (padrão: `openai/gpt-oss-20b`, o mais rápido e barato com structured outputs estritos; se a qualidade em português não bastar, usar `openai/gpt-oss-120b`). Nível de raciocínio em `GROQ_REASONING_EFFORT` (padrão: `medium`; com `low` o 20b gerou JSON fora do schema nos testes). Plano gratuito: 8.000 tokens/min, por isso o cache da seção 9 é essencial na demo.
 - **Deploy:** Vercel.
 ---
  
