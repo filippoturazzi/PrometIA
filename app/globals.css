@@ -280,3 +280,72 @@ html {
 .driver-popover.prometia-tour .driver-popover-arrow {
   display: none;
 }
+
+/* Revelação ao rolar (components/ScrollReveal.tsx).
+   Sem JS ou com "reduzir movimento" ativo, tudo fica visível. */
+.reveal-word {
+  display: inline-block;
+}
+.reveal-mark {
+  background-image: linear-gradient(var(--color-lime), var(--color-lime));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 36%;
+  padding: 0 2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal],
+  [data-reveal="stagger"] > *,
+  .reveal-word,
+  .reveal-mark {
+    transition-property: opacity, transform, filter, background-size;
+    transition-duration: 700ms;
+    transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal="blur"] {
+    transition-duration: 900ms;
+  }
+  [data-reveal="pop"] {
+    transition-duration: 550ms;
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  [data-reveal="stagger"] > * {
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 90ms);
+  }
+  .reveal-word {
+    transition-duration: 550ms;
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 45ms);
+  }
+  .reveal-mark {
+    transition-duration: 800ms;
+    transition-timing-function: cubic-bezier(0.77, 0, 0.18, 1);
+    transition-delay: calc(var(--reveal-delay, 0ms) + 450ms);
+  }
+
+  html.reveal-on [data-reveal="up"]:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  html.reveal-on [data-reveal="blur"]:not(.is-revealed) {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.03);
+  }
+  html.reveal-on [data-reveal="pop"]:not(.is-revealed) {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  html.reveal-on [data-reveal="words"]:not(.is-revealed) .reveal-word {
+    opacity: 0;
+    transform: translateY(0.45em);
+    filter: blur(6px);
+  }
+  html.reveal-on [data-reveal="stagger"]:not(.is-revealed) > * {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  html.reveal-on [data-reveal]:not(.is-revealed) .reveal-mark {
+    background-size: 0% 36%;
+  }
+}

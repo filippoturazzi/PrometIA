@@ -14,6 +14,7 @@ export function KpiStrip({ items, className }: { items: KpiItem[]; className?: s
   return (
     <section
       aria-label="Indicadores"
+      data-reveal="stagger"
       className={cn(
         "grid gap-y-6 rounded-[14px] border border-line bg-white py-7 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line",
         className,

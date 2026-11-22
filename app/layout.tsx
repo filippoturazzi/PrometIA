@@ -3,6 +3,7 @@ import { Inter, Inter_Tight } from "next/font/google";
 import { Header } from "@/components/Header";
 import { DisclaimerFooter } from "@/components/DisclaimerFooter";
 import { Tour } from "@/components/Tour";
+import { ScrollReveal, revealBootScript } from "@/components/ScrollReveal";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -31,12 +32,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${interTight.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: revealBootScript }} />
+      </head>
       <body className="flex min-h-full flex-col">
         <Header />
         <main className="flex w-full flex-1 flex-col">{children}</main>
         <DisclaimerFooter />
         <Toaster theme="light" position="top-right" />
         <Tour />
+        <ScrollReveal />
       </body>
     </html>
   );

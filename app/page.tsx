@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RevealWords } from "@/components/RevealWords";
 
 const STEPS = [
   {
@@ -77,20 +78,29 @@ export default function Home() {
           )}
         >
           <div className="flex flex-1 flex-col items-start gap-7">
-            <span className="text-[12px] font-semibold tracking-[1.6px] text-lime uppercase">
+            <span data-reveal="up" className="text-[12px] font-semibold tracking-[1.6px] text-lime uppercase">
               Um conceito para o ecossistema YouShop
             </span>
-            <h1 className="text-[38px] leading-[1.08] tracking-[-1.2px] text-white sm:text-[54px]">
-              O que foi <span className="text-lime">prometido</span> na divulgação quase nunca é{" "}
-              <span className="text-lime">conferido</span> com o que o comprador
-              recebe.
+            <h1
+              data-reveal="words"
+              className="text-[38px] leading-[1.08] tracking-[-1.2px] text-white sm:text-[54px]"
+            >
+              <RevealWords
+                parts={[
+                  "O que foi ",
+                  { text: "prometido", className: "text-lime" },
+                  " na divulgação quase nunca é ",
+                  { text: "conferido", className: "text-lime" },
+                  " com o que o comprador recebe.",
+                ]}
+              />
             </h1>
-            <p className="max-w-[520px] text-[17px] leading-[27px] text-white/70">
+            <p data-reveal="up" style={{ "--reveal-delay": "400ms" } as React.CSSProperties} className="max-w-[520px] text-[17px] leading-[27px] text-white/70">
               A diferença só aparece no fim — como reembolso, chargeback ou reclamação pública.
               O PrometIA confere a promessa antes de postar, ouve o comprador depois da venda e
               fecha o ciclo quando não bate.
             </p>
-            <div className="flex flex-wrap items-center gap-6 pt-2">
+            <div data-reveal="up" style={{ "--reveal-delay": "550ms" } as React.CSSProperties} className="flex flex-wrap items-center gap-6 pt-2">
               <Link
                 href="/creator/checador"
                 className="inline-flex items-center gap-2.5 rounded-lg bg-lime px-6 py-4 text-[15px] font-semibold text-navy-deep transition-colors hover:bg-lime/85"
@@ -106,7 +116,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-full rounded-2xl border border-white/[0.12] bg-white/[0.04] p-8 lg:w-[460px]">
+          <div data-reveal="up" style={{ "--reveal-delay": "300ms" } as React.CSSProperties} className="w-full rounded-2xl border border-white/[0.12] bg-white/[0.04] p-8 lg:w-[460px]">
             <div className="flex flex-col gap-2.5">
               <span className="flex items-center gap-2 text-[11px] font-semibold tracking-[1.4px] text-white/60 uppercase">
                 <Megaphone className="size-3.5" aria-hidden /> Prometido no vídeo
@@ -117,7 +127,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-3 py-6">
               <span className="h-px flex-1 bg-white/15" />
-              <span className="flex items-center gap-1.5 rounded-full bg-[#FF6B5A26] px-3 py-1.5 text-[12px] font-semibold text-[#FF9A8C]">
+              <span data-reveal="pop" style={{ "--reveal-delay": "1000ms" } as React.CSSProperties} className="flex items-center gap-1.5 rounded-full bg-[#FF6B5A26] px-3 py-1.5 text-[12px] font-semibold text-[#FF9A8C]">
                 <X className="size-3.5" aria-hidden /> Não bate
               </span>
               <span className="h-px flex-1 bg-white/15" />
@@ -141,7 +151,7 @@ export default function Home() {
       <section id="solucao" aria-labelledby="solucao-titulo" className="scroll-mt-24 bg-white">
         <div className={cn(container, "flex flex-col gap-16 py-20 lg:py-28")}>
           <div className="flex flex-wrap items-end justify-between gap-x-20 gap-y-6">
-            <div className="flex max-w-[640px] flex-col gap-4">
+            <div data-reveal="blur" className="flex max-w-[640px] flex-col gap-4">
               <span className="text-[12px] font-semibold tracking-[1.6px] text-muted-foreground uppercase">
                 Como funciona
               </span>
@@ -149,15 +159,16 @@ export default function Home() {
                 id="solucao-titulo"
                 className="text-[32px] leading-[1.12] tracking-[-0.8px] sm:text-[40px]"
               >
-                Um ciclo em 3 passos que transforma promessa em aprendizado.
+                Um ciclo em 3 passos que transforma promessa em{" "}
+                <span className="reveal-mark">aprendizado</span>.
               </h2>
             </div>
-            <p className="max-w-[380px] text-[16px] leading-[26px] text-muted-foreground">
+            <p data-reveal="up" style={{ "--reveal-delay": "200ms" } as React.CSSProperties} className="max-w-[380px] text-[16px] leading-[26px] text-muted-foreground">
               Cada etapa alimenta a próxima: o que o comprador relata volta como sinal para quem
               cria e para quem vende.
             </p>
           </div>
-          <ol className="grid gap-12 md:grid-cols-3">
+          <ol data-reveal="stagger" className="grid gap-12 md:grid-cols-3">
             {STEPS.map((step, i) => (
               <li
                 key={step.title}
@@ -189,7 +200,7 @@ export default function Home() {
 
       <section aria-labelledby="perfis-titulo" className="bg-paper">
         <div className={cn(container, "flex flex-col gap-12 pt-24 pb-28")}>
-          <div className="flex flex-col gap-3">
+          <div data-reveal="blur" className="flex flex-col gap-3">
             <h2 id="perfis-titulo" className="text-[32px] tracking-[-0.6px]">
               Escolha uma perspectiva
             </h2>
@@ -197,7 +208,7 @@ export default function Home() {
               Cada perfil vê o mesmo problema de um ângulo diferente.
             </p>
           </div>
-          <ul className="border-t border-line">
+          <ul data-reveal="stagger" className="border-t border-line">
             {PROFILES.map((p, i) => (
               <li key={p.href} className="border-b border-line">
                 <Link
