@@ -6,8 +6,8 @@ export default function OperacoesPage() {
     <>
       <PageHeader
         eyebrow="Operações YouShop · Aprendizado"
-        title="Saúde da Promessa"
-        subtitle="Quais produtos, creators e promessas geram reembolso, e a fila de casos para agir antes de virarem reclamação pública."
+        title="Saúde da promessa"
+        subtitle="Quais produtos, creators e promessas geram reembolso — e a fila de casos para agir antes de virarem reclamação pública."
       />
       <PromiseHealth audience="operacoes" />
     </>

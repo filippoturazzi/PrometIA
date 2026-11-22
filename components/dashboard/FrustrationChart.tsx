@@ -1,52 +1,42 @@
-"use client";
-
-import { Bar, BarChart, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { cn } from "@/lib/utils";
 
 interface Datum {
   label: string;
   count: number;
 }
 
-/** Barras horizontais, série única (sem legenda: o título nomeia a série), ordenadas do maior para o menor. */
+/** Barras horizontais simples, do maior para o menor; o maior motivo fica em destaque. */
 export function FrustrationChart({ data }: { data: Datum[] }) {
   // categorias sem nenhum caso saem do gráfico (ex.: entrega para um curso digital)
   const sorted = data.filter((d) => d.count > 0).sort((a, b) => b.count - a.count);
   const total = sorted.reduce((n, d) => n + d.count, 0);
+  const max = sorted[0]?.count ?? 1;
+
+  if (!sorted.length) {
+    return <p className="text-[13px] text-muted-foreground">Nenhum pedido de reembolso no período.</p>;
+  }
 
   return (
-    <div className="w-full" style={{ height: Math.max(120, sorted.length * 40) }} role="img" aria-label={sorted.map((d) => `${d.label}: ${d.count}`).join("; ")}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={sorted} layout="vertical" margin={{ top: 4, right: 36, bottom: 4, left: 4 }} barCategoryGap={6}>
-          {/* os valores vão na ponta de cada barra; eixo X e grade seriam redundantes */}
-          <XAxis type="number" hide domain={[0, "dataMax"]} />
-          <YAxis
-            type="category"
-            dataKey="label"
-            width={160}
-            tick={{ fontSize: 12, fill: "var(--foreground)" }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <Tooltip
-            cursor={{ fill: "var(--muted)", opacity: 0.6 }}
-            content={({ active, payload }) => {
-              if (!active || !payload?.length) return null;
-              const d = payload[0].payload as Datum;
-              return (
-                <div className="rounded-lg border bg-popover px-3 py-2 text-xs shadow-md">
-                  <div className="font-semibold text-secondary">{d.label}</div>
-                  <div className="text-muted-foreground">
-                    {d.count} reembolso{d.count === 1 ? "" : "s"} · {total ? Math.round((d.count / total) * 100) : 0}% do total
-                  </div>
-                </div>
-              );
-            }}
-          />
-          <Bar dataKey="count" fill="var(--chart-1)" radius={[0, 4, 4, 0]} maxBarSize={22} isAnimationActive={false}>
-            <LabelList dataKey="count" position="right" style={{ fontSize: 12, fill: "var(--foreground)" }} />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <ul className="flex flex-col gap-[18px]">
+      {sorted.map((d, i) => {
+        const share = total ? Math.round((d.count / total) * 100) : 0;
+        return (
+          <li key={d.label} className="flex flex-col gap-2">
+            <div className="flex justify-between gap-3">
+              <span className={cn("text-[14px] text-ink", i === 0 && "font-semibold")}>{d.label}</span>
+              <span className={cn("text-[13px] font-semibold tabular-nums", i === 0 ? "text-ink" : "text-muted-foreground")}>
+                {d.count} · {share}%
+              </span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-[4px] bg-[#EEF1F5]" aria-hidden>
+              <div
+                className={cn("h-full rounded-[4px]", i === 0 ? "bg-navy" : "bg-[#9AA9BF]")}
+                style={{ width: `${(d.count / max) * 100}%` }}
+              />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
