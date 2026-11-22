@@ -34,5 +34,37 @@
       ]
     },
     "savedAt": "2026-11-22T16:07:54.925Z"
+  },
+  "af4ef644c4feb289": {
+    "route": "classify-feedback",
+    "input": {
+      "productId": "p_reels",
+      "contentId": "ct_001",
+      "text": "comprei achando que ia ganhar 10 mil no primeiro mês, mas o curso é só edição básica",
+      "reason": "Não era o que eu esperava"
+    },
+    "output": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "relatedClaim": "Você vai faturar R$10 mil já no primeiro mês",
+      "summary": "O comprador esperava faturar R$10 mil no primeiro mês, mas o curso oferece apenas edição básica."
+    },
+    "savedAt": "2026-11-22T16:12:46.672Z"
+  },
+  "5143fa56a065f6b5": {
+    "route": "classify-feedback",
+    "input": {
+      "productId": "p_reels",
+      "contentId": "ct_001",
+      "text": "Paguei e não consigo acessar os módulos, aparece tudo bloqueado desde ontem.",
+      "reason": "Não consigo acessar o conteúdo"
+    },
+    "output": {
+      "type": "acesso_tecnico",
+      "severity": "media",
+      "summary": "Não consigo acessar os módulos do curso, tudo aparece bloqueado.",
+      "helpOffer": "Entre em contato com o suporte técnico para desbloquear seu acesso aos módulos."
+    },
+    "savedAt": "2026-11-22T16:14:00.362Z"
   }
 }

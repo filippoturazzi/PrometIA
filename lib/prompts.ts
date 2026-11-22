@@ -28,7 +28,7 @@ ROTEIRO:
 ${script}`;
 }
 
-export function classifyFeedbackPrompt(product: Product, claims: Claim[], text: string) {
+export function classifyFeedbackPrompt(product: Product, claims: Claim[], text: string, reason?: string) {
   const claimList = claims.length ? claims.map((c) => `- ${c.text}`).join("\n") : "nenhuma";
   return `Você analisa pedidos de reembolso em uma plataforma de vendas online.
 Classifique o texto do COMPRADOR em um tipo de frustração:
@@ -41,7 +41,7 @@ Escreva o resumo (summary) e a ajuda (helpOffer) em português do Brasil, em 1 f
 PRODUTO (página oficial): ${product.salesPageText}
 PROMESSAS DO CONTEÚDO DE ORIGEM:
 ${claimList}
-TEXTO DO COMPRADOR: ${text}`;
+${reason ? `MOTIVO SELECIONADO PELO COMPRADOR: ${reason}\n` : ""}TEXTO DO COMPRADOR: ${text}`;
 }
 
 export function creatorInsightPrompt(data: unknown) {

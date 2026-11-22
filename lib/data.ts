@@ -16,7 +16,10 @@ import type {
   Product,
   Sale,
 } from "@/lib/types";
+import { FRUSTRATION_LABELS } from "@/lib/claims-ui";
 import { COMMISSION_RATE, DEMO_FEEDBACK_ID, DEMO_NOW, ESCALATION_HOURS } from "@/lib/demo";
+
+export { FRUSTRATION_LABELS };
 
 // ---------------------------------------------------------------------------
 // Dados brutos (imports estáticos: entram no bundle do servidor, sem fs em runtime)
@@ -233,14 +236,6 @@ export function opsKpis(filter: DataFilter = {}) {
     queueSize: getEscalationQueue(filter).length,
   };
 }
-
-export const FRUSTRATION_LABELS: Record<FrustrationType, string> = {
-  expectativa_desalinhada: "Expectativa desalinhada",
-  acesso_tecnico: "Acesso / técnico",
-  qualidade_conteudo: "Qualidade do conteúdo",
-  entrega_logistica: "Entrega / logística",
-  arrependimento_pessoal: "Arrependimento pessoal",
-};
 
 export function frustrationBreakdown(filter: DataFilter = {}) {
   const list = getFeedback(filter);
