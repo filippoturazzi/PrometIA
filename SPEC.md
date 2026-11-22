@@ -35,7 +35,7 @@ O protótipo precisa rodar este roteiro de 2–3 minutos sem falhas:
 - **Tailwind CSS + shadcn/ui** (Card, Table, Badge, Button, Tabs, Textarea, Select, Dialog, Progress)
 - **Recharts** para os gráficos
 - **Dados:** arquivos JSON em `/data` (lidos no servidor). Sem banco.
-- **IA:** Google Gemini via SDK `@google/genai`, chamado **apenas em Route Handlers do servidor**. Chave em `GEMINI_API_KEY` (`.env.local`). Modelo em `GEMINI_MODEL` (padrão: o Flash mais recente disponível, ex. `gemini-2.5-flash`).
+- **IA:** xAI Grok via SDK `openai` (API compatível, `baseURL: https://api.x.ai/v1`), chamado **apenas em Route Handlers do servidor**. Chave em `XAI_API_KEY` (`.env.local`). Modelo em `XAI_MODEL` (padrão: `grok-4.20-0309-non-reasoning`, o modelo rápido sem raciocínio, adequado a extração e classificação em JSON).
 - **Deploy:** Vercel.
 ---
  
@@ -61,7 +61,7 @@ prometia/
 │     └─ insight/route.ts        # IA 3
 ├─ components/                   # ClaimCard, StatusBadge, RoleSwitcher, PhoneFrame, EscalationQueue, ...
 ├─ lib/
-│  ├─ gemini.ts                  # cliente + helper generateJSON(prompt, schema)
+│  ├─ grok.ts                    # cliente + helper generateJSON(prompt, schema)
 │  ├─ prompts.ts                 # os 3 prompts (seção 8)
 │  ├─ schemas.ts                 # os 3 response schemas (seção 8)
 │  ├─ data.ts                    # leitura dos JSON + funções de agregação
@@ -227,21 +227,24 @@ A classificação dos feedbacks do seed é preenchida pelo próprio script (é d
  
 ## 8. As 3 chamadas de IA
  
-Helper em `lib/gemini.ts`:
+Helper em `lib/grok.ts`:
  
 ```ts
-import { GoogleGenAI } from "@google/genai";
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+import OpenAI from "openai";
+const client = new OpenAI({ apiKey: process.env.XAI_API_KEY!, baseURL: "https://api.x.ai/v1" });
  
-export async function generateJSON<T>(prompt: string, schema: object): Promise<T> {
-  const res = await ai.models.generateContent({
-    model: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
-    contents: prompt,
-    config: { responseMimeType: "application/json", responseSchema: schema, temperature: 0.2 },
+export async function generateJSON<T>(prompt: string, schema: object, name: string): Promise<T> {
+  const res = await client.chat.completions.create({
+    model: process.env.XAI_MODEL ?? "grok-4.20-0309-non-reasoning",
+    messages: [{ role: "user", content: prompt }],
+    response_format: { type: "json_schema", json_schema: { name, schema, strict: true } },
+    temperature: 0.2,
   });
-  return JSON.parse(res.text ?? "{}") as T;
+  return JSON.parse(res.choices[0]?.message.content ?? "{}") as T;
 }
 ```
+
+> Structured outputs da xAI (modo `strict`): campos fora de `required` são opcionais e `additionalProperties` já é `false` por padrão, então os schemas abaixo funcionam como estão.
  
 ### IA 1 — `POST /api/check-claims`
 **Entrada:** `{ productId, script }` → servidor busca `salesPageText` e `contentOutline`.
@@ -354,8 +357,8 @@ export const insightSchema = {
 ## 9. Cache e plano B da demo (`lib/cache.ts`)
  
 - Chave do cache = hash de (`rota` + entrada normalizada).
-- Fluxo: se a chave existe em `data/ai-cache.json` → retorna o cache (com um pequeno delay artificial de 600–900 ms, para parecer ao vivo). Senão → chama o Gemini; se der certo, salva em memória (em dev, também grava no arquivo).
-- Se o Gemini falhar ou passar de 15 s → retorna uma resposta de fallback pré-escrita para os inputs da demo e mostra um toast discreto ("modo demonstração").
+- Fluxo: se a chave existe em `data/ai-cache.json` → retorna o cache (com um pequeno delay artificial de 600–900 ms, para parecer ao vivo). Senão → chama o Grok; se der certo, salva em memória (em dev, também grava no arquivo).
+- Se o Grok falhar ou passar de 15 s → retorna uma resposta de fallback pré-escrita para os inputs da demo e mostra um toast discreto ("modo demonstração").
 - Antes de gravar a demo: rodar a história inteira uma vez em dev para popular o `ai-cache.json` e commitar.
 ---
  
@@ -396,7 +399,7 @@ Uma frase do problema, uma frase da solução, um diagrama de 3 passos (Antes de
  
 ## 11. Fora do escopo (não implementar)
  
-Login e autenticação, banco de dados, integração com a API real da YouShop, envio real de WhatsApp/e-mail, pagamentos, upload e transcrição de vídeo (P2, só se sobrar tempo: usar Gemini multimodal com arquivo curto), testes automatizados extensivos, internacionalização.
+Login e autenticação, banco de dados, integração com a API real da YouShop, envio real de WhatsApp/e-mail, pagamentos, upload e transcrição de vídeo (P2, só se sobrar tempo), testes automatizados extensivos, internacionalização.
  
 ---
  
@@ -408,7 +411,7 @@ Login e autenticação, banco de dados, integração com a API real da YouShop, 
 3. `scripts/generate-seed.ts` → `sales.json`, `feedback.json`. Conferir no console se os padrões da seção 7 aparecem.
 4. `lib/data.ts` com as agregações (por conteúdo, creator, produto; fila de escalonamento).
 **Dia 2 (domingo)**
-5. `lib/gemini.ts`, `prompts.ts`, `schemas.ts`, `cache.ts`.
+5. `lib/grok.ts`, `prompts.ts`, `schemas.ts`, `cache.ts`.
 6. M1 Checador completo, com a IA 1.
 7. M2a Reembolso completo, com a IA 2.
 8. Rodar a história da demo e ajustar os prompts até o resultado da seção 2 sair consistente.
@@ -430,7 +433,7 @@ Login e autenticação, banco de dados, integração com a API real da YouShop, 
 - [ ] O fluxo de reembolso sempre mostra "Continuar com o reembolso".
 - [ ] O painel mostra claramente que conteúdos com promessa proibida têm taxa de reembolso ~3x maior.
 - [ ] A fila de escalonamento contém o caso da demo.
-- [ ] A chave do Gemini nunca aparece no navegador.
+- [ ] A chave da xAI nunca aparece no navegador.
 - [ ] Funciona bem em tela de notebook (1366px+) e o PhoneFrame é legível.
 - [ ] Visual coerente com a YouShop (verde-limão + azul-marinho, Inter), sem logo da YouShop e com o rodapé de aviso em todas as telas.
 - [ ] O tour abre na primeira visita, pode ser pulado e reaberto pelo "?".
