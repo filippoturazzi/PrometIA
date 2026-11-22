@@ -12,28 +12,28 @@
           "text": "Com o curso Renda com Reels você vai faturar R$10 mil já no primeiro mês, sério.",
           "status": "proibida",
           "evidence": "Não garantimos ganhos financeiros.",
-          "reason": "A fonte oficial não garante ganhos financeiros e proíbe alegações de renda específica.",
-          "rewrite": "Com dedicação, você pode começar a faturar de forma consistente, mas os resultados variam e não há garantia de R$10 mil no primeiro mês.",
+          "reason": "A página de vendas nega explicitamente a promessa de ganhos financeiros.",
+          "rewrite": "Com o curso Renda com Reels, você aprende técnicas que podem aumentar seu faturamento, mas os resultados dependem da sua dedicação e do seu nicho.",
           "category": "ganho_financeiro"
         },
         {
           "text": "É só postar 1 vídeo por dia e o algoritmo faz o resto.",
           "status": "exagerada",
           "evidence": "Resultados dependem da sua dedicação; a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante.",
-          "reason": "A fonte indica que resultados dependem de dedicação e tempo, não garantidos apenas com 1 vídeo por dia.",
-          "rewrite": "Postar 1 vídeo por dia e manter consistência ajuda o algoritmo a reconhecer seu conteúdo, mas os resultados dependem de dedicação e podem levar tempo.",
+          "reason": "A página indica que resultados dependem da dedicação, não que o algoritmo faça tudo.",
+          "rewrite": "Postar 1 vídeo por dia, junto com estratégias de engajamento, pode acelerar seu crescimento, mas o sucesso depende da sua dedicação e consistência.",
           "category": "garantia"
         },
         {
           "text": "São 6 módulos com aulas práticas de edição, do roteiro até a postagem.",
           "status": "sustentada",
-          "evidence": "Aprenda a editar Reels que prendem a atenção. 6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem.",
-          "reason": "A fonte oficial descreve exatamente 6 módulos práticos do roteiro à postagem.",
+          "evidence": "6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem.",
+          "reason": "Confirma que o curso tem 6 módulos com aulas práticas de edição, do roteiro até a postagem.",
           "category": "conteudo"
         }
       ]
     },
-    "savedAt": "2026-11-22T16:07:54.925Z"
+    "savedAt": "2026-11-22T17:27:12.400Z"
   },
   "af4ef644c4feb289": {
     "route": "classify-feedback",
@@ -51,20 +51,188 @@
     },
     "savedAt": "2026-11-22T16:12:46.672Z"
   },
-  "5143fa56a065f6b5": {
-    "route": "classify-feedback",
+  "5c0b6eb567c7d6d8": {
+    "route": "insight",
     "input": {
-      "productId": "p_reels",
-      "contentId": "ct_001",
-      "text": "Paguei e não consigo acessar os módulos, aparece tudo bloqueado desde ontem.",
-      "reason": "Não consigo acessar o conteúdo"
+      "scope": "case",
+      "id": "fb_demo"
     },
     "output": {
-      "type": "acesso_tecnico",
-      "severity": "media",
-      "summary": "Não consigo acessar os módulos do curso, tudo aparece bloqueado.",
-      "helpOffer": "Entre em contato com o suporte técnico para desbloquear seu acesso aos módulos."
+      "items": [
+        {
+          "title": "Expectativa desalinhada",
+          "body": "O comprador acreditou que receberia R$10 mil no primeiro mês, porém o curso entrega apenas edição básica de Reels. A promessa vem do conteúdo do creator, e ainda não houve resposta do produtor há 52 horas."
+        }
+      ],
+      "suggestedAction": "Acionar o produtor para esclarecer a promessa e oferecer suporte ao comprador."
     },
-    "savedAt": "2026-11-22T16:14:00.362Z"
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "ea66a45433a3086b": {
+    "route": "insight",
+    "input": {
+      "scope": "case",
+      "id": "fb_034"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Expectativa desalinhada sobre ganhos",
+          "body": "A criadora prometeu faturar R$10 mil no primeiro mês, porém o curso entrega apenas instruções de edição no CapCut, gerando expectativa desalinhada. A falta de resposta do produtor por 66 horas agrava a situação."
+        }
+      ],
+      "suggestedAction": "Acionar o produtor para esclarecer a promessa e oferecer suporte ao comprador."
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "9a7bad957b34821f": {
+    "route": "insight",
+    "input": {
+      "scope": "case",
+      "id": "fb_035"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Expectativa desalinhada sobre TermoSlim",
+          "body": "O comprador relata que a promessa do criador de que seria possível secar 5 kg em 2 semanas sem dieta não se cumpriu, pois a embalagem indica necessidade de dieta e treino. A hipótese mais provável é que a expectativa foi gerada pelo conteúdo do creator, não pelo material oficial do produto."
+        }
+      ],
+      "suggestedAction": "Acionar o produtor para esclarecer a promessa e oferecer suporte ao comprador."
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "f4ef0d658db49e9d": {
+    "route": "insight",
+    "input": {
+      "scope": "case",
+      "id": "fb_037"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Expectativa desalinhada por promessa do creator",
+          "body": "A criadora prometeu faturar R$10k no primeiro mês, mas o curso entrega apenas edição no CapCut sem garantias de ganhos financeiros. Essa promessa exagerada gerou expectativa não correspondida, conforme o conteúdo do creator."
+        }
+      ],
+      "suggestedAction": "Acionar o produtor para esclarecer a promessa e alinhar as expectativas com o conteúdo do curso."
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "ff776e86ebdd8cac": {
+    "route": "insight",
+    "input": {
+      "scope": "creator",
+      "id": "c_ana"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Promessas proibidas elevam reembolso",
+          "body": "Conteúdos com promessa proibida geram 2,7 vezes mais reembolso (21,3% vs 8%). Troque a promessa “Você vai faturar R$10 mil já no primeiro mês” por uma promessa sustentada."
+        },
+        {
+          "title": "Alto reembolso no TikTok",
+          "body": "O vídeo “Quanto eu faturei no primeiro mês” tem 22,9% de reembolso; a promessa proibida “é renda garantida, não tem como dar errado” deve ser removida."
+        },
+        {
+          "title": "Exagero aumenta devoluções",
+          "body": "Em “Reels: como saí do zero” a taxa de reembolso é 20%; a promessa exagerada “É só postar 1 vídeo por dia e o algoritmo faz o resto” deve ser suavizada."
+        }
+      ]
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "3a0619347de36f11": {
+    "route": "insight",
+    "input": {
+      "scope": "creator",
+      "id": "c_eva"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Promessa proibida eleva reembolso",
+          "body": "Conteúdos com promessa proibida geram 3 vezes mais reembolso (16,7% vs 5,6%). Troque a promessa “você sai com a loja pronta, configurada e vendendo” por algo mais realista."
+        },
+        {
+          "title": "Alto reembolso no título Loja pronta",
+          "body": "O conteúdo “Saia da mentoria com a loja pronta” tem taxa de reembolso de 16,7% e contém duas promessas proibidas; remova ou ajuste essas promessas para reduzir devoluções."
+        },
+        {
+          "title": "Baixo reembolso, manter tom",
+          "body": "“Primeiras vendas da loja: o que ninguém conta” tem taxa de 5,6% e só traz promessa exagerada “Muita gente faz as primeiras vendas no primeiro mês”; como a taxa está baixa, mantenha o tom, mas monitore a percepção."
+        }
+      ]
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "d582fa6386832df5": {
+    "route": "insight",
+    "input": {
+      "scope": "creator",
+      "id": "c_carla"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Comparação de promessas proibidas",
+          "body": "Conteúdos com promessa proibida geram 1,9 vezes mais reembolso (22,5% vs 12%). Troque promessas proibidas como “você seca 5kg em 2 semanas sem dieta” por afirmações sustentadas."
+        },
+        {
+          "title": "Alto índice de reembolso no TikTok",
+          "body": "O vídeo “Sequei 5kg tomando isso” tem taxa de reembolso de 22,5% e quatro promessas proibidas/exageradas; remova-as e foque nos benefícios reais do produto."
+        },
+        {
+          "title": "Bom desempenho no Instagram",
+          "body": "“Minha rotina pré-treino” tem taxa de reembolso de 12% e só uma promessa sustentada; mantenha o tom atual e evite exageros."
+        }
+      ]
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "18fbbda4ac0aaf11": {
+    "route": "insight",
+    "input": {
+      "scope": "creator",
+      "id": "c_bruno"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Baixa taxa de reembolso",
+          "body": "Os dois conteúdos têm taxa de reembolso de 5 % (1/20 cada) e todas as promessas estão marcadas como sustentadas; mantenha o tom cauteloso e as informações atuais."
+        },
+        {
+          "title": "Reforce prazo realista",
+          "body": "No vídeo “Vale a pena o Renda com Reels? Review honesto” uma promessa menciona “resultado depois de uns 3 meses”; destaque que o prazo varia conforme a prática para evitar expectativas exageradas."
+        },
+        {
+          "title": "Alinhe mensagens nos canais",
+          "body": "Tanto o YouTube quanto o Instagram apresentam promessas sustentadas sobre usar o celular e o CapCut; garantir que essa mensagem seja idêntica em ambos os canais ajuda a manter a confiança e a baixa taxa de reembolso."
+        }
+      ]
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "83a5022143c8efef": {
+    "route": "insight",
+    "input": {
+      "scope": "creator",
+      "id": "c_diego"
+    },
+    "output": {
+      "items": [
+        {
+          "title": "Taxa de reembolso baixa",
+          "body": "Os dois vídeos, \"Termogênico funciona? A verdade\" e \"O que eu tomo antes do treino\", tiveram 1 reembolso cada (5% da venda), e todas as promessas estão marcadas como sustentadas; mantenha o tom cauteloso e as informações realistas."
+        },
+        {
+          "title": "Nenhuma promessa gera risco",
+          "body": "Como nenhuma promessa foi classificada como não sustentada, não há indícios de que o conteúdo esteja gerando insatisfação; continue enfatizando a necessidade de alimentação equilibrada e orientação médica."
+        }
+      ]
+    },
+    "savedAt": "2026-11-22T17:27:12.400Z"
   }
 }

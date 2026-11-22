@@ -312,8 +312,18 @@ export function getCreatorInsightData(creatorId: string) {
   const creator = creatorById.get(creatorId);
   if (!creator) return null;
   const kpis = creatorKpis(creatorId);
+  const cmp = prohibitedComparison({ creatorId });
   return {
     creator: { name: creator.name, style: creator.style },
+    // o achado principal pronto: conteúdos com promessa proibida vs. os demais
+    comparacao:
+      cmp.ratio != null && cmp.withProhibited.sales > 0 && cmp.withoutProhibited.sales > 0
+        ? {
+            taxaComPromessaProibidaPct: pct(cmp.withProhibited.refundRate),
+            taxaSemPromessaProibidaPct: pct(cmp.withoutProhibited.refundRate),
+            vezesMaior: Math.round(cmp.ratio * 10) / 10,
+          }
+        : null,
     totals: {
       vendas: kpis.sales,
       reembolsos: kpis.refunds,
