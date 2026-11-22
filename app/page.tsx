@@ -170,20 +170,14 @@ export default function Home() {
           </div>
           <ol data-reveal="stagger" className="grid gap-12 md:grid-cols-3">
             {STEPS.map((step, i) => (
-              <li
-                key={step.title}
-                className={cn(
-                  "flex flex-col gap-5 pt-7",
-                  i === 0 ? "border-t-[3px] border-navy" : "border-t border-line",
-                )}
-              >
+              <li key={step.title} className="group relative flex flex-col gap-5 border-t border-line pt-7">
+                {/* barra que preenche da esquerda para a direita no hover */}
+                <span
+                  aria-hidden
+                  className="absolute -top-px left-0 h-[3px] w-full origin-left scale-x-0 bg-navy transition-transform duration-500 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
+                />
                 <div className="flex items-center justify-between">
-                  <span
-                    className={cn(
-                      "font-heading text-[15px] font-semibold",
-                      i === 0 ? "text-navy" : "text-muted-foreground",
-                    )}
-                  >
+                  <span className="font-heading text-[15px] font-semibold text-muted-foreground transition-colors duration-300 group-hover:text-navy">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex size-10 items-center justify-center rounded-[10px] bg-paper">
