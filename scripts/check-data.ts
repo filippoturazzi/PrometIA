@@ -60,6 +60,7 @@ for (const c of queue)
 const demo = queue.find((c) => c.feedback.id === DEMO_FEEDBACK_ID);
 console.log("");
 check("caso da demo na fila", !!demo);
+check("caso da demo no topo da fila", queue[0]?.feedback.id === DEMO_FEEDBACK_ID);
 check(`caso da demo com ${DEMO_CASE_HOURS}h sem resposta`, demo?.hoursWithoutResponse === DEMO_CASE_HOURS);
 check("relatedClaim do caso da demo é a promessa de R$10k", /10 mil/.test(demo?.feedback.classification.relatedClaim ?? ""));
 check("conteúdos com proibida ~3x (2.5–3.6)", !!cmp.ratio && cmp.ratio >= 2.5 && cmp.ratio <= 3.6);

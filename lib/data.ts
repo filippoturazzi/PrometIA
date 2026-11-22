@@ -16,7 +16,7 @@ import type {
   Product,
   Sale,
 } from "@/lib/types";
-import { COMMISSION_RATE, DEMO_NOW, ESCALATION_HOURS } from "@/lib/demo";
+import { COMMISSION_RATE, DEMO_FEEDBACK_ID, DEMO_NOW, ESCALATION_HOURS } from "@/lib/demo";
 
 // ---------------------------------------------------------------------------
 // Dados brutos (imports estáticos: entram no bundle do servidor, sem fs em runtime)
@@ -281,13 +281,17 @@ export interface EscalationCase {
   producerResponded: boolean;
 }
 
-/** Gravidade alta e (produtor sem resposta ou resposta depois de 48h), mais antigos primeiro. */
+/**
+ * Gravidade alta e (produtor sem resposta ou resposta depois de 48h).
+ * O caso da demo (passo 4 da seção 2) vem sempre no topo; os demais, mais antigos primeiro.
+ */
 export function getEscalationQueue(filter: DataFilter = {}): EscalationCase[] {
+  const isDemo = (c: EscalationCase) => (c.feedback.id === DEMO_FEEDBACK_ID ? 1 : 0);
   return getFeedback(filter)
     .filter((f) => f.classification.severity === "alta")
     .filter((f) => f.producerRespondedHours == null || f.producerRespondedHours > ESCALATION_HOURS)
     .map((f) => buildCase(f))
-    .sort((a, b) => b.hoursWithoutResponse - a.hoursWithoutResponse);
+    .sort((a, b) => isDemo(b) - isDemo(a) || b.hoursWithoutResponse - a.hoursWithoutResponse);
 }
 
 function buildCase(f: Feedback): EscalationCase {
