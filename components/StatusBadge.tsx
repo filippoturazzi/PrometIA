@@ -16,15 +16,14 @@ export function StatusBadge({ status, label, size = "md", className }: StatusBad
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border font-semibold whitespace-nowrap",
+        "inline-flex items-center gap-1.5 rounded-full font-semibold whitespace-nowrap",
         m.bg,
         m.text,
-        m.border,
-        size === "sm" ? "px-2 py-0.5 text-xs" : "px-2.5 py-1 text-sm",
+        size === "sm" ? "px-2.5 py-1 text-[12px]" : "px-3 py-1.5 text-[13px]",
         className,
       )}
     >
-      <span aria-hidden>{m.icon}</span>
+      <m.Icon className={size === "sm" ? "size-3.5" : "size-4"} aria-hidden />
       {label ?? m.label}
     </span>
   );

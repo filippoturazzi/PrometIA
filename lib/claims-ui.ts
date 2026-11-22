@@ -1,16 +1,30 @@
 // Metadados visuais das promessas, compartilhados entre client e server.
 
+import { CircleCheck, CircleX, TriangleAlert, type LucideIcon } from "lucide-react";
 import type { ClaimCategory, ClaimStatus, FrustrationType, Severity } from "@/lib/types";
 import type { OverallRisk } from "@/lib/schemas";
 
 export const STATUS_META: Record<
   ClaimStatus,
-  { label: string; icon: string; text: string; bg: string; border: string; accent: string; mark: string }
+  {
+    label: string;
+    icon: string;
+    Icon: LucideIcon;
+    text: string;
+    bg: string;
+    /** fundo sólido (bolinhas, numeração, barras) */
+    solid: string;
+    border: string;
+    accent: string;
+    mark: string;
+  }
 > = {
   sustentada: {
     label: "Sustentada",
     icon: "✅",
+    Icon: CircleCheck,
     text: "text-status-ok",
+    solid: "bg-status-ok",
     bg: "bg-status-ok-bg",
     border: "border-status-ok/30",
     accent: "border-l-status-ok",
@@ -19,7 +33,9 @@ export const STATUS_META: Record<
   exagerada: {
     label: "Exagerada",
     icon: "⚠️",
+    Icon: TriangleAlert,
     text: "text-status-warn",
+    solid: "bg-status-warn",
     bg: "bg-status-warn-bg",
     border: "border-status-warn/30",
     accent: "border-l-status-warn",
@@ -28,7 +44,9 @@ export const STATUS_META: Record<
   proibida: {
     label: "Proibida",
     icon: "❌",
+    Icon: CircleX,
     text: "text-status-bad",
+    solid: "bg-status-bad",
     bg: "bg-status-bad-bg",
     border: "border-status-bad/30",
     accent: "border-l-status-bad",

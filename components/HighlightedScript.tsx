@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { STATUS_META, findClaimSpan } from "@/lib/claims-ui";
 import type { ClaimStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -8,32 +7,55 @@ interface Props {
   claims: { text: string; status: ClaimStatus }[];
 }
 
-/** Roteiro com cada promessa marcada na cor do seu status. */
-export function HighlightedScript({ script, claims }: Props) {
-  const spans = claims
-    .map((c, i) => ({ span: findClaimSpan(script, c.text), status: c.status, n: i + 1 }))
-    .filter((s): s is { span: [number, number]; status: ClaimStatus; n: number } => s.span !== null)
-    .sort((a, b) => a.span[0] - b.span[0]);
-
-  const parts: React.ReactNode[] = [];
-  let cursor = 0;
-  for (const s of spans) {
-    const [start, end] = s.span;
-    if (start < cursor) continue; // sobreposição: mantém a primeira marcação
-    if (start > cursor) parts.push(<Fragment key={`t${cursor}`}>{script.slice(cursor, start)}</Fragment>);
-    parts.push(
-      <mark
-        key={`m${start}`}
-        className={cn("rounded px-0.5 text-foreground underline decoration-2 underline-offset-4", STATUS_META[s.status].mark)}
-        title={STATUS_META[s.status].label}
-      >
-        {script.slice(start, end)}
-        <sup className={cn("ml-0.5 font-semibold", STATUS_META[s.status].text)}>{s.n}</sup>
-      </mark>,
-    );
-    cursor = end;
+/** Quebra o roteiro em frases (com a posição de cada uma no texto original). */
+function sentences(script: string): { text: string; start: number; end: number }[] {
+  const out: { text: string; start: number; end: number }[] = [];
+  const re = /[^.!?…\n]+(?:[.!?…]+["”’]?|$)/gu;
+  for (const m of script.matchAll(re)) {
+    const raw = m[0];
+    const lead = raw.length - raw.trimStart().length;
+    const text = raw.trim();
+    if (!text) continue;
+    const start = (m.index ?? 0) + lead;
+    out.push({ text, start, end: start + text.length });
   }
-  if (cursor < script.length) parts.push(<Fragment key="tail">{script.slice(cursor)}</Fragment>);
+  return out;
+}
 
-  return <p className="leading-loose whitespace-pre-wrap">{parts}</p>;
+/** Roteiro frase a frase; as frases com promessa recebem o número e a cor do status. */
+export function HighlightedScript({ script, claims }: Props) {
+  const spans = claims.map((c, i) => ({ span: findClaimSpan(script, c.text), status: c.status, n: i + 1 }));
+
+  return (
+    <ol className="flex flex-col gap-3.5">
+      {sentences(script).map((s) => {
+        const hit = spans.find((c) => c.span && c.span[0] < s.end && c.span[1] > s.start);
+        return (
+          <li key={s.start} className="flex items-start gap-3">
+            {hit ? (
+              <span
+                className={cn(
+                  "mt-px flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white",
+                  STATUS_META[hit.status].solid,
+                )}
+                title={STATUS_META[hit.status].label}
+              >
+                {hit.n}
+              </span>
+            ) : (
+              <span className="size-5 shrink-0" aria-hidden />
+            )}
+            <span
+              className={cn(
+                "flex-1 text-[14px] leading-[21px]",
+                hit ? "font-medium text-ink" : "text-muted-foreground",
+              )}
+            >
+              {s.text}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
 }

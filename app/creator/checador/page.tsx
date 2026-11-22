@@ -1,3 +1,4 @@
+import { Info } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { getContents, getCreator, getProducts } from "@/lib/data";
 import { DEMO_CREATOR_ID, DEMO_PRODUCT_ID, DEMO_SCRIPT } from "@/lib/demo";
@@ -15,6 +16,12 @@ export default function ChecadorPage() {
         eyebrow="Creator · Antes de postar"
         title="Checador de promessas"
         subtitle="Cole o roteiro antes de postar: a IA confere cada promessa com a página do produto e sugere uma versão verdadeira."
+        actions={
+          <p className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <Info className="size-4 shrink-0" aria-hidden />
+            O PrometIA orienta, não bloqueia. A decisão de publicar é sua.
+          </p>
+        }
       />
       <Checador
         creator={{ name: creator.name, handle: creator.handle }}

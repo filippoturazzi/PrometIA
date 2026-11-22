@@ -10,9 +10,17 @@ interface CopyButtonProps {
   label?: string;
   className?: string;
   variant?: "outline" | "ghost" | "default";
+  /** chamado depois de copiar com sucesso */
+  onCopied?: () => void;
 }
 
-export function CopyButton({ text, label = "Copiar", className, variant = "outline" }: CopyButtonProps) {
+export function CopyButton({
+  text,
+  label = "Copiar",
+  className,
+  variant = "outline",
+  onCopied,
+}: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -25,8 +33,9 @@ export function CopyButton({ text, label = "Copiar", className, variant = "outli
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
+      onCopied?.();
     } catch {
-      // clipboard bloqueado (ex.: http sem permissão): seleciona o texto não é possível aqui, só ignora
+      // clipboard bloqueado (ex.: http sem permissão): só ignora
     }
   }
 

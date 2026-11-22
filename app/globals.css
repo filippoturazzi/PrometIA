@@ -91,11 +91,11 @@
   --radius: 0.625rem;
 
   --status-ok: #2a8f55;
-  --status-ok-bg: rgb(42 143 85 / 0.1);
+  --status-ok-bg: #e4f4ea;
   --status-warn: #b86e00;
-  --status-warn-bg: #fef3c7;
+  --status-warn-bg: #fdf1dc;
   --status-bad: #d23b3b;
-  --status-bad-bg: #fde8ec;
+  --status-bad-bg: #fbeaea;
 
   --chart-1: #1b3358;
   --chart-2: #a6e81c;
