@@ -35,7 +35,7 @@ O protótipo precisa rodar este roteiro de 2–3 minutos sem falhas:
 - **Tailwind CSS + shadcn/ui** (Card, Table, Badge, Button, Tabs, Textarea, Select, Dialog, Progress)
 - **Recharts** para os gráficos
 - **Dados:** arquivos JSON em `/data` (lidos no servidor). Sem banco.
-- **IA:** xAI Grok via SDK `openai` (API compatível, `baseURL: https://api.x.ai/v1`), chamado **apenas em Route Handlers do servidor**. Chave em `XAI_API_KEY` (`.env.local`). Modelo em `XAI_MODEL` (padrão: `grok-4.20-0309-non-reasoning`, o modelo rápido sem raciocínio, adequado a extração e classificação em JSON).
+- **IA:** Groq via SDK oficial `groq-sdk`, chamado **apenas em Route Handlers do servidor**. Chave em `GROQ_API_KEY` (`.env.local`). Modelo em `GROQ_MODEL` (padrão: `openai/gpt-oss-20b`, o mais rápido e barato com structured outputs estritos; se a qualidade em português não bastar, usar `openai/gpt-oss-120b`).
 - **Deploy:** Vercel.
 ---
  
@@ -61,7 +61,7 @@ prometia/
 │     └─ insight/route.ts        # IA 3
 ├─ components/                   # ClaimCard, StatusBadge, RoleSwitcher, PhoneFrame, EscalationQueue, ...
 ├─ lib/
-│  ├─ grok.ts                    # cliente + helper generateJSON(prompt, schema)
+│  ├─ groq.ts                    # cliente + helper generateJSON(prompt, schema)
 │  ├─ prompts.ts                 # os 3 prompts (seção 8)
 │  ├─ schemas.ts                 # os 3 response schemas (seção 8)
 │  ├─ data.ts                    # leitura dos JSON + funções de agregação
@@ -227,15 +227,15 @@ A classificação dos feedbacks do seed é preenchida pelo próprio script (é d
  
 ## 8. As 3 chamadas de IA
  
-Helper em `lib/grok.ts`:
+Helper em `lib/groq.ts`:
  
 ```ts
-import OpenAI from "openai";
-const client = new OpenAI({ apiKey: process.env.XAI_API_KEY!, baseURL: "https://api.x.ai/v1" });
+import Groq from "groq-sdk";
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
  
 export async function generateJSON<T>(prompt: string, schema: object, name: string): Promise<T> {
-  const res = await client.chat.completions.create({
-    model: process.env.XAI_MODEL ?? "grok-4.20-0309-non-reasoning",
+  const res = await groq.chat.completions.create({
+    model: process.env.GROQ_MODEL ?? "openai/gpt-oss-20b",
     messages: [{ role: "user", content: prompt }],
     response_format: { type: "json_schema", json_schema: { name, schema, strict: true } },
     temperature: 0.2,
@@ -244,7 +244,7 @@ export async function generateJSON<T>(prompt: string, schema: object, name: stri
 }
 ```
 
-> Structured outputs da xAI (modo `strict`): campos fora de `required` são opcionais e `additionalProperties` já é `false` por padrão, então os schemas abaixo funcionam como estão.
+> Structured outputs do Groq (modo `strict`, suportado por `openai/gpt-oss-20b` e `openai/gpt-oss-120b`): **todo campo precisa estar em `required` e todo objeto precisa de `additionalProperties: false`**. Por isso os campos "opcionais" (`rewrite`, `relatedClaim`, `helpOffer`, `suggestedAction`) são obrigatórios nos schemas e vêm como `""` quando não se aplicam; o Route Handler converte `""` em `undefined` antes de devolver para a tela. Structured outputs não funcionam com streaming.
  
 ### IA 1 — `POST /api/check-claims`
 **Entrada:** `{ productId, script }` → servidor busca `salesPageText` e `contentOutline`.
@@ -259,7 +259,7 @@ Classifique cada promessa:
 - "exagerada": tem base na fonte, mas aumenta resultado, prazo ou facilidade.
 - "proibida": garante ganho financeiro, promete resultado de saúde/emagrecimento, contradiz a fonte, ou viola regras de publicidade (CONAR) ou de alegações de saúde (ANVISA).
  
-Para cada promessa: copie o trecho literal do roteiro; cite o trecho da fonte que sustenta ou contradiz (string vazia se não houver); explique em 1 frase simples; se não for "sustentada", sugira uma reescrita persuasiva, no tom do creator, que seja verdadeira.
+Para cada promessa: copie o trecho literal do roteiro; cite o trecho da fonte que sustenta ou contradiz (string vazia se não houver); explique em 1 frase simples; se não for "sustentada", sugira uma reescrita persuasiva, no tom do creator, que seja verdadeira (string vazia se for "sustentada").
 Não invente informações que não estejam na fonte. Ignore frases que não são afirmações sobre o produto (ex.: "link na bio").
  
 FONTE OFICIAL — Página de vendas:
@@ -281,12 +281,13 @@ export const checkClaimsSchema = {
       status: { type: "string", enum: ["sustentada", "exagerada", "proibida"] },
       evidence: { type: "string" },
       reason: { type: "string" },
-      rewrite: { type: "string" },
+      rewrite: { type: "string" },   // "" se sustentada
       category: { type: "string", enum: ["ganho_financeiro","resultado_saude","prazo","conteudo","garantia","outro"] }
-    }, required: ["text","status","evidence","reason","category"] } },
+    }, required: ["text","status","evidence","reason","rewrite","category"], additionalProperties: false } },
     overallRisk: { type: "string", enum: ["baixo","medio","alto"] }
   },
-  required: ["claims","overallRisk"]
+  required: ["claims","overallRisk"],
+  additionalProperties: false
 };
 ```
  
@@ -300,7 +301,7 @@ Classifique o texto do COMPRADOR em um tipo de frustração:
 expectativa_desalinhada | acesso_tecnico | qualidade_conteudo | entrega_logistica | arrependimento_pessoal.
 Defina a gravidade (baixa/media/alta) considerando risco de reclamação pública.
 Se for expectativa_desalinhada, indique qual PROMESSA DO CONTEÚDO DE ORIGEM provavelmente gerou a expectativa (texto literal da lista, ou vazio).
-Indique se existe uma ajuda que pode resolver o problema sem reembolso (ex.: acesso travado) — nunca sugira dificultar o reembolso.
+Indique se existe uma ajuda que pode resolver o problema sem reembolso (ex.: acesso travado), ou string vazia se não houver — nunca sugira dificultar o reembolso.
  
 PRODUTO (página oficial): {salesPageText}
 PROMESSAS DO CONTEÚDO DE ORIGEM: {claims[].text}
@@ -314,11 +315,12 @@ export const classifyFeedbackSchema = {
   properties: {
     type: { type: "string", enum: ["expectativa_desalinhada","acesso_tecnico","qualidade_conteudo","entrega_logistica","arrependimento_pessoal"] },
     severity: { type: "string", enum: ["baixa","media","alta"] },
-    relatedClaim: { type: "string" },
+    relatedClaim: { type: "string" }, // "" se não houver
     summary: { type: "string" },
     helpOffer: { type: "string" }   // "" se não houver
   },
-  required: ["type","severity","summary"]
+  required: ["type","severity","relatedClaim","summary","helpOffer"],
+  additionalProperties: false
 };
 ```
  
@@ -345,10 +347,11 @@ export const insightSchema = {
   properties: {
     items: { type: "array", items: { type: "object", properties: {
       title: { type: "string" }, body: { type: "string" }
-    }, required: ["title","body"] } },
-    suggestedAction: { type: "string" }
+    }, required: ["title","body"], additionalProperties: false } },
+    suggestedAction: { type: "string" }   // "" no scope=creator
   },
-  required: ["items"]
+  required: ["items","suggestedAction"],
+  additionalProperties: false
 };
 ```
  
@@ -357,8 +360,8 @@ export const insightSchema = {
 ## 9. Cache e plano B da demo (`lib/cache.ts`)
  
 - Chave do cache = hash de (`rota` + entrada normalizada).
-- Fluxo: se a chave existe em `data/ai-cache.json` → retorna o cache (com um pequeno delay artificial de 600–900 ms, para parecer ao vivo). Senão → chama o Grok; se der certo, salva em memória (em dev, também grava no arquivo).
-- Se o Grok falhar ou passar de 15 s → retorna uma resposta de fallback pré-escrita para os inputs da demo e mostra um toast discreto ("modo demonstração").
+- Fluxo: se a chave existe em `data/ai-cache.json` → retorna o cache (com um pequeno delay artificial de 600–900 ms, para parecer ao vivo). Senão → chama o Groq; se der certo, salva em memória (em dev, também grava no arquivo).
+- Se o Groq falhar ou passar de 15 s → retorna uma resposta de fallback pré-escrita para os inputs da demo e mostra um toast discreto ("modo demonstração").
 - Antes de gravar a demo: rodar a história inteira uma vez em dev para popular o `ai-cache.json` e commitar.
 ---
  
@@ -411,7 +414,7 @@ Login e autenticação, banco de dados, integração com a API real da YouShop, 
 3. `scripts/generate-seed.ts` → `sales.json`, `feedback.json`. Conferir no console se os padrões da seção 7 aparecem.
 4. `lib/data.ts` com as agregações (por conteúdo, creator, produto; fila de escalonamento).
 **Dia 2 (domingo)**
-5. `lib/grok.ts`, `prompts.ts`, `schemas.ts`, `cache.ts`.
+5. `lib/groq.ts`, `prompts.ts`, `schemas.ts`, `cache.ts`.
 6. M1 Checador completo, com a IA 1.
 7. M2a Reembolso completo, com a IA 2.
 8. Rodar a história da demo e ajustar os prompts até o resultado da seção 2 sair consistente.
@@ -433,7 +436,7 @@ Login e autenticação, banco de dados, integração com a API real da YouShop, 
 - [ ] O fluxo de reembolso sempre mostra "Continuar com o reembolso".
 - [ ] O painel mostra claramente que conteúdos com promessa proibida têm taxa de reembolso ~3x maior.
 - [ ] A fila de escalonamento contém o caso da demo.
-- [ ] A chave da xAI nunca aparece no navegador.
+- [ ] A chave do Groq nunca aparece no navegador.
 - [ ] Funciona bem em tela de notebook (1366px+) e o PhoneFrame é legível.
 - [ ] Visual coerente com a YouShop (verde-limão + azul-marinho, Inter), sem logo da YouShop e com o rodapé de aviso em todas as telas.
 - [ ] O tour abre na primeira visita, pode ser pulado e reaberto pelo "?".
