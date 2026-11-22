@@ -51,6 +51,6 @@ DADOS: ${JSON.stringify(data)}`;
 }
 
 export function caseInsightPrompt(data: unknown) {
-  return `Resuma este caso para a equipe de Operações em 2 frases e sugira 1 ação (ex.: acionar produtor, oferecer suporte de acesso, reembolsar proativamente, revisar conteúdo do creator). Não atribua culpa definitiva; indique a hipótese mais provável. Responda em português do Brasil: o resumo vai em items (um item com título curto) e a ação em suggestedAction.
+  return `Resuma este caso para a equipe de Operações em 2 frases e sugira 1 ação (ex.: acionar produtor, oferecer suporte de acesso, reembolsar proativamente, revisar conteúdo do creator). Não atribua culpa definitiva; indique a hipótese mais provável. A promessa que gerou a expectativa, quando existe, está no CONTEÚDO DO CREATOR (conteudoDeOrigem), não na página oficial do produto: não sugira mudar a página do produto. Considere as horas sem resposta do produtor. Responda em português do Brasil: o resumo vai em items (um item com título curto) e a ação em suggestedAction (1 frase, começando por um verbo).
 CASO: ${JSON.stringify(data)}`;
 }

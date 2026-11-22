@@ -18,6 +18,12 @@ function getClient() {
 
 export const groqModel = () => process.env.GROQ_MODEL ?? "openai/gpt-oss-20b";
 
+/**
+ * Modelo reserva: no plano gratuito o limite diário de tokens (TPD) é por modelo,
+ * então quando o principal esgota a cota do dia a chamada tenta este. "" desliga.
+ */
+export const groqFallbackModel = () => process.env.GROQ_FALLBACK_MODEL ?? "openai/gpt-oss-120b";
+
 // "medium": com "low" o gpt-oss-20b gerou JSON fora do schema e omitiu promessas sustentadas nos testes.
 function reasoningEffort(): ReasoningEffort {
   const v = process.env.GROQ_REASONING_EFFORT;
@@ -35,12 +41,13 @@ export async function generateJSON<T>(
   timeoutMs = AI_TIMEOUT_MS,
 ): Promise<T> {
   const deadline = Date.now() + timeoutMs;
+  let model = groqModel();
   const attempt = async () => {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw new Error(`Groq passou de ${timeoutMs} ms`);
     const res = await getClient().chat.completions.create(
       {
-        model: groqModel(),
+        model,
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_schema", json_schema: { name, schema, strict: true } },
         temperature: 0.2,
@@ -59,6 +66,12 @@ export async function generateJSON<T>(
       return await attempt();
     } catch (err) {
       if (retry < MAX_JSON_RETRIES && isJSONGenerationError(err)) continue;
+      const fallback = groqFallbackModel();
+      if (isDailyLimitError(err) && fallback && model !== fallback) {
+        console.warn(`[groq] cota diária de ${model} esgotada; usando ${fallback}`);
+        model = fallback;
+        continue;
+      }
       throw err;
     }
   }
@@ -72,4 +85,9 @@ function isJSONGenerationError(err: unknown) {
     err.status === 400 &&
     /json_validate_failed|json_generate_failed|Failed to generate JSON|does not match the expected schema/i.test(err.message)
   );
+}
+
+/** 429 por cota diária (tokens ou requisições por dia), que não volta em segundos. */
+function isDailyLimitError(err: unknown) {
+  return err instanceof Groq.APIError && err.status === 429 && /per day|\(TPD\)|\(RPD\)/i.test(err.message);
 }

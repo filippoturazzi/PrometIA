@@ -1,11 +1,15 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { PageHeader } from "@/components/PageHeader";
+import { PromiseHealth } from "@/components/PromiseHealth";
 
-export default function Page() {
+export default function OperacoesPage() {
   return (
-    <ComingSoon
-      eyebrow="Operações YouShop"
-      title="Saúde da Promessa"
-      subtitle="Visão geral de reembolsos por promessa e fila de casos antes de virarem reclamação pública."
-    />
+    <>
+      <PageHeader
+        eyebrow="Operações YouShop · Aprendizado"
+        title="Saúde da Promessa"
+        subtitle="Quais produtos, creators e promessas geram reembolso, e a fila de casos para agir antes de virarem reclamação pública."
+      />
+      <PromiseHealth audience="operacoes" />
+    </>
   );
 }

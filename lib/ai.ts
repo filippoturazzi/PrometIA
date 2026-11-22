@@ -5,7 +5,7 @@ import "server-only";
 
 import { matchClaim } from "@/lib/claims-ui";
 import { generateJSON } from "@/lib/groq";
-import { checkClaimsPrompt, classifyFeedbackPrompt } from "@/lib/prompts";
+import { caseInsightPrompt, checkClaimsPrompt, classifyFeedbackPrompt, creatorInsightPrompt } from "@/lib/prompts";
 import {
   checkClaimsSchema,
   classifyFeedbackSchema,
@@ -15,6 +15,10 @@ import {
   type CheckClaimsResult,
   type ClassifyFeedbackRaw,
   type ClassifyFeedbackResult,
+  cleanInsight,
+  insightSchema,
+  type InsightRaw,
+  type InsightResult,
 } from "@/lib/schemas";
 import type { Content, Product } from "@/lib/types";
 
@@ -45,4 +49,14 @@ export async function runClassifyFeedback(
   // quando a promessa não bateu (ou é arrependimento), o caminho é o reembolso: nada de "ajuda" no lugar dele
   const refundOnly = result.type === "expectativa_desalinhada" || result.type === "arrependimento_pessoal";
   return { ...result, relatedClaim: claim?.text, helpOffer: refundOnly ? undefined : result.helpOffer };
+}
+
+export async function runCreatorInsight(data: unknown): Promise<InsightResult> {
+  const r = cleanInsight(await generateJSON<InsightRaw>(creatorInsightPrompt(data), insightSchema, "insight"));
+  return { items: r.items.slice(0, 3) };
+}
+
+export async function runCaseInsight(data: unknown): Promise<InsightResult> {
+  const r = cleanInsight(await generateJSON<InsightRaw>(caseInsightPrompt(data), insightSchema, "insight"));
+  return { items: r.items.slice(0, 2), suggestedAction: r.suggestedAction };
 }
