@@ -1,4 +1,3 @@
-import { PageHeader } from "@/components/PageHeader";
 import { aggregateByContent, creatorKpis, getCreators, prohibitedComparison } from "@/lib/data";
 import { DEMO_CREATOR_ID } from "@/lib/demo";
 import { MeusConteudos, type CreatorView } from "./MeusConteudos";
@@ -30,14 +29,5 @@ export default function ConteudosPage() {
     };
   });
 
-  return (
-    <>
-      <PageHeader
-        eyebrow="Creator · Aprendizado"
-        title="Meus conteúdos"
-        subtitle="Quais vídeos vendem e quais geram reembolso: cada venda vem do link exclusivo do conteúdo."
-      />
-      <MeusConteudos views={views} defaultCreatorId={DEMO_CREATOR_ID} />
-    </>
-  );
+  return <MeusConteudos views={views} defaultCreatorId={DEMO_CREATOR_ID} />;
 }

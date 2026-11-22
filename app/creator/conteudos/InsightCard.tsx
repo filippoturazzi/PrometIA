@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { toast } from "sonner";
-import { Sparkles } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowRight, Sparkles } from "lucide-react";
 import type { InsightResult } from "@/lib/schemas";
 
 type State = { status: "loading" } | { status: "ok"; data: InsightResult } | { status: "error"; message: string };
@@ -12,7 +12,7 @@ type State = { status: "loading" } | { status: "ok"; data: InsightResult } | { s
 const loaded = new Map<string, InsightResult>();
 
 /** Card "Insights do PrometIA" (IA 3, scope=creator). Remontado por `key` a cada creator. */
-export function InsightCard({ creatorId, creatorName }: { creatorId: string; creatorName: string }) {
+export function InsightCard({ creatorId }: { creatorId: string }) {
   const [state, setState] = useState<State>(() => {
     const cached = loaded.get(creatorId);
     return cached ? { status: "ok", data: cached } : { status: "loading" };
@@ -50,36 +50,52 @@ export function InsightCard({ creatorId, creatorName }: { creatorId: string; cre
       id="card-insights"
       aria-labelledby="insights-titulo"
       aria-live="polite"
-      className="rounded-xl border border-primary/50 bg-card p-5 shadow-sm"
+      className="flex flex-col rounded-[14px] border border-line bg-white p-7"
     >
-      <h2 id="insights-titulo" className="flex items-center gap-2 text-lg">
-        <Sparkles className="size-5 text-secondary" aria-hidden /> Insights do PrometIA
-      </h2>
-      <p className="text-sm text-muted-foreground">Gerados por IA a partir das vendas e reembolsos de {creatorName}</p>
+      <div className="flex flex-col gap-1 pb-5">
+        <h2 id="insights-titulo" className="flex items-center gap-2 text-[20px]">
+          <Sparkles className="size-[18px] text-navy" aria-hidden /> Insights do PrometIA
+        </h2>
+        <p className="text-[13px] text-muted-foreground">Gerados por IA a partir das suas vendas e reembolsos</p>
+      </div>
 
       {state.status === "loading" && (
-        <div className="mt-4 space-y-4" aria-label="Gerando insights">
+        <div aria-label="Gerando insights">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="space-y-2">
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-4 w-full" />
+            <div key={i} className="flex animate-pulse gap-3.5 border-t border-line py-[18px]">
+              <span className="h-3.5 w-5 rounded bg-[#EEF1F5]" />
+              <div className="flex flex-1 flex-col gap-2">
+                <span className="h-4 w-1/2 rounded bg-[#EEF1F5]" />
+                <span className="h-3.5 w-full rounded bg-[#EEF1F5]" />
+                <span className="h-3.5 w-2/3 rounded bg-[#EEF1F5]" />
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {state.status === "error" && <p className="mt-4 text-sm text-muted-foreground">{state.message}</p>}
+      {state.status === "error" && (
+        <p className="border-t border-line pt-[18px] text-[13px] text-muted-foreground">{state.message}</p>
+      )}
 
       {state.status === "ok" && (
-        <ol className="mt-4 space-y-4">
+        <ol>
           {state.data.items.map((it, i) => (
-            <li key={it.title} className="flex gap-3">
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                {i + 1}
+            <li key={it.title} className="flex gap-3.5 border-t border-line py-[18px] last:pb-0">
+              <span className="w-5 shrink-0 font-heading text-[13px] font-semibold text-muted-foreground tabular-nums">
+                {String(i + 1).padStart(2, "0")}
               </span>
-              <div>
-                <p className="font-semibold text-secondary">{it.title}</p>
-                <p className="text-sm text-muted-foreground">{it.body}</p>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <p className="text-[15px] font-semibold text-ink">{it.title}</p>
+                <p className="text-[13px] leading-5 text-muted-foreground">{it.body}</p>
+                {i === 0 && (
+                  <Link
+                    href="/creator/checador"
+                    className="flex items-center gap-1.5 pt-1.5 text-[13px] font-semibold text-navy hover:underline"
+                  >
+                    Abrir no checador <ArrowRight className="size-3.5" aria-hidden />
+                  </Link>
+                )}
               </div>
             </li>
           ))}
