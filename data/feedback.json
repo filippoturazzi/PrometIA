@@ -1,0 +1,508 @@
+[
+  {
+    "id": "fb_001",
+    "saleId": "s_0017",
+    "text": "Paguei quase mil reais achando que iam configurar minha loja. É só aula.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você sai com a loja pronta, configurada e vendendo\" não corresponde ao que Mentoria Loja Lucrativa entrega segundo a página oficial.",
+      "relatedClaim": "você sai com a loja pronta, configurada e vendendo"
+    },
+    "producerRespondedHours": 15,
+    "createdAt": "2026-10-03T04:52:00.000Z"
+  },
+  {
+    "id": "fb_002",
+    "saleId": "s_0027",
+    "text": "Vi o vídeo com print de faturamento e achei que ia sair vendendo serviço. É um curso de edição pra iniciante.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"Você vai faturar R$10 mil já no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "Você vai faturar R$10 mil já no primeiro mês"
+    },
+    "producerRespondedHours": 8,
+    "createdAt": "2026-10-05T14:05:00.000Z"
+  },
+  {
+    "id": "fb_003",
+    "saleId": "s_0018",
+    "text": "As aulas travam no meio e perdem o meu progresso.",
+    "classification": {
+      "type": "acesso_tecnico",
+      "severity": "baixa",
+      "summary": "O comprador não consegue acessar o conteúdo de Mentoria Loja Lucrativa; parece um problema técnico que dá para resolver sem reembolso."
+    },
+    "producerRespondedHours": 23,
+    "createdAt": "2026-10-06T01:34:00.000Z"
+  },
+  {
+    "id": "fb_004",
+    "saleId": "s_0020",
+    "text": "Esperava resultado rápido igual ao antes e depois do vídeo, não vi diferença.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você seca 5kg em 2 semanas sem dieta\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "você seca 5kg em 2 semanas sem dieta"
+    },
+    "producerRespondedHours": 20,
+    "createdAt": "2026-10-06T05:42:00.000Z"
+  },
+  {
+    "id": "fb_005",
+    "saleId": "s_0039",
+    "text": "Me prometeram renda garantida e o próprio curso diz que não garante ganho nenhum.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"é renda garantida, não tem como dar errado\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "é renda garantida, não tem como dar errado"
+    },
+    "producerRespondedHours": 39,
+    "createdAt": "2026-10-06T22:50:00.000Z"
+  },
+  {
+    "id": "fb_006",
+    "saleId": "s_0046",
+    "text": "A criadora falou em faturar 10 mil no primeiro mês. O curso não fala nada de ganhar dinheiro, é só CapCut.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você fatura R$10k no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "você fatura R$10k no primeiro mês"
+    },
+    "producerRespondedHours": 47,
+    "createdAt": "2026-10-09T03:57:00.000Z"
+  },
+  {
+    "id": "fb_007",
+    "saleId": "s_0045",
+    "text": "A caixa chegou amassada e o pote aberto.",
+    "classification": {
+      "type": "entrega_logistica",
+      "severity": "media",
+      "summary": "O pedido de TermoSlim teve problema na entrega."
+    },
+    "producerRespondedHours": 17,
+    "createdAt": "2026-10-11T01:30:00.000Z"
+  },
+  {
+    "id": "fb_008",
+    "saleId": "s_0058",
+    "text": "Comprei pra emagrecer e o próprio rótulo diz que sozinho ele não faz isso.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você seca 5kg em 2 semanas sem dieta\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "você seca 5kg em 2 semanas sem dieta"
+    },
+    "producerRespondedHours": 47,
+    "createdAt": "2026-10-12T23:06:00.000Z"
+  },
+  {
+    "id": "fb_009",
+    "saleId": "s_0062",
+    "text": "Esperava aprender a ganhar dinheiro com Reels, recebi aula de legenda e gancho.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "media",
+      "summary": "A expectativa criada pela promessa \"Você vai faturar R$10 mil já no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "Você vai faturar R$10 mil já no primeiro mês"
+    },
+    "producerRespondedHours": 14,
+    "createdAt": "2026-10-14T15:22:00.000Z"
+  },
+  {
+    "id": "fb_010",
+    "saleId": "s_0082",
+    "text": "Disseram que em poucas semanas dava pra largar o emprego. Não chegou nem perto.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "baixa",
+      "summary": "A expectativa criada pela promessa \"Em poucas semanas dá pra largar o emprego\" não corresponde ao que Mentoria Loja Lucrativa entrega segundo a página oficial.",
+      "relatedClaim": "Em poucas semanas dá pra largar o emprego"
+    },
+    "producerRespondedHours": 18,
+    "createdAt": "2026-10-15T09:24:00.000Z"
+  },
+  {
+    "id": "fb_011",
+    "saleId": "s_0078",
+    "text": "Achei que era um emagrecedor, é só um pré-treino com cafeína.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "baixa",
+      "summary": "A expectativa criada pela promessa \"eu nem sinto cansaço, treino duas horas seguidas sem parar\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "eu nem sinto cansaço, treino duas horas seguidas sem parar"
+    },
+    "producerRespondedHours": 20,
+    "createdAt": "2026-10-16T12:54:00.000Z"
+  },
+  {
+    "id": "fb_012",
+    "saleId": "s_0066",
+    "text": "Disseram que era só postar um vídeo por dia que o algoritmo fazia o resto. Postei 30 dias seguidos e nada.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"É só postar 1 vídeo por dia e o algoritmo faz o resto\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "É só postar 1 vídeo por dia e o algoritmo faz o resto"
+    },
+    "producerRespondedHours": 10,
+    "createdAt": "2026-10-19T00:19:00.000Z"
+  },
+  {
+    "id": "fb_013",
+    "saleId": "s_0095",
+    "text": "A criadora falou em faturar 10 mil no primeiro mês. O curso não fala nada de ganhar dinheiro, é só CapCut.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você fatura R$10k no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "você fatura R$10k no primeiro mês"
+    },
+    "producerRespondedHours": 19,
+    "createdAt": "2026-10-19T05:50:00.000Z"
+  },
+  {
+    "id": "fb_014",
+    "saleId": "s_0084",
+    "text": "O YouClass pede login toda hora e não entra.",
+    "classification": {
+      "type": "acesso_tecnico",
+      "severity": "media",
+      "summary": "O comprador não consegue acessar o conteúdo de Renda com Reels; parece um problema técnico que dá para resolver sem reembolso."
+    },
+    "producerRespondedHours": 2,
+    "createdAt": "2026-10-20T18:23:00.000Z"
+  },
+  {
+    "id": "fb_015",
+    "saleId": "s_0092",
+    "text": "Chegou o produto errado.",
+    "classification": {
+      "type": "entrega_logistica",
+      "severity": "media",
+      "summary": "O pedido de TermoSlim teve problema na entrega."
+    },
+    "producerRespondedHours": 2,
+    "createdAt": "2026-10-21T19:49:00.000Z"
+  },
+  {
+    "id": "fb_016",
+    "saleId": "s_0115",
+    "text": "Liberaram só a primeira aula, o resto está travado.",
+    "classification": {
+      "type": "acesso_tecnico",
+      "severity": "media",
+      "summary": "O comprador não consegue acessar o conteúdo de Mentoria Loja Lucrativa; parece um problema técnico que dá para resolver sem reembolso."
+    },
+    "producerRespondedHours": 71,
+    "createdAt": "2026-10-27T05:35:00.000Z"
+  },
+  {
+    "id": "fb_017",
+    "saleId": "s_0122",
+    "text": "Achei que ia editar igual profissional em uma semana, não é nada disso.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "media",
+      "summary": "A expectativa criada pela promessa \"Em uma semana de curso você edita igual profissional\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "Em uma semana de curso você edita igual profissional"
+    },
+    "producerRespondedHours": 10,
+    "createdAt": "2026-10-27T23:15:00.000Z"
+  },
+  {
+    "id": "fb_018",
+    "saleId": "s_0126",
+    "text": "Me arrependi, estava passando por um momento difícil.",
+    "classification": {
+      "type": "arrependimento_pessoal",
+      "severity": "baixa",
+      "summary": "Desistência por motivo pessoal, sem relação com a promessa do conteúdo."
+    },
+    "producerRespondedHours": 10,
+    "createdAt": "2026-10-30T11:23:00.000Z"
+  },
+  {
+    "id": "fb_019",
+    "saleId": "s_0144",
+    "text": "Prometeram 5kg em 2 semanas. Tomei certinho e não perdi nada.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você seca 5kg em 2 semanas sem dieta\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "você seca 5kg em 2 semanas sem dieta"
+    },
+    "producerRespondedHours": 17,
+    "createdAt": "2026-11-01T03:58:00.000Z"
+  },
+  {
+    "id": "fb_020",
+    "saleId": "s_0135",
+    "text": "O pote chegou com o lacre rompido.",
+    "classification": {
+      "type": "qualidade_conteudo",
+      "severity": "media",
+      "summary": "O comprador relata problema na qualidade do produto físico recebido (TermoSlim)."
+    },
+    "producerRespondedHours": 7,
+    "createdAt": "2026-11-01T05:17:00.000Z"
+  },
+  {
+    "id": "fb_021",
+    "saleId": "s_0166",
+    "text": "A criadora falou em faturar 10 mil no primeiro mês. O curso não fala nada de ganhar dinheiro, é só CapCut.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você fatura R$10k no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "você fatura R$10k no primeiro mês"
+    },
+    "producerRespondedHours": 9,
+    "createdAt": "2026-11-01T11:23:00.000Z"
+  },
+  {
+    "id": "fb_022",
+    "saleId": "s_0161",
+    "text": "As cápsulas vieram grudadas e com cheiro estranho.",
+    "classification": {
+      "type": "qualidade_conteudo",
+      "severity": "baixa",
+      "summary": "O comprador relata problema na qualidade do produto físico recebido (TermoSlim)."
+    },
+    "producerRespondedHours": 2,
+    "createdAt": "2026-11-01T21:57:00.000Z"
+  },
+  {
+    "id": "fb_023",
+    "saleId": "s_0152",
+    "text": "Disseram que não tinha contraindicação nenhuma e eu passei mal com a cafeína.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"É natural, então não tem contraindicação nenhuma\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "É natural, então não tem contraindicação nenhuma"
+    },
+    "producerRespondedHours": 22,
+    "createdAt": "2026-11-01T23:50:00.000Z"
+  },
+  {
+    "id": "fb_024",
+    "saleId": "s_0162",
+    "text": "O conteúdo é desatualizado, as telas não batem com a versão atual do app.",
+    "classification": {
+      "type": "qualidade_conteudo",
+      "severity": "media",
+      "summary": "O comprador considera o conteúdo de Renda com Reels abaixo do esperado."
+    },
+    "producerRespondedHours": 20,
+    "createdAt": "2026-11-02T00:10:00.000Z"
+  },
+  {
+    "id": "fb_025",
+    "saleId": "s_0164",
+    "text": "Achei que era um emagrecedor, é só um pré-treino com cafeína.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você seca 5kg em 2 semanas sem dieta\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "você seca 5kg em 2 semanas sem dieta"
+    },
+    "producerRespondedHours": 9,
+    "createdAt": "2026-11-03T08:36:00.000Z"
+  },
+  {
+    "id": "fb_026",
+    "saleId": "s_0177",
+    "text": "Esperava resultado rápido igual ao antes e depois do vídeo, não vi diferença.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "media",
+      "summary": "A expectativa criada pela promessa \"eu nem sinto cansaço, treino duas horas seguidas sem parar\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "eu nem sinto cansaço, treino duas horas seguidas sem parar"
+    },
+    "producerRespondedHours": 5,
+    "createdAt": "2026-11-03T11:04:00.000Z"
+  },
+  {
+    "id": "fb_027",
+    "saleId": "s_0183",
+    "text": "Já tenho algo parecido, comprei sem pensar.",
+    "classification": {
+      "type": "arrependimento_pessoal",
+      "severity": "baixa",
+      "summary": "Desistência por motivo pessoal, sem relação com a promessa do conteúdo."
+    },
+    "producerRespondedHours": 22,
+    "createdAt": "2026-11-05T00:47:00.000Z"
+  },
+  {
+    "id": "fb_028",
+    "saleId": "s_0181",
+    "text": "Esperava mais profundidade pelo preço que paguei.",
+    "classification": {
+      "type": "qualidade_conteudo",
+      "severity": "baixa",
+      "summary": "O comprador considera o conteúdo de Renda com Reels abaixo do esperado."
+    },
+    "producerRespondedHours": 42,
+    "createdAt": "2026-11-08T08:42:00.000Z"
+  },
+  {
+    "id": "fb_029",
+    "saleId": "s_0190",
+    "text": "Achei que a mentoria montava a loja pra mim.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você sai com a loja pronta, configurada e vendendo\" não corresponde ao que Mentoria Loja Lucrativa entrega segundo a página oficial.",
+      "relatedClaim": "você sai com a loja pronta, configurada e vendendo"
+    },
+    "producerRespondedHours": 15,
+    "createdAt": "2026-11-10T20:58:00.000Z"
+  },
+  {
+    "id": "fb_030",
+    "saleId": "s_0237",
+    "text": "Material confuso, pula etapas importantes.",
+    "classification": {
+      "type": "qualidade_conteudo",
+      "severity": "media",
+      "summary": "O comprador considera o conteúdo de Renda com Reels abaixo do esperado."
+    },
+    "producerRespondedHours": 14,
+    "createdAt": "2026-11-14T15:34:00.000Z"
+  },
+  {
+    "id": "fb_031",
+    "saleId": "s_0221",
+    "text": "Os vídeos não carregam no celular, fica só girando.",
+    "classification": {
+      "type": "acesso_tecnico",
+      "severity": "media",
+      "summary": "O comprador não consegue acessar o conteúdo de Renda com Reels; parece um problema técnico que dá para resolver sem reembolso."
+    },
+    "producerRespondedHours": 21,
+    "createdAt": "2026-11-15T10:14:00.000Z"
+  },
+  {
+    "id": "fb_032",
+    "saleId": "s_0265",
+    "text": "A influencer disse que derretia gordura dormindo. Isso não existe.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "media",
+      "summary": "A expectativa criada pela promessa \"derrete a gordura da barriga enquanto você dorme\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "derrete a gordura da barriga enquanto você dorme"
+    },
+    "producerRespondedHours": null,
+    "createdAt": "2026-11-19T02:00:00.000Z"
+  },
+  {
+    "id": "fb_033",
+    "saleId": "s_0262",
+    "text": "A criadora falou em faturar 10 mil no primeiro mês. O curso não fala nada de ganhar dinheiro, é só CapCut.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "media",
+      "summary": "A expectativa criada pela promessa \"você fatura R$10k no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "você fatura R$10k no primeiro mês"
+    },
+    "producerRespondedHours": null,
+    "createdAt": "2026-11-19T18:00:00.000Z"
+  },
+  {
+    "id": "fb_034",
+    "saleId": "s_0278",
+    "text": "A criadora falou em faturar 10 mil no primeiro mês. O curso não fala nada de ganhar dinheiro, é só CapCut.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"Você vai faturar R$10 mil já no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "Você vai faturar R$10 mil já no primeiro mês"
+    },
+    "producerRespondedHours": null,
+    "createdAt": "2026-11-20T21:00:00.000Z"
+  },
+  {
+    "id": "fb_035",
+    "saleId": "s_0280",
+    "text": "Falaram que eu ia secar sem dieta, a embalagem diz que precisa de dieta e treino.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você seca 5kg em 2 semanas sem dieta\" não corresponde ao que TermoSlim entrega segundo a página oficial.",
+      "relatedClaim": "você seca 5kg em 2 semanas sem dieta"
+    },
+    "producerRespondedHours": null,
+    "createdAt": "2026-11-21T01:00:00.000Z"
+  },
+  {
+    "id": "fb_036",
+    "saleId": "s_0287",
+    "text": "Esperava algo mais mão na massa, é muita aula teórica em grupo.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "media",
+      "summary": "A expectativa criada pela promessa \"Muita gente faz as primeiras vendas no primeiro mês\" não corresponde ao que Mentoria Loja Lucrativa entrega segundo a página oficial.",
+      "relatedClaim": "Muita gente faz as primeiras vendas no primeiro mês"
+    },
+    "producerRespondedHours": 57,
+    "createdAt": "2026-11-21T05:00:00.000Z"
+  },
+  {
+    "id": "fb_037",
+    "saleId": "s_0274",
+    "text": "A criadora falou em faturar 10 mil no primeiro mês. O curso não fala nada de ganhar dinheiro, é só CapCut.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "A expectativa criada pela promessa \"você fatura R$10k no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "você fatura R$10k no primeiro mês"
+    },
+    "producerRespondedHours": null,
+    "createdAt": "2026-11-21T08:00:00.000Z"
+  },
+  {
+    "id": "fb_demo",
+    "saleId": "s_0275",
+    "text": "comprei achando que ia ganhar 10 mil no primeiro mês, mas o curso é só edição básica",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "relatedClaim": "Você vai faturar R$10 mil já no primeiro mês",
+      "summary": "A expectativa criada pela promessa \"Você vai faturar R$10 mil já no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial."
+    },
+    "producerRespondedHours": null,
+    "createdAt": "2026-11-21T11:00:00.000Z"
+  },
+  {
+    "id": "fb_038",
+    "saleId": "s_0290",
+    "text": "Vi o vídeo com print de faturamento e achei que ia sair vendendo serviço. É um curso de edição pra iniciante.",
+    "classification": {
+      "type": "expectativa_desalinhada",
+      "severity": "baixa",
+      "summary": "A expectativa criada pela promessa \"você fatura R$10k no primeiro mês\" não corresponde ao que Renda com Reels entrega segundo a página oficial.",
+      "relatedClaim": "você fatura R$10k no primeiro mês"
+    },
+    "producerRespondedHours": 18,
+    "createdAt": "2026-11-22T16:34:00.000Z"
+  },
+  {
+    "id": "fb_039",
+    "saleId": "s_0298",
+    "text": "O Renda com Reels parece gravado às pressas, áudio ruim e sem roteiro.",
+    "classification": {
+      "type": "qualidade_conteudo",
+      "severity": "media",
+      "summary": "O comprador considera o conteúdo de Renda com Reels abaixo do esperado."
+    },
+    "producerRespondedHours": 19,
+    "createdAt": "2026-11-22T19:00:00.000Z"
+  }
+]
