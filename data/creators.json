@@ -1,0 +1,7 @@
+[
+  { "id": "c_ana", "name": "Ana Reels", "handle": "ana-reels", "niche": "renda online", "style": "exagerado" },
+  { "id": "c_bruno", "name": "Bruno Edita", "handle": "bruno-edita", "niche": "edição de vídeo", "style": "cauteloso" },
+  { "id": "c_carla", "name": "Carla Fit", "handle": "carla-fit", "niche": "fitness", "style": "exagerado" },
+  { "id": "c_diego", "name": "Diego Treino", "handle": "diego-treino", "niche": "fitness", "style": "cauteloso" },
+  { "id": "c_eva", "name": "Eva Empreende", "handle": "eva-empreende", "niche": "e-commerce", "style": "misto" }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "p_reels",
+    "slug": "renda-reels",
+    "name": "Renda com Reels",
+    "type": "curso",
+    "producer": "Studio Viral",
+    "price": 297,
+    "salesPageText": "Aprenda a editar Reels que prendem a atenção. 6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem. Para iniciantes. Resultados dependem da sua dedicação; a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante. Não garantimos ganhos financeiros.",
+    "contentOutline": [
+      "M1 Roteiro em 3 atos",
+      "M2 Gravação com celular",
+      "M3 Edição no CapCut",
+      "M4 Legendas e ritmo",
+      "M5 Ganchos dos 3 primeiros segundos",
+      "M6 Calendário de postagem"
+    ],
+    "hasYouClass": true,
+    "expectationChips": [
+      "Aprender a editar",
+      "Crescer seguidores",
+      "Faturar rápido",
+      "Virar freelancer de edição"
+    ]
+  },
+  {
+    "id": "p_slim",
+    "slug": "termoslim",
+    "name": "TermoSlim",
+    "type": "suplemento",
+    "producer": "NutriMax",
+    "price": 149,
+    "salesPageText": "Suplemento termogênico com cafeína e chá verde. Auxilia no foco e na disposição para treinos. Deve ser associado a alimentação equilibrada e exercícios. Não substitui orientação médica. Este produto não é medicamento.",
+    "hasYouClass": false,
+    "expectationChips": [
+      "Mais disposição",
+      "Emagrecer",
+      "Foco nos treinos",
+      "Resultado rápido"
+    ]
+  },
+  {
+    "id": "p_mentor",
+    "slug": "loja-lucrativa",
+    "name": "Mentoria Loja Lucrativa",
+    "type": "mentoria",
+    "producer": "Rafa Commerce",
+    "price": 997,
+    "salesPageText": "8 encontros ao vivo em grupo sobre como estruturar uma loja online: escolha de nicho, fornecedores, precificação, tráfego pago básico e atendimento. Inclui gravações e planilhas. Não é um serviço de montagem de loja.",
+    "contentOutline": [
+      "Encontro 1 Nicho",
+      "Encontro 2 Fornecedores",
+      "Encontro 3 Precificação",
+      "Encontro 4 Loja na prática",
+      "Encontro 5 Tráfego básico",
+      "Encontro 6 Criativos",
+      "Encontro 7 Atendimento",
+      "Encontro 8 Plano de 90 dias"
+    ],
+    "hasYouClass": true,
+    "expectationChips": [
+      "Montar minha loja",
+      "Primeiras vendas",
+      "Renda extra",
+      "Largar o emprego"
+    ]
+  }
+]

@@ -1,0 +1,451 @@
+[
+  {
+    "id": "ct_001",
+    "creatorId": "c_ana",
+    "productId": "p_reels",
+    "title": "Reels: como saí do zero",
+    "channel": "instagram",
+    "publishedAt": "2026-09-22T13:00:00.000Z",
+    "script": "Gente, há um ano eu tava no CLT, contando moeda no fim do mês. Aí eu descobri o Renda com Reels e mudou tudo. Você vai faturar R$10 mil já no primeiro mês, sério, foi o que aconteceu comigo. É só postar 1 vídeo por dia e o algoritmo faz o resto. São 6 módulos com aulas práticas de edição, do roteiro até a postagem, tudo pelo celular. Não precisa aparecer, não precisa de equipamento. Link na bio, corre que a turma fecha amanhã!",
+    "claims": [
+      {
+        "text": "Você vai faturar R$10 mil já no primeiro mês",
+        "status": "proibida",
+        "evidence": "Não garantimos ganhos financeiros.",
+        "reason": "Promete ganho financeiro garantido e com prazo, e a página diz explicitamente que não garante ganhos.",
+        "rewrite": "Eu comecei do zero e hoje vivo de Reels, mas levou tempo e muita prática. O curso te dá o caminho: o resultado vem da sua dedicação.",
+        "category": "ganho_financeiro"
+      },
+      {
+        "text": "É só postar 1 vídeo por dia e o algoritmo faz o resto",
+        "status": "exagerada",
+        "evidence": "a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante",
+        "reason": "Simplifica demais: a página fala em 3 meses de prática constante, não em resultado automático.",
+        "rewrite": "Com constância e as técnicas do curso, a maioria dos alunos começa a crescer depois de uns 3 meses de prática.",
+        "category": "prazo"
+      },
+      {
+        "text": "São 6 módulos com aulas práticas de edição, do roteiro até a postagem",
+        "status": "sustentada",
+        "evidence": "6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem.",
+        "reason": "Bate com a estrutura descrita na página de vendas.",
+        "category": "conteudo"
+      },
+      {
+        "text": "Não precisa aparecer, não precisa de equipamento",
+        "status": "exagerada",
+        "evidence": "gravação com celular",
+        "reason": "A página fala em gravação com celular, mas não diz que dá para fazer sem aparecer.",
+        "rewrite": "Dá pra começar só com o celular, sem comprar equipamento.",
+        "category": "outro"
+      }
+    ],
+    "linkId": "ct_001"
+  },
+  {
+    "id": "ct_002",
+    "creatorId": "c_ana",
+    "productId": "p_reels",
+    "title": "Quanto eu faturei no primeiro mês",
+    "channel": "tiktok",
+    "publishedAt": "2026-09-29T21:30:00.000Z",
+    "script": "Vou mostrar quanto eu faturei no primeiro mês editando Reels. Olha esse print! Com o Renda com Reels você fatura R$10k no primeiro mês, é renda garantida, não tem como dar errado. Eu não sabia nem abrir o CapCut e em duas semanas já tava fechando cliente. O curso ensina edição no CapCut, legenda e gancho. Quem entrar hoje ainda leva meu bônus secreto. Clica no link e vem comigo!",
+    "claims": [
+      {
+        "text": "você fatura R$10k no primeiro mês",
+        "status": "proibida",
+        "evidence": "Não garantimos ganhos financeiros.",
+        "reason": "Promete um valor de faturamento com prazo, o que a página nega.",
+        "rewrite": "Eu fui aprendendo e hoje edito para clientes. O curso ensina a técnica; quanto você vai ganhar depende da sua dedicação.",
+        "category": "ganho_financeiro"
+      },
+      {
+        "text": "é renda garantida, não tem como dar errado",
+        "status": "proibida",
+        "evidence": "Resultados dependem da sua dedicação",
+        "reason": "Garante resultado financeiro, contrariando a página e as regras de publicidade.",
+        "rewrite": "Não é mágica: é método e prática. Quem se dedica sai editando muito melhor.",
+        "category": "garantia"
+      },
+      {
+        "text": "em duas semanas já tava fechando cliente",
+        "status": "exagerada",
+        "evidence": "a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante",
+        "reason": "Sugere um prazo bem menor do que a página indica como típico.",
+        "rewrite": "Depois de algumas semanas praticando eu já me sentia segura pra oferecer meu trabalho.",
+        "category": "prazo"
+      },
+      {
+        "text": "O curso ensina edição no CapCut, legenda e gancho",
+        "status": "sustentada",
+        "evidence": "edição no CapCut, legendas, ganchos",
+        "reason": "Corresponde aos módulos do curso.",
+        "category": "conteudo"
+      }
+    ],
+    "linkId": "ct_002"
+  },
+  {
+    "id": "ct_003",
+    "creatorId": "c_ana",
+    "productId": "p_reels",
+    "title": "Edição no CapCut em 5 minutos",
+    "channel": "youtube",
+    "publishedAt": "2026-10-06T14:00:00.000Z",
+    "script": "Hoje vou te mostrar uma edição rápida no CapCut, do jeitinho que eu aprendi no Renda com Reels. Olha esse corte no ritmo da música, esse gancho nos 3 primeiros segundos. Em uma semana de curso você edita igual profissional, e aí viralizar fica fácil. Lá dentro tem módulo de legenda, de gancho e de calendário de postagem. É pra iniciante mesmo, eu comecei sem saber nada. Link aqui embaixo.",
+    "claims": [
+      {
+        "text": "Em uma semana de curso você edita igual profissional",
+        "status": "exagerada",
+        "evidence": "Para iniciantes. Resultados dependem da sua dedicação",
+        "reason": "Promete nível profissional em prazo curto; a página só diz que é para iniciantes.",
+        "rewrite": "Em poucas semanas de curso você já edita muito melhor do que quando começou.",
+        "category": "prazo"
+      },
+      {
+        "text": "viralizar fica fácil",
+        "status": "exagerada",
+        "evidence": "a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante",
+        "reason": "A página fala em crescimento gradual, não em viralizar com facilidade.",
+        "rewrite": "Com bons ganchos e constância, suas chances de alcance aumentam bastante.",
+        "category": "outro"
+      },
+      {
+        "text": "Lá dentro tem módulo de legenda, de gancho e de calendário de postagem",
+        "status": "sustentada",
+        "evidence": "M4 Legendas e ritmo · M5 Ganchos dos 3 primeiros segundos · M6 Calendário de postagem",
+        "reason": "Os módulos citados existem no conteúdo real.",
+        "category": "conteudo"
+      },
+      {
+        "text": "É pra iniciante mesmo",
+        "status": "sustentada",
+        "evidence": "Para iniciantes.",
+        "reason": "A página declara que o curso é para iniciantes.",
+        "category": "conteudo"
+      }
+    ],
+    "linkId": "ct_003"
+  },
+  {
+    "id": "ct_004",
+    "creatorId": "c_bruno",
+    "productId": "p_reels",
+    "title": "Vale a pena o Renda com Reels? Review honesto",
+    "channel": "youtube",
+    "publishedAt": "2026-09-25T18:00:00.000Z",
+    "script": "Fiz o Renda com Reels inteiro pra te contar se vale a pena. São 6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem. É focado em iniciante, então se você já edita bem talvez não seja pra você. O que eu mais gostei foi o módulo de ganchos. Mas atenção: ninguém cresce do dia pra noite. O próprio curso fala que a maioria vê resultado depois de uns 3 meses de prática. Resultados dependem de você. Link na descrição.",
+    "claims": [
+      {
+        "text": "São 6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem",
+        "status": "sustentada",
+        "evidence": "6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem.",
+        "reason": "Repete fielmente a estrutura da página.",
+        "category": "conteudo"
+      },
+      {
+        "text": "É focado em iniciante",
+        "status": "sustentada",
+        "evidence": "Para iniciantes.",
+        "reason": "Confirmado pela página de vendas.",
+        "category": "conteudo"
+      },
+      {
+        "text": "a maioria vê resultado depois de uns 3 meses de prática",
+        "status": "sustentada",
+        "evidence": "a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante",
+        "reason": "Mesmo prazo informado pela página.",
+        "category": "prazo"
+      },
+      {
+        "text": "Resultados dependem de você",
+        "status": "sustentada",
+        "evidence": "Resultados dependem da sua dedicação",
+        "reason": "Alinhado ao aviso da página.",
+        "category": "garantia"
+      }
+    ],
+    "linkId": "ct_004"
+  },
+  {
+    "id": "ct_005",
+    "creatorId": "c_bruno",
+    "productId": "p_reels",
+    "title": "3 erros de edição que travam seus Reels",
+    "channel": "instagram",
+    "publishedAt": "2026-10-10T12:00:00.000Z",
+    "script": "Três erros de edição que travam seus Reels: gancho fraco, legenda difícil de ler e corte fora do ritmo. Eu aprendi a corrigir os três no Renda com Reels, que tem um módulo só de ganchos dos 3 primeiros segundos e outro de legendas e ritmo. Dá pra fazer tudo no celular, com o CapCut. Não é fórmula mágica, é técnica e prática. Se quiser conhecer, o link tá no meu perfil.",
+    "claims": [
+      {
+        "text": "tem um módulo só de ganchos dos 3 primeiros segundos e outro de legendas e ritmo",
+        "status": "sustentada",
+        "evidence": "M4 Legendas e ritmo · M5 Ganchos dos 3 primeiros segundos",
+        "reason": "Os dois módulos existem no conteúdo real.",
+        "category": "conteudo"
+      },
+      {
+        "text": "Dá pra fazer tudo no celular, com o CapCut",
+        "status": "sustentada",
+        "evidence": "gravação com celular, edição no CapCut",
+        "reason": "A página cita gravação com celular e edição no CapCut.",
+        "category": "conteudo"
+      },
+      {
+        "text": "Não é fórmula mágica, é técnica e prática",
+        "status": "sustentada",
+        "evidence": "Resultados dependem da sua dedicação",
+        "reason": "Coerente com o aviso de que os resultados dependem de dedicação.",
+        "category": "garantia"
+      }
+    ],
+    "linkId": "ct_005"
+  },
+  {
+    "id": "ct_006",
+    "creatorId": "c_carla",
+    "productId": "p_slim",
+    "title": "Sequei 5kg tomando isso",
+    "channel": "tiktok",
+    "publishedAt": "2026-09-24T20:00:00.000Z",
+    "script": "Meninas, olha meu antes e depois! Com o TermoSlim você seca 5kg em 2 semanas sem dieta, eu continuei comendo de tudo. Ele acelera o metabolismo e derrete a gordura da barriga enquanto você dorme. É natural, então não tem contraindicação nenhuma. Eu tomo uma cápsula de manhã e pronto, mais energia o dia inteiro. Corre que o estoque tá acabando, link na bio!",
+    "claims": [
+      {
+        "text": "você seca 5kg em 2 semanas sem dieta",
+        "status": "proibida",
+        "evidence": "Deve ser associado a alimentação equilibrada e exercícios.",
+        "reason": "Promete emagrecimento com prazo e sem dieta, contradizendo a página e as regras da ANVISA.",
+        "rewrite": "O TermoSlim me ajuda a ter disposição pros treinos. Junto com alimentação equilibrada e exercício, tô me sentindo muito melhor.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "derrete a gordura da barriga enquanto você dorme",
+        "status": "proibida",
+        "evidence": "Este produto não é medicamento.",
+        "reason": "Alegação terapêutica de emagrecimento sem respaldo na página.",
+        "rewrite": "Ele é um termogênico com cafeína e chá verde, que me dá mais disposição pra treinar.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "É natural, então não tem contraindicação nenhuma",
+        "status": "proibida",
+        "evidence": "Não substitui orientação médica.",
+        "reason": "Afirma ausência de contraindicação para um produto com cafeína; a página recomenda orientação médica.",
+        "rewrite": "Antes de começar, vale conversar com um profissional de saúde, principalmente se você é sensível à cafeína.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "mais energia o dia inteiro",
+        "status": "exagerada",
+        "evidence": "Auxilia no foco e na disposição para treinos.",
+        "reason": "A página fala em disposição para treinos, não em energia o dia inteiro.",
+        "rewrite": "Sinto mais disposição na hora do treino.",
+        "category": "resultado_saude"
+      }
+    ],
+    "linkId": "ct_006"
+  },
+  {
+    "id": "ct_007",
+    "creatorId": "c_carla",
+    "productId": "p_slim",
+    "title": "Minha rotina pré-treino",
+    "channel": "instagram",
+    "publishedAt": "2026-10-08T11:00:00.000Z",
+    "script": "Bora de rotina pré-treino? Acordo, tomo meu café da manhã reforçado e uma cápsula de TermoSlim, que é um termogênico com cafeína e chá verde. Com ele eu nem sinto cansaço, treino duas horas seguidas sem parar. É o segredo do meu shape, sério. Claro que eu também cuido da alimentação e do sono. Quem quiser, tem cupom no link da bio.",
+    "claims": [
+      {
+        "text": "termogênico com cafeína e chá verde",
+        "status": "sustentada",
+        "evidence": "Suplemento termogênico com cafeína e chá verde.",
+        "reason": "Descrição idêntica à da página.",
+        "category": "conteudo"
+      },
+      {
+        "text": "eu nem sinto cansaço, treino duas horas seguidas sem parar",
+        "status": "exagerada",
+        "evidence": "Auxilia no foco e na disposição para treinos.",
+        "reason": "A página diz que auxilia na disposição, não que elimina o cansaço.",
+        "rewrite": "Sinto mais foco e disposição pra treinar.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "É o segredo do meu shape",
+        "status": "exagerada",
+        "evidence": "Deve ser associado a alimentação equilibrada e exercícios.",
+        "reason": "Atribui o resultado físico ao suplemento, quando a página exige dieta e exercício.",
+        "rewrite": "Meu shape vem de treino e alimentação; o TermoSlim me ajuda na disposição.",
+        "category": "resultado_saude"
+      }
+    ],
+    "linkId": "ct_007"
+  },
+  {
+    "id": "ct_008",
+    "creatorId": "c_diego",
+    "productId": "p_slim",
+    "title": "Termogênico funciona? A verdade",
+    "channel": "youtube",
+    "publishedAt": "2026-09-27T16:00:00.000Z",
+    "script": "Termogênico funciona? Depende do que você espera. O TermoSlim tem cafeína e chá verde e ajuda na disposição pro treino e no foco. Ele não emagrece sozinho: precisa de alimentação equilibrada e exercício, e isso tá escrito na própria embalagem. Também não substitui orientação médica, então se você tem pressão alta ou é sensível à cafeína, fala com seu médico antes. Se fizer sentido pra você, o link tá na descrição.",
+    "claims": [
+      {
+        "text": "ajuda na disposição pro treino e no foco",
+        "status": "sustentada",
+        "evidence": "Auxilia no foco e na disposição para treinos.",
+        "reason": "Mesma alegação da página.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "precisa de alimentação equilibrada e exercício",
+        "status": "sustentada",
+        "evidence": "Deve ser associado a alimentação equilibrada e exercícios.",
+        "reason": "Repete a orientação da página.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "não substitui orientação médica",
+        "status": "sustentada",
+        "evidence": "Não substitui orientação médica.",
+        "reason": "Aviso idêntico ao da página.",
+        "category": "outro"
+      }
+    ],
+    "linkId": "ct_008"
+  },
+  {
+    "id": "ct_009",
+    "creatorId": "c_diego",
+    "productId": "p_slim",
+    "title": "O que eu tomo antes do treino",
+    "channel": "tiktok",
+    "publishedAt": "2026-10-12T19:00:00.000Z",
+    "script": "Me perguntaram o que eu tomo antes do treino. Uso o TermoSlim, um termogênico com cafeína e chá verde. Pra mim ajuda na disposição, principalmente no treino da noite. Mas não é remédio e não faz milagre: o que muda o corpo é treino e comida. Se você quiser testar, começa com uma dose e vê como seu corpo reage. Link no perfil.",
+    "claims": [
+      {
+        "text": "um termogênico com cafeína e chá verde",
+        "status": "sustentada",
+        "evidence": "Suplemento termogênico com cafeína e chá verde.",
+        "reason": "Descrição fiel à página.",
+        "category": "conteudo"
+      },
+      {
+        "text": "ajuda na disposição",
+        "status": "sustentada",
+        "evidence": "Auxilia no foco e na disposição para treinos.",
+        "reason": "Alegação presente na página.",
+        "category": "resultado_saude"
+      },
+      {
+        "text": "não é remédio e não faz milagre",
+        "status": "sustentada",
+        "evidence": "Este produto não é medicamento.",
+        "reason": "Coerente com o aviso da página.",
+        "category": "outro"
+      }
+    ],
+    "linkId": "ct_009"
+  },
+  {
+    "id": "ct_010",
+    "creatorId": "c_eva",
+    "productId": "p_mentor",
+    "title": "Saia da mentoria com a loja pronta",
+    "channel": "instagram",
+    "publishedAt": "2026-09-23T15:00:00.000Z",
+    "script": "Quer ter sua loja online mas não sabe por onde começar? Na Mentoria Loja Lucrativa você sai com a loja pronta, configurada e vendendo. São 8 encontros ao vivo com o Rafa, e eu fiz e recomendo. Em poucas semanas dá pra largar o emprego, como eu fiz. Tem nicho, fornecedor, precificação e tráfego. As vagas são limitadas, link na bio.",
+    "claims": [
+      {
+        "text": "você sai com a loja pronta, configurada e vendendo",
+        "status": "proibida",
+        "evidence": "Não é um serviço de montagem de loja.",
+        "reason": "Contradiz a página: a mentoria ensina, não monta a loja.",
+        "rewrite": "Você sai sabendo estruturar sua loja passo a passo: nicho, fornecedores, preço e tráfego.",
+        "category": "conteudo"
+      },
+      {
+        "text": "São 8 encontros ao vivo",
+        "status": "sustentada",
+        "evidence": "8 encontros ao vivo em grupo",
+        "reason": "Confirmado pela página.",
+        "category": "conteudo"
+      },
+      {
+        "text": "Em poucas semanas dá pra largar o emprego",
+        "status": "proibida",
+        "evidence": "",
+        "reason": "Promete resultado financeiro com prazo, sem nenhuma base na página.",
+        "rewrite": "A mentoria me deu um plano de 90 dias pra começar a loja com segurança, no meu ritmo.",
+        "category": "ganho_financeiro"
+      },
+      {
+        "text": "Tem nicho, fornecedor, precificação e tráfego",
+        "status": "sustentada",
+        "evidence": "escolha de nicho, fornecedores, precificação, tráfego pago básico e atendimento",
+        "reason": "Temas listados na página.",
+        "category": "conteudo"
+      }
+    ],
+    "linkId": "ct_010"
+  },
+  {
+    "id": "ct_011",
+    "creatorId": "c_eva",
+    "productId": "p_mentor",
+    "title": "Primeiras vendas da loja: o que ninguém conta",
+    "channel": "tiktok",
+    "publishedAt": "2026-10-04T22:00:00.000Z",
+    "script": "O que ninguém te conta sobre as primeiras vendas da loja online: o difícil é escolher nicho e fornecedor. Foi isso que eu destravei na Mentoria Loja Lucrativa. Muita gente faz as primeiras vendas no primeiro mês, eu fiz na terceira semana. Tem encontro só de precificação e um de tráfego básico, além das planilhas. Se você quer começar com método, o link tá na bio.",
+    "claims": [
+      {
+        "text": "Muita gente faz as primeiras vendas no primeiro mês",
+        "status": "exagerada",
+        "evidence": "Encontro 8 Plano de 90 dias",
+        "reason": "A página não informa prazo de vendas; o próprio conteúdo trabalha com um plano de 90 dias.",
+        "rewrite": "Eu fiz minhas primeiras vendas rápido, mas cada loja tem seu tempo. A mentoria te dá um plano de 90 dias.",
+        "category": "prazo"
+      },
+      {
+        "text": "Tem encontro só de precificação e um de tráfego básico, além das planilhas",
+        "status": "sustentada",
+        "evidence": "Encontro 3 Precificação · Encontro 5 Tráfego básico · Inclui gravações e planilhas.",
+        "reason": "Encontros e planilhas confirmados.",
+        "category": "conteudo"
+      }
+    ],
+    "linkId": "ct_011"
+  },
+  {
+    "id": "ct_012",
+    "creatorId": "c_eva",
+    "productId": "p_mentor",
+    "title": "Tour pela Mentoria Loja Lucrativa",
+    "channel": "youtube",
+    "publishedAt": "2026-10-14T13:00:00.000Z",
+    "script": "Vou fazer um tour pela Mentoria Loja Lucrativa. São 8 encontros ao vivo em grupo, e se você perder algum, fica a gravação. Passa por nicho, fornecedores, precificação, loja na prática, tráfego básico, criativos e atendimento, e fecha com um plano de 90 dias. Vem com planilhas prontas de precificação. Dá pra ter uma renda extra se você aplicar com consistência. Link na descrição.",
+    "claims": [
+      {
+        "text": "São 8 encontros ao vivo em grupo, e se você perder algum, fica a gravação",
+        "status": "sustentada",
+        "evidence": "8 encontros ao vivo em grupo · Inclui gravações e planilhas.",
+        "reason": "Formato confirmado pela página.",
+        "category": "conteudo"
+      },
+      {
+        "text": "fecha com um plano de 90 dias",
+        "status": "sustentada",
+        "evidence": "Encontro 8 Plano de 90 dias",
+        "reason": "Último encontro do conteúdo real.",
+        "category": "conteudo"
+      },
+      {
+        "text": "Dá pra ter uma renda extra se você aplicar com consistência",
+        "status": "exagerada",
+        "evidence": "",
+        "reason": "A página não fala em renda; a frase é cautelosa, mas ainda sugere um ganho que a fonte não sustenta.",
+        "rewrite": "Com o que aprendi, consegui estruturar minha loja com método. O resultado depende de quanto você aplica.",
+        "category": "ganho_financeiro"
+      }
+    ],
+    "linkId": "ct_012"
+  }
+]
