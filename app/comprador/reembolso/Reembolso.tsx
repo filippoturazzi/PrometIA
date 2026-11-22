@@ -4,24 +4,27 @@ import { useState } from "react";
 import { toast } from "sonner";
 import {
   ArrowLeft,
-  CheckCircle2,
+  Check,
+  Clapperboard,
   Eye,
+  GitBranch,
   HandHelping,
-  Loader2,
-  MessageSquareHeart,
+  Hourglass,
+  LifeBuoy,
+  LoaderCircle,
   PlayCircle,
   ShieldCheck,
+  Smartphone,
+  Sparkles,
+  Target,
 } from "lucide-react";
 import { PhoneFrame } from "@/components/PhoneFrame";
-import { SimulationBadge } from "@/components/SimulationBadge";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { FRUSTRATION_LABELS, SEVERITY_META, STATUS_META, matchClaim } from "@/lib/claims-ui";
+import { FRUSTRATION_LABELS, matchClaim } from "@/lib/claims-ui";
 import type { ClassifyFeedbackResult } from "@/lib/schemas";
-import type { ClaimStatus } from "@/lib/types";
+import type { ClaimStatus, Severity } from "@/lib/types";
 import { EXPECTATION_KEY, useSessionValue } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +55,24 @@ const REASONS = [
   "Outro motivo",
 ];
 
-const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const CHANNEL: Record<string, string> = { tiktok: "TikTok", instagram: "Instagram", youtube: "YouTube" };
+
+// gravidade no cabeçalho escuro do painel
+const SEVERITY_DARK: Record<Severity, { label: string; bg: string; fg: string; dot: string }> = {
+  alta: { label: "Gravidade alta", bg: "bg-[#FF6B5A26]", fg: "text-[#FF9A8C]", dot: "bg-[#FF6B5A]" },
+  media: { label: "Gravidade média", bg: "bg-[#FDB55A26]", fg: "text-[#FFC97A]", dot: "bg-[#FFC97A]" },
+  baixa: { label: "Gravidade baixa", bg: "bg-[#4CC38A26]", fg: "text-[#7FDCAE]", dot: "bg-[#7FDCAE]" },
+};
+
+const brl = (v: number, cents = true) =>
+  v.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: cents ? 2 : 0,
+    maximumFractionDigits: cents ? 2 : 0,
+  });
+
+const sectionLabel = "flex items-center gap-2 text-[11px] font-semibold tracking-[1.4px] text-muted-foreground uppercase";
 
 export function Reembolso({ order, exampleText }: { order: Order; exampleText: string }) {
   const [step, setStep] = useState<Step>("form");
@@ -92,41 +112,60 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
     setResult(null);
   }
 
-  const relatedStatus = result?.relatedClaim
-    ? matchClaim(order.claims, result.relatedClaim)?.status
-    : undefined;
+  const related = result?.relatedClaim ? matchClaim(order.claims, result.relatedClaim) : undefined;
+  const stage = step === "form" || step === "loading" ? 1 : step === "done" ? 3 : 2;
+  const analysed = step !== "form" && step !== "loading";
 
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-[400px_minmax(0,1fr)]">
+    <div className="grid items-start gap-12 lg:grid-cols-[380px_minmax(0,1fr)]">
       {/* Celular: o que o comprador vê */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <SimulationBadge /> O que o comprador vê
-        </div>
+      <div className="flex flex-col gap-4">
+        <p className={cn(sectionLabel, "justify-center")}>
+          <Smartphone className="size-3.5" aria-hidden /> O que o comprador vê
+          <span className="rounded-full bg-status-warn-bg px-2 py-0.5 text-[10px] tracking-normal text-status-warn normal-case">
+            Simulação
+          </span>
+        </p>
         <PhoneFrame id="phone-frame">
-          <div id="phone-reembolso" className="flex min-h-full flex-col text-[13px] text-neutral-800">
-            <div className="sticky top-0 z-10 border-b bg-white px-4 py-3">
-              <div className="flex items-center gap-2">
-                <ArrowLeft className="size-4" aria-hidden />
-                <span className="font-semibold">Solicitar reembolso</span>
+          <div id="phone-reembolso" className="flex min-h-full flex-1 flex-col text-[13px] text-ink">
+            <div className="flex items-center gap-3 px-5 pt-3 pb-4">
+              <ArrowLeft className="size-5" aria-hidden />
+              <div className="flex flex-col">
+                <span className="text-[15px] font-semibold">Solicitar reembolso</span>
+                <span className="text-[11px] text-muted-foreground">Pedido #{order.number}</span>
               </div>
-              <p className="mt-0.5 pl-6 text-[11px] text-neutral-500">
-                Minhas Compras › Pedido #{order.number} › Reembolso
-              </p>
             </div>
 
-            <div className="flex-1 space-y-4 bg-neutral-50 p-4">
-              <OrderCard order={order} />
+            <div className="flex items-center gap-3 bg-paper px-5 py-3.5">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-navy">
+                <Clapperboard className="size-[18px] text-lime" aria-hidden />
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span className="text-[13px] font-semibold">{order.productName}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  {order.producer} · {order.purchasedAt}
+                </span>
+              </div>
+              <span className="text-[15px] font-semibold">{brl(order.price, false)}</span>
+            </div>
+
+            <div className="flex flex-1 flex-col gap-4 px-5 pt-5 pb-5">
+              <div className="flex gap-1" aria-label={`Etapa ${stage} de 3`}>
+                {[1, 2, 3].map((n) => (
+                  <span key={n} className={cn("h-[3px] flex-1 rounded-full", n <= stage ? "bg-navy" : "bg-line")} />
+                ))}
+              </div>
 
               {(step === "form" || step === "loading") && (
-                <div className="space-y-4">
-                  <p className="flex gap-2 rounded-lg bg-status-ok-bg p-3 text-[12px] text-neutral-700">
-                    <ShieldCheck className="size-4 shrink-0 text-status-ok" aria-hidden />
-                    Você está dentro do prazo de garantia de 7 dias. O reembolso é um direito seu.
+                <>
+                  <StageTitle n={1} title="Conte o que aconteceu" />
+                  <p className="flex gap-2 rounded-lg bg-status-ok-bg px-3 py-2.5 text-[12px] text-status-ok">
+                    <ShieldCheck className="mt-px size-4 shrink-0" aria-hidden />
+                    Você está no prazo de garantia de 7 dias. O reembolso é um direito seu.
                   </p>
 
-                  <div className="space-y-1.5">
-                    <label className="font-medium" htmlFor="motivo">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12px] font-semibold" htmlFor="motivo">
                       Motivo
                     </label>
                     <Select
@@ -134,7 +173,11 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
                       value={reason}
                       onValueChange={(v) => v && setReason(v)}
                     >
-                      <SelectTrigger id="motivo" className="w-full bg-white" disabled={step === "loading"}>
+                      <SelectTrigger
+                        id="motivo"
+                        className="w-full rounded-lg border-line bg-white px-3 py-2.5 text-[13px] data-[size=default]:h-auto"
+                        disabled={step === "loading"}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -147,12 +190,10 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
                     </Select>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label className="font-medium" htmlFor="relato">
-                        O que você esperava e o que recebeu?
-                      </label>
-                    </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[12px] font-semibold" htmlFor="relato">
+                      O que você esperava e o que recebeu?
+                    </label>
                     <Textarea
                       id="relato"
                       value={text}
@@ -160,12 +201,12 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
                       maxLength={2000}
                       disabled={step === "loading"}
                       placeholder="Conte com suas palavras. Isso nos ajuda a melhorar."
-                      className="min-h-28 bg-white text-[13px]"
+                      className="min-h-24 resize-none rounded-lg border-line bg-white px-3 py-2.5 text-[13px] leading-[19px]"
                     />
                     <button
                       id="btn-texto-exemplo"
                       type="button"
-                      className="text-[12px] font-medium text-secondary underline underline-offset-2"
+                      className="self-start text-[12px] font-medium text-navy underline underline-offset-2"
                       onClick={() => {
                         setReason(REASONS[0]);
                         setText(exampleText);
@@ -175,80 +216,118 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
                     </button>
                   </div>
 
-                  <RefundButton
-                    onClick={submit}
-                    disabled={text.trim().length < 10 || step === "loading"}
-                    loading={step === "loading"}
-                  />
-                </div>
+                  <div className="mt-auto pt-2">
+                    <PrimaryButton
+                      id="btn-continuar-reembolso"
+                      onClick={submit}
+                      disabled={text.trim().length < 10 || step === "loading"}
+                    >
+                      {step === "loading" && <LoaderCircle className="size-4 animate-spin" aria-hidden />}
+                      {step === "loading" ? "Analisando…" : "Continuar"}
+                    </PrimaryButton>
+                  </div>
+                </>
               )}
 
               {step === "classified" && (
-                <div className="space-y-3">
-                  <div className="rounded-xl border bg-white p-4 shadow-sm">
-                    <p className="flex items-center gap-2 font-semibold text-secondary">
-                      <MessageSquareHeart className="size-4" aria-hidden /> Entendemos seu caso
-                    </p>
-                    {result?.summary && (
-                      <p className="mt-2 rounded-lg bg-neutral-50 p-2.5 text-neutral-600">
-                        <span className="block text-[11px] font-medium text-neutral-500">Resumo do seu relato</span>
-                        {result.summary}
-                      </p>
-                    )}
-                    <p className="mt-2 text-neutral-600">
-                      Obrigado por contar. Isso chega ao produtor e ao creator para melhorar a divulgação.
-                    </p>
-                  </div>
-
-                  {result?.helpOffer && (
-                    <div className="rounded-xl border border-primary/50 bg-white p-4">
-                      <p className="flex items-center gap-2 font-semibold text-secondary">
-                        <HandHelping className="size-4" aria-hidden /> Podemos resolver agora
-                      </p>
-                      <p className="mt-2 text-neutral-600">{result.helpOffer}</p>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="mt-3 h-10 w-full text-[13px]"
-                        onClick={() => setStep("help")}
-                      >
-                        Quero essa ajuda
-                      </Button>
+                <>
+                  <StageTitle n={2} title={result?.helpOffer ? "Podemos resolver agora" : "Entendemos seu caso"} />
+                  {result?.summary && (
+                    <div className="flex flex-col gap-1 rounded-lg bg-paper px-3.5 py-3">
+                      <span className="text-[11px] text-muted-foreground">Resumo do seu relato</span>
+                      <span className="text-[13px] leading-[19px]">{result.summary}</span>
                     </div>
                   )}
 
-                  <RefundButton onClick={() => setStep("done")} />
-                  <button type="button" onClick={reset} className="w-full text-center text-[12px] text-neutral-500 underline">
-                    Voltar e editar o relato
-                  </button>
-                </div>
+                  {result?.helpOffer ? (
+                    <div className="flex flex-col gap-2.5 rounded-xl border-[1.5px] border-navy p-3.5">
+                      <p className="flex items-center gap-2 text-[13px] font-semibold">
+                        <LifeBuoy className="size-4" aria-hidden />
+                        {result.type === "acesso_tecnico" ? "Parece um problema de acesso" : "Talvez a gente resolva agora"}
+                      </p>
+                      <p className="text-[12px] leading-[18px] text-muted-foreground">{result.helpOffer}</p>
+                      <button
+                        type="button"
+                        onClick={() => setStep("help")}
+                        className="rounded-lg bg-navy py-2.5 text-[13px] font-semibold text-white hover:bg-navy/90"
+                      >
+                        Quero essa ajuda
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-[13px] leading-5 text-muted-foreground">
+                        Obrigado por contar. Isso chega ao produtor e ao creator para melhorar a divulgação.
+                      </p>
+                      <p className="flex gap-2 text-[12px] text-status-ok">
+                        <ShieldCheck className="mt-px size-4 shrink-0" aria-hidden />
+                        Dentro da garantia de 7 dias — o reembolso é seu direito.
+                      </p>
+                    </>
+                  )}
+
+                  <div className="mt-auto flex flex-col gap-3 pt-2">
+                    {result?.helpOffer ? (
+                      <SecondaryButton id="btn-continuar-reembolso" onClick={() => setStep("done")}>
+                        Prefiro continuar com o reembolso
+                      </SecondaryButton>
+                    ) : (
+                      <PrimaryButton id="btn-continuar-reembolso" onClick={() => setStep("done")}>
+                        Continuar com o reembolso
+                      </PrimaryButton>
+                    )}
+                    <button
+                      type="button"
+                      onClick={reset}
+                      className="text-center text-[12px] text-muted-foreground hover:text-ink"
+                    >
+                      Voltar e editar o relato
+                    </button>
+                  </div>
+                </>
               )}
 
               {step === "help" && (
-                <div className="space-y-3">
-                  <div className="rounded-xl border bg-white p-4 text-center shadow-sm">
-                    <HandHelping className="mx-auto size-8 text-secondary" aria-hidden />
-                    <p className="mt-2 font-semibold text-secondary">Combinado!</p>
-                    <p className="mt-1 text-neutral-600">
+                <>
+                  <StageTitle n={2} title="Combinado!" />
+                  <div className="flex flex-col items-center gap-2 rounded-xl bg-paper p-5 text-center">
+                    <HandHelping className="size-8 text-navy" aria-hidden />
+                    <p className="text-[13px] leading-5 text-muted-foreground">
                       O suporte vai entrar em contato em até 24h. Se não resolver, seu reembolso continua garantido.
                     </p>
                   </div>
-                  <RefundButton onClick={() => setStep("done")} />
-                </div>
+                  <div className="mt-auto pt-2">
+                    <SecondaryButton id="btn-continuar-reembolso" onClick={() => setStep("done")}>
+                      Prefiro continuar com o reembolso
+                    </SecondaryButton>
+                  </div>
+                </>
               )}
 
               {step === "done" && (
-                <div className="rounded-xl border bg-white p-5 text-center shadow-sm">
-                  <CheckCircle2 className="mx-auto size-10 text-status-ok" aria-hidden />
-                  <p className="mt-2 text-base font-semibold text-secondary">Reembolso solicitado</p>
-                  <p className="mt-1 text-neutral-600">
-                    {brl(order.price)} voltam pelo mesmo meio de pagamento da compra. Você recebe a confirmação por
-                    e-mail.
-                  </p>
-                  <button type="button" onClick={reset} className="mt-4 text-[12px] text-neutral-500 underline">
-                    Recomeçar a simulação
-                  </button>
-                </div>
+                <>
+                  <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+                    <span className="flex size-14 items-center justify-center rounded-full bg-status-ok-bg">
+                      <Check className="size-7 text-status-ok" aria-hidden />
+                    </span>
+                    <p className="font-heading text-[20px] font-semibold">Reembolso solicitado</p>
+                    <p className="text-[13px] leading-5 text-muted-foreground">
+                      {brl(order.price)} voltam pelo mesmo meio de pagamento da compra. Você recebe a confirmação por
+                      e-mail.
+                    </p>
+                    <dl className="mt-2 w-full rounded-lg bg-paper px-3.5 text-[12px]">
+                      <div className="flex justify-between border-b border-line py-2.5">
+                        <dt className="text-muted-foreground">Pedido recebido</dt>
+                        <dd className="font-semibold">Hoje</dd>
+                      </div>
+                      <div className="flex justify-between py-2.5">
+                        <dt className="text-muted-foreground">Estorno no cartão</dt>
+                        <dd className="font-semibold">até 5 dias úteis</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <SecondaryButton onClick={reset}>Voltar para Minhas compras</SecondaryButton>
+                </>
               )}
             </div>
           </div>
@@ -256,142 +335,170 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
       </div>
 
       {/* Painel lateral: o que a YouShop vê */}
-      <aside aria-label="O que a YouShop vê" aria-live="polite" className="space-y-4 lg:pt-7">
-        <div className="rounded-xl border bg-card p-5 shadow-sm">
-          <h2 className="flex items-center gap-2 text-lg">
-            <Eye className="size-5" aria-hidden /> O que a YouShop vê
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Painel interno. O comprador não vê nada disto.
-          </p>
-
-          <dl className="mt-4 space-y-4 text-sm">
-            <div>
-              <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Conteúdo de origem</dt>
-              <dd className="mt-1 flex items-start gap-2">
-                <PlayCircle className="mt-0.5 size-4 shrink-0 text-secondary" aria-hidden />
-                <span>
-                  <strong className="text-secondary">“{order.contentTitle}”</strong> · {order.creatorName} ·{" "}
-                  <span className="capitalize">{order.contentChannel}</span>
-                  <code className="mt-1 block text-xs text-muted-foreground">{order.link}</code>
-                </span>
-              </dd>
+      <aside aria-label="O que a YouShop vê" aria-live="polite" className="flex min-w-0 flex-col gap-4">
+        <p className={sectionLabel}>
+          <Eye className="size-3.5" aria-hidden /> O que a YouShop vê · Painel interno
+        </p>
+        <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-navy-deep px-6 py-[18px]">
+            <div className="flex flex-col gap-0.5">
+              <p className="font-heading text-[16px] font-semibold text-white">Pedido de reembolso #{order.number}</p>
+              <p className="text-[12px] text-white/60">O comprador não vê nada deste painel.</p>
             </div>
+            {analysed && result && (
+              <span
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full px-2.5 py-[5px] text-[12px] font-semibold",
+                  SEVERITY_DARK[result.severity].bg,
+                  SEVERITY_DARK[result.severity].fg,
+                )}
+              >
+                <span className={cn("size-[7px] rounded-full", SEVERITY_DARK[result.severity].dot)} />
+                {SEVERITY_DARK[result.severity].label}
+              </span>
+            )}
+          </div>
+
+          <dl>
+            <Row label="Conteúdo de origem">
+              <span className="flex items-start gap-2">
+                <PlayCircle className="mt-0.5 size-4 shrink-0 text-ink" aria-hidden />
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span>
+                    <strong className="font-semibold">“{order.contentTitle}”</strong>
+                    <span className="font-normal text-muted-foreground">
+                      {" "}
+                      · {order.creatorName} · {CHANNEL[order.contentChannel] ?? order.contentChannel}
+                    </span>
+                  </span>
+                  <code className="truncate font-mono text-[12px] font-normal text-muted-foreground">{order.link}</code>
+                </span>
+              </span>
+            </Row>
 
             {expectation && (
-              <div>
-                <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Expectativa marcada na compra</dt>
-                <dd className="mt-1">
-                  <span className="rounded-full bg-primary/15 px-2.5 py-0.5 font-medium text-secondary">{expectation}</span>
-                </dd>
-              </div>
+              <Row label="Expectativa na compra">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-2.5 py-1 text-[13px]">
+                  <Target className="size-3.5" aria-hidden /> {expectation}
+                </span>
+              </Row>
             )}
 
             {step === "form" && (
-              <p className="rounded-lg border border-dashed bg-muted/30 p-4 text-center text-muted-foreground">
-                Aguardando o relato do comprador…
-              </p>
-            )}
-
-            {step === "loading" && (
-              <div className="space-y-3" aria-label="Analisando">
-                <Skeleton className="h-6 w-2/3" />
-                <Skeleton className="h-6 w-1/2" />
-                <Skeleton className="h-16 w-full" />
+              <div className="flex items-center justify-center gap-2.5 px-6 py-5 text-[14px] text-muted-foreground">
+                <Hourglass className="size-4" aria-hidden /> Aguardando o relato do comprador…
               </div>
             )}
 
-            {step !== "form" && step !== "loading" && !result && (
-              <p className="rounded-lg bg-muted/40 p-4 text-muted-foreground">
+            {step === "loading" && (
+              <div className="flex animate-pulse flex-col gap-3 px-6 py-5" aria-label="Analisando">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="flex gap-5">
+                    <span className="h-3.5 w-[170px] rounded bg-[#EEF1F5]" />
+                    <span className="h-3.5 flex-1 rounded bg-[#EEF1F5]" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {analysed && !result && (
+              <p className="px-6 py-5 text-[14px] text-muted-foreground">
                 A análise automática não ficou disponível desta vez. O pedido segue normalmente para a fila.
               </p>
             )}
 
-            {step !== "form" && step !== "loading" && result && (
+            {analysed && result && (
               <>
-                <div className="flex flex-wrap gap-6">
-                  <div>
-                    <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Tipo de frustração</dt>
-                    <dd className="mt-1 font-semibold text-secondary">{FRUSTRATION_LABELS[result.type]}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Gravidade</dt>
-                    <dd className="mt-1">
-                      <StatusBadge
-                        status={SEVERITY_META[result.severity].status}
-                        label={SEVERITY_META[result.severity].label}
-                        size="sm"
-                      />
-                    </dd>
-                  </div>
-                </div>
-
-                <div>
-                  <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Promessa relacionada</dt>
-                  <dd className="mt-1">
-                    {result.relatedClaim ? (
-                      <div className="flex flex-wrap items-center gap-2">
-                        <mark
-                          className={cn(
-                            "rounded px-1 text-foreground",
-                            relatedStatus ? STATUS_META[relatedStatus].mark : "bg-muted",
-                          )}
-                        >
-                          “{result.relatedClaim}”
-                        </mark>
-                        {relatedStatus && <StatusBadge status={relatedStatus} size="sm" />}
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground">Nenhuma promessa do conteúdo ligada a este caso.</span>
-                    )}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Resumo da IA</dt>
-                  <dd className="mt-1">{result.summary}</dd>
-                </div>
-
+                <Row label="Tipo de frustração">{FRUSTRATION_LABELS[result.type]}</Row>
+                <Row label="Promessa relacionada">
+                  {result.relatedClaim ? (
+                    <span className="flex flex-wrap items-center gap-2 font-normal">
+                      <em>“{related?.text ?? result.relatedClaim}”</em>
+                      {related && (
+                        <StatusBadge status={related.status} size="sm" className="px-2 py-0.5 text-[11px]" />
+                      )}
+                    </span>
+                  ) : (
+                    <em className="font-normal text-muted-foreground">Nenhuma promessa do conteúdo ligada a este caso.</em>
+                  )}
+                </Row>
+                <Row label="Resumo da IA">
+                  <span className="flex gap-2 font-normal">
+                    <Sparkles className="mt-0.5 size-3.5 shrink-0 text-navy" aria-hidden />
+                    {result.summary}
+                  </span>
+                </Row>
                 {result.helpOffer && (
-                  <div>
-                    <dt className="text-xs font-medium tracking-wide text-secondary/70 uppercase">Ajuda oferecida</dt>
-                    <dd className="mt-1">{result.helpOffer}</dd>
-                  </div>
+                  <Row label="Ajuda oferecida">
+                    <span className="font-normal">{result.helpOffer}</span>
+                  </Row>
                 )}
               </>
             )}
           </dl>
         </div>
+        <p className="flex items-center gap-2 px-1 text-[13px] text-muted-foreground">
+          <GitBranch className="size-3.5" aria-hidden />
+          Este caso alimenta o painel do produtor e o aprendizado do creator {order.creatorName}.
+        </p>
       </aside>
     </div>
   );
 }
 
-function OrderCard({ order }: { order: Order }) {
+function StageTitle({ n, title }: { n: number; title: string }) {
   return (
-    <div className="rounded-xl border bg-white p-3 shadow-sm">
-      <div className="flex gap-3">
-        <div className="bg-hero flex size-14 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold text-primary">
-          CURSO
-        </div>
-        <div className="min-w-0">
-          <p className="font-semibold">{order.productName}</p>
-          <p className="text-[12px] text-neutral-500">por {order.producer}</p>
-          <p className="mt-1 font-semibold">{brl(order.price)}</p>
-        </div>
-      </div>
-      <p className="mt-2 border-t pt-2 text-[11px] text-neutral-500">
-        Pedido #{order.number} · comprado em {order.purchasedAt} · via conteúdo de {order.creatorName}
-      </p>
+    <div className="flex flex-col gap-1">
+      <span className="text-[10px] font-semibold tracking-[1.2px] text-muted-foreground uppercase">Etapa {n} de 3</span>
+      <span className="font-heading text-[20px] font-semibold">{title}</span>
     </div>
   );
 }
 
-function RefundButton({ onClick, disabled, loading }: { onClick: () => void; disabled?: boolean; loading?: boolean }) {
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <Button id="btn-continuar-reembolso" type="button" className="h-10 w-full text-[13px] font-semibold" onClick={onClick} disabled={disabled}>
-      {loading && <Loader2 className="size-4 animate-spin" />}
-      Continuar com o reembolso
-    </Button>
+    <div className="flex flex-col gap-1.5 border-b border-line px-6 py-4 last:border-b-0 sm:flex-row sm:gap-5">
+      <dt className="w-[170px] shrink-0 text-[11px] leading-[19px] font-semibold tracking-[0.8px] text-muted-foreground uppercase">
+        {label}
+      </dt>
+      <dd className="min-w-0 flex-1 text-[14px] leading-[21px] font-semibold text-ink">{children}</dd>
+    </div>
+  );
+}
+
+function PrimaryButton({
+  children,
+  onClick,
+  disabled,
+  id,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  id?: string;
+}) {
+  return (
+    <button
+      id={id}
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-lime py-3.5 text-[14px] font-semibold text-navy-deep transition-colors hover:bg-lime/85 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {children}
+    </button>
+  );
+}
+
+function SecondaryButton({ children, onClick, id }: { children: React.ReactNode; onClick: () => void; id?: string }) {
+  return (
+    <button
+      id={id}
+      type="button"
+      onClick={onClick}
+      className="w-full rounded-[10px] border border-line bg-white py-3.5 text-[13px] font-semibold text-ink transition-colors hover:bg-paper"
+    >
+      {children}
+    </button>
   );
 }

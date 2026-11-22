@@ -15,7 +15,7 @@ export default function ReembolsoPage() {
     month: "short",
     year: "numeric",
     timeZone: "America/Sao_Paulo",
-  });
+  }).replace(/ de /g, " ");
 
   return (
     <>
