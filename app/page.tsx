@@ -81,7 +81,8 @@ export default function Home() {
               Um conceito para o ecossistema YouShop
             </span>
             <h1 className="text-[38px] leading-[1.08] tracking-[-1.2px] text-white sm:text-[54px]">
-              O que foi prometido na divulgação quase nunca é conferido com o que o comprador
+              O que foi <span className="text-lime">prometido</span> na divulgação quase nunca é{" "}
+              <span className="text-lime">conferido</span> com o que o comprador
               recebe.
             </h1>
             <p className="max-w-[520px] text-[17px] leading-[27px] text-white/70">
