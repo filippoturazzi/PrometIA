@@ -147,14 +147,13 @@ export function Tour() {
 
       const d = driver({
         steps,
-        showProgress: true,
-        progressText: "{{current}} de {{total}}",
-        nextBtnText: "Próximo",
-        prevBtnText: "Voltar",
-        doneBtnText: "Concluir",
+        showProgress: false,
+        nextBtnText: "Próximo →",
+        prevBtnText: "← Voltar",
+        doneBtnText: "Concluir ✓",
         closeBtnLabel: "Fechar o tour",
         popoverClass: "prometia-tour",
-        overlayColor: "#173359",
+        overlayColor: "#0B1628",
         overlayOpacity: 0.55,
         stagePadding: 6,
         stageRadius: 12,
@@ -167,14 +166,32 @@ export function Tour() {
         },
         onPrevClick: (_el, _step, { index }) => void goTo(Math.max(0, (index ?? 0) - 1)),
         onPopoverRender: (popover, { index }) => {
-          // botão "Pular tour" (não aparece no último passo)
-          if (index === STEPS.length - 1) return;
+          const i = index ?? 0;
+          const total = STEPS.length;
+
+          // barra de progresso no topo e "Passo X de N" acima do título
+          const bar = document.createElement("div");
+          bar.className = "prometia-tour-bar";
+          bar.style.setProperty("--progress", `${((i + 1) / total) * 100}%`);
+          popover.wrapper.prepend(bar);
+          const label = document.createElement("span");
+          label.className = "prometia-tour-step";
+          label.textContent = `Passo ${i + 1} de ${total}`;
+          popover.title.before(label);
+
+          if (i === 0) {
+            popover.previousButton.style.display = "none";
+            popover.nextButton.textContent = "Começar tour →";
+          }
+
+          // "Pular tour" à esquerda do rodapé (não aparece no último passo)
+          if (i === total - 1) return;
           const skip = document.createElement("button");
           skip.type = "button";
           skip.textContent = "Pular tour";
           skip.className = "prometia-tour-skip";
           skip.addEventListener("click", () => d.destroy());
-          popover.footerButtons.prepend(skip);
+          popover.footer.prepend(skip);
         },
         onDestroyed: () => {
           markDone();
