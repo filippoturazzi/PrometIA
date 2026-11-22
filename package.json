@@ -9,7 +9,8 @@
     "lint": "eslint",
     "seed": "tsx scripts/generate-seed.ts",
     "check-data": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/check-data.ts",
-    "try-ai": "tsx --env-file=.env.local --conditions=react-server --tsconfig tsconfig.json scripts/try-ai.ts"
+    "try-ai": "tsx --env-file=.env.local --conditions=react-server --tsconfig tsconfig.json scripts/try-ai.ts",
+    "eval-demo": "tsx --env-file=.env.local --conditions=react-server --tsconfig tsconfig.json scripts/eval-demo.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

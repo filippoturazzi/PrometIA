@@ -53,15 +53,23 @@ export async function generateJSON<T>(
     return JSON.parse(content) as T;
   };
 
-  try {
-    return await attempt();
-  } catch (err) {
-    // O modelo às vezes gera JSON fora do schema (400 json_validate_failed): a doc do Groq recomenda tentar de novo.
-    if (isSchemaValidationError(err)) return attempt();
-    throw err;
+  // O modelo às vezes gera JSON inválido ou fora do schema (400): a doc do Groq recomenda tentar de novo.
+  for (let retry = 0; ; retry++) {
+    try {
+      return await attempt();
+    } catch (err) {
+      if (retry < MAX_JSON_RETRIES && isJSONGenerationError(err)) continue;
+      throw err;
+    }
   }
 }
 
-function isSchemaValidationError(err: unknown) {
-  return err instanceof Groq.APIError && err.status === 400 && /json_validate_failed/.test(err.message);
+const MAX_JSON_RETRIES = 2;
+
+function isJSONGenerationError(err: unknown) {
+  return (
+    err instanceof Groq.APIError &&
+    err.status === 400 &&
+    /json_validate_failed|json_generate_failed|Failed to generate JSON|does not match the expected schema/i.test(err.message)
+  );
 }

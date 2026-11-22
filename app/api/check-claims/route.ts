@@ -1,10 +1,8 @@
+import { runCheckClaims } from "@/lib/ai";
 import { aiErrorResponse, errorResponse, readJSONBody, str } from "@/lib/api";
 import { withAICache } from "@/lib/cache";
 import { getProduct } from "@/lib/data";
 import { checkClaimsFallback } from "@/lib/fallbacks";
-import { generateJSON } from "@/lib/groq";
-import { checkClaimsPrompt } from "@/lib/prompts";
-import { checkClaimsSchema, cleanCheckClaims, type CheckClaimsRaw } from "@/lib/schemas";
 
 const MIN_CHARS = 20;
 const MAX_CHARS = 4000;
@@ -13,8 +11,8 @@ const MAX_CHARS = 4000;
 export async function POST(req: Request) {
   const body = await readJSONBody(req);
   if (!body) return errorResponse("Requisição inválida.", 400);
-  const productId = str(body?.productId);
-  const script = str(body?.script);
+  const productId = str(body.productId);
+  const script = str(body.script);
 
   const product = getProduct(productId);
   if (!product) return errorResponse("Produto não encontrado.", 404);
@@ -25,10 +23,7 @@ export async function POST(req: Request) {
     const res = await withAICache({
       route: "check-claims",
       input: { productId, script },
-      call: async () =>
-        cleanCheckClaims(
-          await generateJSON<CheckClaimsRaw>(checkClaimsPrompt(product, script), checkClaimsSchema, "check_claims"),
-        ),
+      call: () => runCheckClaims(product, script),
       fallback: () => checkClaimsFallback(productId, script),
     });
     return Response.json({ ...res.data, source: res.source });

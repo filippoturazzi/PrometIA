@@ -13,6 +13,7 @@ Classifique cada promessa:
 - "sustentada": a fonte oficial confirma.
 - "exagerada": tem base na fonte, mas aumenta resultado, prazo ou facilidade.
 - "proibida": garante ganho financeiro, promete resultado de saúde/emagrecimento, contradiz a fonte, ou viola regras de publicidade (CONAR) ou de alegações de saúde (ANVISA).
+Atenção: promessa de emagrecimento, perda de peso ou efeito no corpo (ex.: "seca X kg", "derrete gordura") é SEMPRE "proibida", mesmo que o produto auxilie em algo parecido. Valor de ganho com prazo (ex.: "fature R$X no primeiro mês") também é SEMPRE "proibida". Se a fonte nega explicitamente a afirmação (ex.: a página diz "não é..." ou "não garantimos..."), a promessa é "proibida", não "exagerada".
 
 Para cada promessa: copie o trecho literal do roteiro; cite o trecho da fonte que sustenta ou contradiz (string vazia se não houver); explique em 1 frase simples; se não for "sustentada", sugira uma reescrita persuasiva, no tom do creator, que seja verdadeira (string vazia se for "sustentada").
 Não invente informações que não estejam na fonte. Ignore frases que não são afirmações sobre o produto (ex.: "link na bio").
@@ -35,7 +36,7 @@ Classifique o texto do COMPRADOR em um tipo de frustração:
 expectativa_desalinhada | acesso_tecnico | qualidade_conteudo | entrega_logistica | arrependimento_pessoal.
 Defina a gravidade (baixa/media/alta) considerando risco de reclamação pública. Use "alta" quando a frustração vem de uma promessa de ganho financeiro garantido ou de resultado de saúde, ou quando o comprador se sente enganado.
 Se for expectativa_desalinhada, indique qual PROMESSA DO CONTEÚDO DE ORIGEM provavelmente gerou a expectativa (texto literal da lista, ou vazio).
-Indique se existe uma ajuda que pode resolver o problema sem reembolso (ex.: acesso travado), ou string vazia se não houver — nunca sugira dificultar o reembolso.
+Indique se existe uma ajuda que pode resolver o problema sem reembolso (ex.: acesso travado), ou string vazia se não houver — nunca sugira dificultar o reembolso. Para expectativa_desalinhada e arrependimento_pessoal, helpOffer é sempre string vazia: nesses casos o caminho é o reembolso.
 Escreva o resumo (summary) e a ajuda (helpOffer) em português do Brasil, em 1 frase cada.
 
 PRODUTO (página oficial): ${product.salesPageText}

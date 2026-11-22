@@ -1,15 +1,8 @@
-import { matchClaim } from "@/lib/claims-ui";
+import { runClassifyFeedback } from "@/lib/ai";
 import { aiErrorResponse, errorResponse, readJSONBody, str } from "@/lib/api";
 import { withAICache } from "@/lib/cache";
 import { getContent, getProduct } from "@/lib/data";
 import { classifyFeedbackFallback } from "@/lib/fallbacks";
-import { generateJSON } from "@/lib/groq";
-import { classifyFeedbackPrompt } from "@/lib/prompts";
-import {
-  classifyFeedbackSchema,
-  cleanClassifyFeedback,
-  type ClassifyFeedbackRaw,
-} from "@/lib/schemas";
 
 const MIN_CHARS = 10;
 const MAX_CHARS = 2000;
@@ -35,21 +28,7 @@ export async function POST(req: Request) {
     const res = await withAICache({
       route: "classify-feedback",
       input: { productId, contentId, text, reason },
-      call: async () => {
-        const result = cleanClassifyFeedback(
-          await generateJSON<ClassifyFeedbackRaw>(
-            classifyFeedbackPrompt(product, content.claims, text, reason),
-            classifyFeedbackSchema,
-            "classify_feedback",
-          ),
-        );
-        // só vale promessa real do conteúdo de origem, e só para expectativa desalinhada
-        const claim =
-          result.type === "expectativa_desalinhada" && result.relatedClaim
-            ? matchClaim(content.claims, result.relatedClaim)
-            : undefined;
-        return { ...result, relatedClaim: claim?.text };
-      },
+      call: () => runClassifyFeedback(product, content, text, reason),
       fallback: () => classifyFeedbackFallback(contentId, text),
     });
     return Response.json({ ...res.data, source: res.source });
