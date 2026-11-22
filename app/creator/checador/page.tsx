@@ -1,11 +1,28 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { PageHeader } from "@/components/PageHeader";
+import { getContents, getCreator, getProducts } from "@/lib/data";
+import { DEMO_CREATOR_ID, DEMO_PRODUCT_ID, DEMO_SCRIPT } from "@/lib/demo";
+import { Checador } from "./Checador";
 
-export default function Page() {
+export default function ChecadorPage() {
+  const creator = getCreator(DEMO_CREATOR_ID)!;
+  const products = getProducts().map((p) => ({ id: p.id, name: p.name, slug: p.slug }));
+  // próximo id livre: o conteúdo checado da demo vira ct_013
+  const nextContentId = `ct_${String(getContents().length + 1).padStart(3, "0")}`;
+
   return (
-    <ComingSoon
-      eyebrow="Creator"
-      title="Checador de promessas"
-      subtitle="Cole o roteiro antes de postar e veja quais promessas a página do produto sustenta."
-    />
+    <>
+      <PageHeader
+        eyebrow="Creator · Antes de postar"
+        title="Checador de promessas"
+        subtitle="Cole o roteiro antes de postar: a IA confere cada promessa com a página do produto e sugere uma versão verdadeira."
+      />
+      <Checador
+        creator={{ name: creator.name, handle: creator.handle }}
+        products={products}
+        defaultProductId={DEMO_PRODUCT_ID}
+        exampleScript={DEMO_SCRIPT}
+        nextContentId={nextContentId}
+      />
+    </>
   );
 }

@@ -1,1 +1,38 @@
-{}
+{
+  "1ebf0ba465602894": {
+    "route": "check-claims",
+    "input": {
+      "productId": "p_reels",
+      "script": "Gente, eu era CLT e hoje vivo de Reels. Com o curso Renda com Reels você vai faturar R$10 mil já no primeiro mês, sério. É só postar 1 vídeo por dia e o algoritmo faz o resto. São 6 módulos com aulas práticas de edição, do roteiro até a postagem. Link na bio, corre que é por tempo limitado!"
+    },
+    "output": {
+      "overallRisk": "alto",
+      "claims": [
+        {
+          "text": "Com o curso Renda com Reels você vai faturar R$10 mil já no primeiro mês, sério.",
+          "status": "proibida",
+          "evidence": "Não garantimos ganhos financeiros.",
+          "reason": "A fonte oficial não garante ganhos financeiros e proíbe alegações de renda específica.",
+          "rewrite": "Com dedicação, você pode começar a faturar de forma consistente, mas os resultados variam e não há garantia de R$10 mil no primeiro mês.",
+          "category": "ganho_financeiro"
+        },
+        {
+          "text": "É só postar 1 vídeo por dia e o algoritmo faz o resto.",
+          "status": "exagerada",
+          "evidence": "Resultados dependem da sua dedicação; a maioria dos alunos começa a ver crescimento de seguidores após 3 meses de prática constante.",
+          "reason": "A fonte indica que resultados dependem de dedicação e tempo, não garantidos apenas com 1 vídeo por dia.",
+          "rewrite": "Postar 1 vídeo por dia e manter consistência ajuda o algoritmo a reconhecer seu conteúdo, mas os resultados dependem de dedicação e podem levar tempo.",
+          "category": "garantia"
+        },
+        {
+          "text": "São 6 módulos com aulas práticas de edição, do roteiro até a postagem.",
+          "status": "sustentada",
+          "evidence": "Aprenda a editar Reels que prendem a atenção. 6 módulos práticos: roteiro, gravação com celular, edição no CapCut, legendas, ganchos e postagem.",
+          "reason": "A fonte oficial descreve exatamente 6 módulos práticos do roteiro à postagem.",
+          "category": "conteudo"
+        }
+      ]
+    },
+    "savedAt": "2026-11-22T16:07:54.925Z"
+  }
+}
