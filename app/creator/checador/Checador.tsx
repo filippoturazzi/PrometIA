@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { toastAIError, toastDemoMode } from "@/lib/ai-toast";
 import {
   BookOpen,
   Check,
@@ -103,13 +104,11 @@ export function Checador({ creator, products, defaultProductId, exampleScript, n
       });
       const data = await res.json();
       if (!res.ok) {
-        toast.error(data.error ?? "Não foi possível checar agora.");
+        toastAIError(data, "Não foi possível checar agora.");
         return;
       }
       setResult({ claims: data.claims, overallRisk: data.overallRisk, script, productId });
-      if (data.source === "fallback") {
-        toast("Modo demonstração", { description: "A IA demorou a responder; mostrando uma análise salva." });
-      }
+      toastDemoMode(data, "uma análise salva");
     } catch {
       toast.error("Sem conexão com o servidor. Tente de novo.");
     } finally {

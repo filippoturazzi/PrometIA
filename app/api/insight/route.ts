@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       call: () => (scope === "creator" ? runCreatorInsight(data) : runCaseInsight(data)),
       fallback: () => (scope === "creator" ? creatorInsightFallback(id) : caseInsightFallback(id)),
     });
-    return Response.json({ ...res.data, source: res.source });
+    return Response.json({ ...res.data, source: res.source, notice: res.notice });
   } catch (err) {
     return aiErrorResponse(err);
   }

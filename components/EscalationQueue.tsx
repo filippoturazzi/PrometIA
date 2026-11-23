@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { toastAIError, toastDemoMode } from "@/lib/ai-toast";
 import {
   ArrowRight,
   BellRing,
@@ -100,12 +101,10 @@ export function EscalationQueue({
       const data = await res.json();
       if (!res.ok) {
         setFailed(true);
-        toast.error(data.error ?? "Não foi possível resumir o caso agora.");
+        toastAIError(data, "Não foi possível resumir o caso agora.");
       } else {
         setInsight(data);
-        if (data.source === "fallback") {
-          toast("Modo demonstração", { description: "A IA demorou a responder; mostrando um resumo salvo." });
-        }
+        toastDemoMode(data, "um resumo salvo");
       }
     } catch {
       setFailed(true);

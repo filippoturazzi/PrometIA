@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toastDemoMode } from "@/lib/ai-toast";
 import { ArrowRight, Sparkles } from "lucide-react";
 import type { InsightResult } from "@/lib/schemas";
 
@@ -30,14 +30,15 @@ export function InsightCard({ creatorId }: { creatorId: string }) {
         const data = await res.json();
         if (cancelled) return;
         if (!res.ok) {
-          setState({ status: "error", message: data.error ?? "Os insights não ficaram disponíveis agora." });
+          setState({
+            status: "error",
+            message: data.error ? `${data.error}. ${data.detail ?? ""}`.trim() : "Os insights não ficaram disponíveis agora.",
+          });
           return;
         }
         loaded.set(creatorId, data);
         setState({ status: "ok", data });
-        if (data.source === "fallback") {
-          toast("Modo demonstração", { description: "A IA demorou a responder; mostrando insights calculados dos dados." });
-        }
+        toastDemoMode(data, "insights calculados dos dados");
       })
       .catch(() => !cancelled && setState({ status: "error", message: "Sem conexão com o servidor." }));
     return () => {

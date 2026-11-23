@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       call: () => runClassifyFeedback(product, content, text, reason),
       fallback: () => classifyFeedbackFallback(contentId, text),
     });
-    return Response.json({ ...res.data, source: res.source });
+    return Response.json({ ...res.data, source: res.source, notice: res.notice });
   } catch (err) {
     return aiErrorResponse(err);
   }

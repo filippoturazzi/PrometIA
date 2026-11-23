@@ -19,8 +19,8 @@ function getClient() {
 export const groqModel = () => process.env.GROQ_MODEL ?? "openai/gpt-oss-20b";
 
 /**
- * Modelo reserva: no plano gratuito o limite diário de tokens (TPD) é por modelo,
- * então quando o principal esgota a cota do dia a chamada tenta este. "" desliga.
+ * Modelo reserva: no plano gratuito os limites (por minuto e por dia) são por modelo,
+ * então quando o principal bate qualquer limite (429) a chamada tenta este. "" desliga.
  */
 export const groqFallbackModel = () => process.env.GROQ_FALLBACK_MODEL ?? "openai/gpt-oss-120b";
 
@@ -44,7 +44,7 @@ export async function generateJSON<T>(
   let model = groqModel();
   const attempt = async () => {
     const remaining = deadline - Date.now();
-    if (remaining <= 0) throw new Error(`Groq passou de ${timeoutMs} ms`);
+    if (remaining <= 0) throw new AITimeoutError(timeoutMs);
     const res = await getClient().chat.completions.create(
       {
         model,
@@ -67,8 +67,8 @@ export async function generateJSON<T>(
     } catch (err) {
       if (retry < MAX_JSON_RETRIES && isJSONGenerationError(err)) continue;
       const fallback = groqFallbackModel();
-      if (isDailyLimitError(err) && fallback && model !== fallback) {
-        console.warn(`[groq] cota diária de ${model} esgotada; usando ${fallback}`);
+      if (isRateLimitError(err) && fallback && model !== fallback) {
+        console.warn(`[groq] limite de ${model} atingido; usando ${fallback}`);
         model = fallback;
         continue;
       }
@@ -87,7 +87,20 @@ function isJSONGenerationError(err: unknown) {
   );
 }
 
+/** 429: limite de tokens/requisições por minuto ou por dia. */
+export function isRateLimitError(err: unknown) {
+  return err instanceof Groq.APIError && err.status === 429;
+}
+
 /** 429 por cota diária (tokens ou requisições por dia), que não volta em segundos. */
-function isDailyLimitError(err: unknown) {
-  return err instanceof Groq.APIError && err.status === 429 && /per day|\(TPD\)|\(RPD\)/i.test(err.message);
+export function isDailyLimitError(err: unknown) {
+  return isRateLimitError(err) && /per day|\(TPD\)|\(RPD\)/i.test((err as Error).message);
+}
+
+/** A chamada passou do teto de AI_TIMEOUT_MS. */
+export class AITimeoutError extends Error {
+  constructor(ms: number) {
+    super(`Groq passou de ${ms} ms`);
+    this.name = "AITimeoutError";
+  }
 }

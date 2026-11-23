@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       call: () => runCheckClaims(product, script),
       fallback: () => checkClaimsFallback(productId, script),
     });
-    return Response.json({ ...res.data, source: res.source });
+    return Response.json({ ...res.data, source: res.source, notice: res.notice });
   } catch (err) {
     return aiErrorResponse(err);
   }

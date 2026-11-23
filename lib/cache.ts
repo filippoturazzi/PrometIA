@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import savedCache from "@/data/ai-cache.json";
+import { describeAIError } from "@/lib/api";
 
 // Cache e plano B da demo (seção 9 do SPEC).
 // 1. chave existe em data/ai-cache.json (ou na memória) → devolve com delay de 600–900 ms;
@@ -15,6 +16,8 @@ export type AISource = "cache" | "live" | "fallback";
 export interface AIResponse<T> {
   data: T;
   source: AISource;
+  /** só no fallback: por que a IA ao vivo não respondeu (ex.: "Limite de uso da IA atingido") */
+  notice?: string;
 }
 
 interface CacheEntry {
@@ -97,7 +100,7 @@ export async function withAICache<T>({ route, input, call, fallback }: Options<T
   } catch (err) {
     console.error(`[ai] ${route} falhou:`, err instanceof Error ? err.message : err);
     const fb = fallback?.();
-    if (fb) return { data: fb, source: "fallback" };
+    if (fb) return { data: fb, source: "fallback", notice: describeAIError(err).title };
     throw err;
   }
 }
