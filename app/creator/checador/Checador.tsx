@@ -124,12 +124,12 @@ export function Checador({ creator, products, defaultProductId, exampleScript, n
   const canCheck = script.trim().length >= 20 && !loading;
 
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-[400px_minmax(0,1fr)]">
+    <div className="grid gap-8 lg:grid-cols-[400px_minmax(0,1fr)]">
       {/* Entrada */}
       <section
         id="checador-entrada"
         aria-label="Roteiro"
-        className={cn(panel, "flex flex-col gap-6 p-7 lg:sticky lg:top-40")}
+        className={cn(panel, "flex flex-col gap-6 p-7 lg:sticky lg:top-40 lg:self-start")}
       >
         <div className="flex items-center gap-3 border-b border-line pb-5">
           <span className="flex size-9 items-center justify-center rounded-full bg-navy text-[13px] font-semibold text-white">
@@ -251,9 +251,9 @@ export function Checador({ creator, products, defaultProductId, exampleScript, n
       </section>
 
       {/* Resultado */}
-      <section aria-label="Resultado" aria-live="polite" className="min-w-0">
+      <section aria-label="Resultado" aria-live="polite" className="flex min-w-0 flex-col">
         {!loading && !result && (
-          <div className={cn(panel, "flex min-h-[560px] flex-col items-center justify-center gap-7 p-12 text-center")}>
+          <div className={cn(panel, "flex min-h-[560px] flex-1 flex-col items-center justify-center gap-7 p-12 text-center")}>
             <span className="flex size-14 items-center justify-center rounded-full bg-paper">
               <ScanSearch className="size-6 text-navy" aria-hidden />
             </span>
