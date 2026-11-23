@@ -125,7 +125,8 @@ export function Reembolso({ order, exampleText }: { order: Order; exampleText: s
             Simulação
           </span>
         </p>
-        <PhoneFrame id="phone-frame">
+        {/* scroll-mt: header fixo (~155px) + rótulo acima do celular, usado pelo tour */}
+        <PhoneFrame id="phone-frame" className="scroll-mt-[196px]">
           <div id="phone-reembolso" className="flex min-h-full flex-1 flex-col text-[13px] text-ink">
             <div className="flex items-center gap-3 px-5 pt-3 pb-4">
               <ArrowLeft className="size-5" aria-hidden />

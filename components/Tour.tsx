@@ -65,6 +65,8 @@ const STEPS: TourStep[] = [
     route: "/comprador/reembolso",
     selector: "#phone-frame",
     side: "right",
+    // o celular é mais alto que a tela: mostra o começo dele, logo abaixo do header
+    scrollBlock: "start",
     title: "Depois, o comprador",
     description:
       "Simulação do pedido de reembolso: a IA entende o motivo e liga ao conteúdo que gerou a venda. O reembolso nunca é escondido.",
