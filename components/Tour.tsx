@@ -146,7 +146,13 @@ export function Tour() {
       }
       const el = step.selector ? await waitForVisible(step.selector) : null;
       // o driver só rola se o elemento estiver fora da tela; aqui forçamos a posição
-      if (el && step.scrollBlock) el.scrollIntoView({ block: step.scrollBlock, behavior: "instant" });
+      if (el && step.scrollBlock) {
+        el.scrollIntoView({ block: step.scrollBlock, behavior: "instant" });
+        // se o elemento não cabe inteiro, o driver recentraliza; bloqueia isso por um instante
+        const target = el as Element & { scrollIntoView: Element["scrollIntoView"] };
+        target.scrollIntoView = () => {};
+        setTimeout(() => delete (target as Partial<typeof target>).scrollIntoView, 1000);
+      }
       // um quadro para o layout assentar antes de medir
       requestAnimationFrame(() => d.moveTo(index));
     }
