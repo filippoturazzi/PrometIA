@@ -18,6 +18,11 @@ import { RevealWords } from "@/components/RevealWords";
 
 const STEPS = [
   {
+    icon: Store,
+    title: "Ao criar o produto",
+    text: "O produtor confere a própria página de vendas: a IA aponta promessas que o produto não sustenta antes de qualquer divulgação.",
+  },
+  {
     icon: ShieldCheck,
     title: "Antes de postar",
     text: "O creator passa o roteiro pelo checador: a IA extrai cada promessa, confere com a página do produto e sugere uma reescrita verdadeira.",
@@ -102,10 +107,10 @@ export default function Home() {
             </p>
             <div data-reveal="up" style={{ "--reveal-delay": "550ms" } as React.CSSProperties} className="flex flex-wrap items-center gap-6 pt-2">
               <Link
-                href="/creator/checador"
+                href="/produtor"
                 className="inline-flex items-center gap-2.5 rounded-lg bg-lime px-6 py-4 text-[15px] font-semibold text-navy-deep transition-colors hover:bg-lime/85"
               >
-                Começar pelo creator <ArrowRight className="size-4" />
+                Começar pelo produtor <ArrowRight className="size-4" />
               </Link>
               <a
                 href="#solucao"
@@ -159,7 +164,7 @@ export default function Home() {
                 id="solucao-titulo"
                 className="text-[32px] leading-[1.12] tracking-[-0.8px] sm:text-[40px]"
               >
-                Um ciclo em 3 passos que transforma promessa em{" "}
+                Um ciclo em 4 passos que transforma promessa em{" "}
                 <span className="reveal-mark">aprendizado</span>.
               </h2>
             </div>
@@ -168,7 +173,7 @@ export default function Home() {
               cria e para quem vende.
             </p>
           </div>
-          <ol id="solucao-passos" data-reveal="stagger" className="grid scroll-mb-8 gap-12 md:grid-cols-3">
+          <ol id="solucao-passos" data-reveal="stagger" className="grid scroll-mb-8 gap-12 md:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((step, i) => (
               <li key={step.title} className="group relative flex flex-col gap-5 border-t border-line pt-7">
                 {/* barra que preenche da esquerda para a direita no hover */}
