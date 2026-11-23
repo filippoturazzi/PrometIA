@@ -29,3 +29,7 @@ export const COMMISSION_RATE = 0.4;
 
 /** Limite de horas sem resposta para entrar na fila de escalonamento. */
 export const ESCALATION_HOURS = 48;
+
+/** Produto da demo do Checador do Produtor (página de vendas fictícia). */
+export const DEMO_PRODUCER_PRODUCT_ID = "p_slim";
+export const DEMO_SALES_PAGE_PATH = "/paginavendas";

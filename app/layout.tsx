@@ -3,6 +3,7 @@ import { Inter, Inter_Tight } from "next/font/google";
 import { Header } from "@/components/Header";
 import { DisclaimerFooter } from "@/components/DisclaimerFooter";
 import { Tour } from "@/components/Tour";
+import { HideOnStandalone } from "@/components/AppChrome";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ScrollReveal, revealBootScript } from "@/components/ScrollReveal";
 import { Toaster } from "@/components/ui/sonner";
@@ -37,12 +38,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: revealBootScript }} />
       </head>
       <body className="flex min-h-full flex-col">
-        <Header />
+        <HideOnStandalone>
+          <Header />
+        </HideOnStandalone>
         <main className="flex w-full flex-1 flex-col">{children}</main>
-        <DisclaimerFooter />
+        <HideOnStandalone>
+          <DisclaimerFooter />
+        </HideOnStandalone>
         <Toaster theme="light" position="top-right" />
         <ScrollToTop />
-        <Tour />
+        <HideOnStandalone>
+          <Tour />
+        </HideOnStandalone>
         <ScrollReveal />
       </body>
     </html>
