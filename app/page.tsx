@@ -149,7 +149,7 @@ export default function Home() {
       </section>
 
       <section id="solucao" aria-labelledby="solucao-titulo" className="scroll-mt-24 bg-white py-20 lg:py-28">
-        <div id="solucao-conteudo" className={cn(container, "flex flex-col gap-16")}>
+        <div className={cn(container, "flex flex-col gap-16")}>
           <div className="flex flex-wrap items-end justify-between gap-x-20 gap-y-6">
             <div data-reveal="blur" className="flex max-w-[640px] flex-col gap-4">
               <span className="text-[12px] font-semibold tracking-[1.6px] text-muted-foreground uppercase">
@@ -168,7 +168,7 @@ export default function Home() {
               cria e para quem vende.
             </p>
           </div>
-          <ol data-reveal="stagger" className="grid gap-12 md:grid-cols-3">
+          <ol id="solucao-passos" data-reveal="stagger" className="grid scroll-mb-8 gap-12 md:grid-cols-3">
             {STEPS.map((step, i) => (
               <li key={step.title} className="group relative flex flex-col gap-5 border-t border-line pt-7">
                 {/* barra que preenche da esquerda para a direita no hover */}

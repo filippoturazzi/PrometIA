@@ -17,6 +17,8 @@ interface TourStep {
   title: string;
   description: string;
   side?: "top" | "right" | "bottom" | "left";
+  /** onde o elemento deve ficar na tela antes de destacar (abre espaço para o balão) */
+  scrollBlock?: ScrollLogicalPosition;
 }
 
 const STEPS: TourStep[] = [
@@ -36,12 +38,13 @@ const STEPS: TourStep[] = [
   },
   {
     route: "/",
-    // só o conteúdo (sem o padding da seção) e o balão abaixo, para não cobrir os 3 passos
-    selector: "#solucao-conteudo",
-    side: "bottom",
+    // só os 3 passos, rolados para o fim da tela, com o balão no espaço livre acima
+    selector: "#solucao-passos",
+    side: "top",
+    scrollBlock: "end",
     title: "A solução",
     description:
-      "Checar a promessa antes de postar, ouvir o comprador depois da venda e transformar isso em aprendizado.",
+      "Um ciclo em 3 passos: checar a promessa antes de postar, ouvir o comprador depois da venda e transformar isso em aprendizado.",
   },
   {
     route: "/",
@@ -139,7 +142,9 @@ export function Tour() {
       if (window.location.pathname !== step.route) {
         router.push(step.route);
       }
-      if (step.selector) await waitForVisible(step.selector);
+      const el = step.selector ? await waitForVisible(step.selector) : null;
+      // o driver só rola se o elemento estiver fora da tela; aqui forçamos a posição
+      if (el && step.scrollBlock) el.scrollIntoView({ block: step.scrollBlock, behavior: "instant" });
       // um quadro para o layout assentar antes de medir
       requestAnimationFrame(() => d.moveTo(index));
     }
