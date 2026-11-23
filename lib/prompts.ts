@@ -1,4 +1,4 @@
-// Os 3 prompts da seção 8 do SPEC (texto fiel; só a interpolação é código).
+// Os 4 prompts da seção 8 do SPEC (texto fiel; só a interpolação é código).
 
 import type { Claim, Product } from "@/lib/types";
 
@@ -53,4 +53,34 @@ DADOS: ${JSON.stringify(data)}`;
 export function caseInsightPrompt(data: unknown) {
   return `Resuma este caso para a equipe de Operações em 2 frases e sugira 1 ação (ex.: acionar produtor, oferecer suporte de acesso, reembolsar proativamente, revisar conteúdo do creator). Não atribua culpa definitiva; indique a hipótese mais provável. A promessa que gerou a expectativa, quando existe, está no CONTEÚDO DO CREATOR (conteudoDeOrigem), não na página oficial do produto: não sugira mudar a página do produto. Considere as horas sem resposta do produtor. Responda em português do Brasil: o resumo vai em items (um item com título curto) e a ação em suggestedAction (1 frase, começando por um verbo).
 CASO: ${JSON.stringify(data)}`;
+}
+
+// IA 4 — página de vendas do produtor (Checador do Produtor).
+export function checkPagePrompt(product: Product, pageText: string) {
+  const outline = product.contentOutline?.length
+    ? product.contentOutline.join("\n")
+    : "não disponível";
+  return `Você é um revisor de conformidade de páginas de vendas no Brasil e ajuda o PRODUTOR a evitar reembolsos.
+Extraia da PÁGINA DE VENDAS todas as promessas ou afirmações sobre o produto e verifique cada uma contra a FICHA DO PRODUTO e as regras de publicidade (CONAR) e de alegações de saúde (ANVISA).
+
+Classifique cada promessa:
+- "sustentada": a ficha confirma e não viola regras.
+- "exagerada": tem base na ficha, mas aumenta resultado, prazo ou facilidade.
+- "proibida": garante ganho financeiro, promete resultado de saúde/emagrecimento, contradiz a ficha, ou viola CONAR/ANVISA.
+Atenção: promessa de emagrecimento, perda de peso ou efeito no corpo (ex.: "seca X kg", "queima gordura") é SEMPRE "proibida", mesmo que o produto auxilie em algo parecido. Valor de ganho com prazo (ex.: "fature R$X no primeiro mês") também é SEMPRE "proibida". Aval de autoridade sem fonte (ex.: "aprovado por médicos") e garantia de resultado são "proibida". Se a ficha nega explicitamente a afirmação (ex.: "não substitui...", "não é..."), a promessa é "proibida", não "exagerada".
+Depoimentos de clientes também são promessas: se o depoimento promete resultado proibido, classifique como tal.
+
+Para cada promessa: copie o trecho literal da página; cite o trecho da ficha que sustenta ou contradiz (string vazia se não houver); explique em 1 frase simples; estime o risco de reembolso (baixo/medio/alto) pensando em um comprador que acredita na frase; se não for "sustentada", sugira uma reescrita persuasiva e verdadeira, no tom de página de vendas, usando SÓ o que a ficha diz (composição, foco e disposição para treinos) (string vazia se for "sustentada"). A reescrita NUNCA fala de peso, medidas, gordura, calorias, metabolismo ou emagrecimento, nem com "pode ajudar" ou "quando aliado a": isso continua sendo promessa de resultado de saúde. Ex.: "Seque 5 kg" → "Mais disposição para você aproveitar cada treino". Toda promessa "exagerada" ou "proibida" TEM reescrita (nunca vazia): troque o resultado prometido pelo benefício que a ficha sustenta.
+Não invente informações que não estejam na ficha. Ignore textos que não são afirmações sobre o produto (menus, preço, botões, rodapé, avisos legais).
+Liste TODAS as afirmações sobre o produto, inclusive as sustentadas (ex.: composição, para que serve) — elas também precisam aparecer, com status "sustentada".
+Em summary, escreva 1 frase para o produtor dizendo o principal risco de reembolso da página.
+Escreva motivo, reescrita e summary em português do Brasil.
+
+FICHA DO PRODUTO:
+${product.salesPageText}
+CONTEÚDO REAL:
+${outline}
+
+PÁGINA DE VENDAS:
+${pageText}`;
 }

@@ -68,6 +68,10 @@ test("extractVisibleText decodifica entidades e acentos", () => {
   );
 });
 
+test("extractVisibleText não cria espaço onde o React põe comentários", () => {
+  assert.equal(extractVisibleText("<blockquote>“<!-- -->Perdi 9 kg<!-- -->”</blockquote>"), "“Perdi 9 kg”");
+});
+
 test("extractVisibleText separa blocos em linhas", () => {
   assert.equal(extractVisibleText("<h1>Um</h1><p>Dois</p><li>Três</li>"), "Um\nDois\nTrês");
 });

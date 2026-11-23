@@ -249,5 +249,124 @@
       "summary": "O comprador se sentiu enganado por uma promessa de bateria de 3 dias que durou apenas 1 dia"
     },
     "savedAt": "2026-11-23T01:08:44.986Z"
+  },
+  "93fcd315d17d2552": {
+    "route": "check-page",
+    "input": {
+      "productId": "p_slim",
+      "text": "NutriMax apresenta · TermoSlim\nSeque 10 kg em 15 dias sem dieta e sem passar fome\nO termogênico que queima gordura enquanto você dorme. Aprovado por médicos e escolhido por mais de 50 mil brasileiras.\nPor que o TermoSlim funciona\nFórmula com cafeína e chá verde\nAuxilia no foco e na disposição para os treinos\nEnergia o dia inteiro, do café da manhã até a noite\nAcelera o metabolismo em até 3x\nSubstitui a academia: emagreça sem sair do sofá\nQuem tomou, aprovou\n“Perdi 9 kg em duas semanas sem mudar nada na alimentação!”\nJuliana M.\n“Tomo 2 cápsulas por dia e a barriga sumiu. Nunca mais fui à academia.”\nPatrícia R.\n“Mais disposição logo na primeira semana, sinto muito mais foco no treino.”\nCarla S.\nDe R$ 297 por apenas\nR$ 149\nQuero secar agora\nResultado garantido ou devolvemos o dobro do seu dinheiro."
+    },
+    "output": {
+      "overallRisk": "alto",
+      "summary": "O principal risco de reembolso está nas promessas de perda de peso e garantias de resultados, que são proibidas e geram alto risco de devoluções.",
+      "claims": [
+        {
+          "text": "Seque 10 kg em 15 dias sem dieta e sem passar fome",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Promessa de emagrecimento é proibida por CONAR/ANVISA",
+          "rewrite": "Mais disposição para você aproveitar cada treino",
+          "category": "resultado_saude",
+          "refundRisk": "alto"
+        },
+        {
+          "text": "O termogênico que queima gordura enquanto você dorme",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Promessa de queima de gordura é proibida",
+          "rewrite": "Ajuda a manter energia e foco nos treinos, mesmo nos períodos de descanso",
+          "category": "resultado_saude",
+          "refundRisk": "alto"
+        },
+        {
+          "text": "Aprovado por médicos e escolhido por mais de 50 mil brasileiras",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Afirmativa de aprovação médica sem comprovação é proibida",
+          "rewrite": "Formulado com cafeína e chá verde, reconhecido por quem busca mais foco nos treinos",
+          "category": "outro",
+          "refundRisk": "medio"
+        },
+        {
+          "text": "Fórmula com cafeína e chá verde",
+          "status": "sustentada",
+          "evidence": "Fórmula com cafeína e chá verde",
+          "reason": "Informação presente na ficha do produto",
+          "category": "conteudo",
+          "refundRisk": "baixo"
+        },
+        {
+          "text": "Auxilia no foco e na disposição para os treinos",
+          "status": "sustentada",
+          "evidence": "Auxilia no foco e na disposição para treinos",
+          "reason": "Benefício confirmado pela ficha",
+          "category": "conteudo",
+          "refundRisk": "baixo"
+        },
+        {
+          "text": "Energia o dia inteiro, do café da manhã até a noite",
+          "status": "exagerada",
+          "evidence": "",
+          "reason": "Afirmação de energia contínua não comprovada na ficha",
+          "rewrite": "Contribui para mais foco e disposição ao longo do dia, especialmente nos momentos de treino",
+          "category": "outro",
+          "refundRisk": "medio"
+        },
+        {
+          "text": "Acelera o metabolismo em até 3x",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Promessa de aceleração de metabolismo não comprovada e proibida",
+          "rewrite": "Pode apoiar seu ritmo de energia durante os treinos",
+          "category": "resultado_saude",
+          "refundRisk": "alto"
+        },
+        {
+          "text": "Substitui a academia: emagreça sem sair do sofá",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Afirmativa de substituir academia e garantir emagrecimento é proibida",
+          "rewrite": "Complementa sua rotina de exercícios, ajudando a manter foco e disposição",
+          "category": "resultado_saude",
+          "refundRisk": "alto"
+        },
+        {
+          "text": "“Perdi 9 kg em duas semanas sem mudar nada na alimentação!”",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Depoimento promete perda de peso, o que é proibido",
+          "rewrite": "Senti mais energia e foco nos treinos desde a primeira semana",
+          "category": "resultado_saude",
+          "refundRisk": "alto"
+        },
+        {
+          "text": "“Tomo 2 cápsulas por dia e a barriga sumiu. Nunca mais fui à academia.”",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Depoimento garante emagrecimento e substituição da academia, proibido",
+          "rewrite": "Notei mais disposição para treinar e foco nas atividades diárias",
+          "category": "resultado_saude",
+          "refundRisk": "alto"
+        },
+        {
+          "text": "“Mais disposição logo na primeira semana, sinto muito mais foco no treino.”",
+          "status": "sustentada",
+          "evidence": "Auxilia no foco e na disposição para treinos",
+          "reason": "Depoimento reflete benefício real da ficha",
+          "category": "conteudo",
+          "refundRisk": "baixo"
+        },
+        {
+          "text": "Resultado garantido ou devolvemos o dobro do seu dinheiro",
+          "status": "proibida",
+          "evidence": "",
+          "reason": "Garantia de resultado e devolução em dobro violam as normas",
+          "rewrite": "Se não notar melhora na disposição e foco, entre em contato para avaliarmos a situação",
+          "category": "garantia",
+          "refundRisk": "alto"
+        }
+      ]
+    },
+    "savedAt": "2026-11-23T20:09:28.672Z"
   }
 }

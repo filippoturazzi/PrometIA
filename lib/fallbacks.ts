@@ -10,8 +10,15 @@ import {
   hoursWithoutResponse,
   worstClaimStatus,
 } from "@/lib/data";
-import { DEMO_PRODUCT_ID, DEMO_REFUND_TEXT, DEMO_SCRIPT } from "@/lib/demo";
-import type { CheckClaimsResult, ClassifyFeedbackResult, InsightResult, OverallRisk } from "@/lib/schemas";
+import { DEMO_PRODUCER_PRODUCT_ID, DEMO_PRODUCT_ID, DEMO_REFUND_TEXT, DEMO_SCRIPT } from "@/lib/demo";
+import { DEMO_PAGE_SIGNATURE } from "@/lib/demo-page";
+import type {
+  CheckClaimsResult,
+  CheckPageResult,
+  ClassifyFeedbackResult,
+  InsightResult,
+  OverallRisk,
+} from "@/lib/schemas";
 import type { Claim, FrustrationType } from "@/lib/types";
 
 const same = (a: string, b: string) =>
@@ -61,6 +68,101 @@ export function checkClaimsFallback(productId: string, script: string): CheckCla
   const seeded = getContents({ productId }).find((c) => same(c.script, script));
   if (seeded) return { claims: seeded.claims, overallRisk: riskOf(seeded.claims) };
   return null;
+}
+
+const SLIM_NOT_MEDICINE = "Não substitui orientação médica. Este produto não é medicamento.";
+const SLIM_DIET = "Deve ser associado a alimentação equilibrada e exercícios.";
+
+/** Resultado esperado da página de vendas fictícia (/paginavendas) do TermoSlim. */
+export const DEMO_CHECK_PAGE: CheckPageResult = {
+  overallRisk: "alto",
+  summary:
+    "A página promete perda de peso rápida e sem esforço, o que a ficha não sustenta: quem compra por isso pede reembolso quando o resultado não vem.",
+  claims: [
+    {
+      text: "Seque 10 kg em 15 dias sem dieta e sem passar fome",
+      status: "proibida",
+      category: "resultado_saude",
+      refundRisk: "alto",
+      evidence: SLIM_DIET,
+      reason: "Promete perda de peso com número e prazo, e a ficha diz que o produto depende de alimentação e exercícios.",
+      rewrite: "Mais disposição para treinar: o TermoSlim é um aliado da sua rotina de alimentação equilibrada e exercícios.",
+    },
+    {
+      text: "O termogênico que queima gordura enquanto você dorme",
+      status: "proibida",
+      category: "resultado_saude",
+      refundRisk: "alto",
+      evidence: "",
+      reason: "Alega um efeito no corpo que a ficha não menciona e que a ANVISA não permite para suplemento.",
+      rewrite: "Termogênico com cafeína e chá verde para dar mais energia e foco nos seus treinos.",
+    },
+    {
+      text: "Aprovado por médicos",
+      status: "proibida",
+      category: "outro",
+      refundRisk: "alto",
+      evidence: SLIM_NOT_MEDICINE,
+      reason: "Usa aval médico sem fonte, e a ficha diz que o produto não é medicamento nem substitui orientação médica.",
+      rewrite: "Converse com um profissional de saúde antes de começar qualquer suplemento.",
+    },
+    {
+      text: "Substitui a academia: emagreça sem sair do sofá",
+      status: "proibida",
+      category: "resultado_saude",
+      refundRisk: "alto",
+      evidence: SLIM_DIET,
+      reason: "Contradiz a ficha, que diz que o produto deve ser associado a exercícios.",
+      rewrite: "Feito para quem treina: mais disposição para aproveitar cada treino.",
+    },
+    {
+      text: "Resultado garantido ou devolvemos o dobro do seu dinheiro.",
+      status: "proibida",
+      category: "garantia",
+      refundRisk: "alto",
+      evidence: "",
+      reason: "Garante resultado de saúde, o que não pode ser prometido, e cria uma garantia que a ficha não prevê.",
+      rewrite: "Você tem 7 dias para se arrepender da compra, como garante o Código de Defesa do Consumidor.",
+    },
+    {
+      text: "Energia o dia inteiro, do café da manhã até a noite",
+      status: "exagerada",
+      category: "outro",
+      refundRisk: "medio",
+      evidence: "Auxilia no foco e na disposição para treinos.",
+      reason: "A ficha fala em disposição para treinos, não em energia o dia inteiro.",
+      rewrite: "Mais disposição na hora do treino.",
+    },
+    {
+      text: "Acelera o metabolismo em até 3x",
+      status: "exagerada",
+      category: "resultado_saude",
+      refundRisk: "medio",
+      evidence: "Suplemento termogênico com cafeína e chá verde.",
+      reason: "A ficha diz que é termogênico, mas não sustenta um número de aceleração do metabolismo.",
+      rewrite: "Fórmula termogênica com cafeína e chá verde.",
+    },
+    {
+      text: "Fórmula com cafeína e chá verde",
+      status: "sustentada",
+      category: "conteudo",
+      refundRisk: "baixo",
+      evidence: "Suplemento termogênico com cafeína e chá verde.",
+      reason: "Bate com a composição descrita na ficha.",
+    },
+    {
+      text: "Auxilia no foco e na disposição para os treinos",
+      status: "sustentada",
+      category: "outro",
+      refundRisk: "baixo",
+      evidence: "Auxilia no foco e na disposição para treinos.",
+      reason: "É o que a ficha diz que o produto faz.",
+    },
+  ],
+};
+
+export function checkPageFallback(productId: string, pageText: string): CheckPageResult | null {
+  return productId === DEMO_PRODUCER_PRODUCT_ID && pageText.includes(DEMO_PAGE_SIGNATURE) ? DEMO_CHECK_PAGE : null;
 }
 
 export function classifyFeedbackFallback(

@@ -19,6 +19,12 @@ function getClient() {
 export const groqModel = () => process.env.GROQ_MODEL ?? "openai/gpt-oss-20b";
 
 /**
+ * Modelo da IA 4 (página de vendas): o schema é maior e o gpt-oss-20b gerou JSON inválido
+ * em todas as tentativas nos testes; o 120b respondeu em 9 a 12 s.
+ */
+export const groqPageModel = () => process.env.GROQ_PAGE_MODEL ?? "openai/gpt-oss-120b";
+
+/**
  * Modelo reserva: no plano gratuito os limites (por minuto e por dia) são por modelo,
  * então quando o principal bate qualquer limite (429) a chamada tenta este. "" desliga.
  */
@@ -32,16 +38,17 @@ function reasoningEffort(): ReasoningEffort {
 
 /**
  * Chama o Groq com Structured Outputs estritos e devolve o JSON já parseado.
- * `name`: identificador do schema (a-z, 0-9, _ ou -).
+ * `name`: identificador do schema (a-z, 0-9, _ ou -). `startModel`: modelo da primeira tentativa.
  */
 export async function generateJSON<T>(
   prompt: string,
   schema: Record<string, unknown>,
   name: string,
   timeoutMs = AI_TIMEOUT_MS,
+  startModel = groqModel(),
 ): Promise<T> {
   const deadline = Date.now() + timeoutMs;
-  let model = groqModel();
+  let model = startModel;
   const attempt = async () => {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw new AITimeoutError(timeoutMs);

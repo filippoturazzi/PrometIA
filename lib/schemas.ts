@@ -1,4 +1,4 @@
-// Os 3 response schemas da seção 8, no formato do modo strict do Groq:
+// Os 4 response schemas da seção 8, no formato do modo strict do Groq:
 // todos os campos em `required` e `additionalProperties: false` em todo objeto.
 // Campos "opcionais" vêm como "" e são convertidos em undefined por `clean*` antes de ir para a tela.
 
@@ -77,6 +77,50 @@ export interface CheckClaimsResult {
     category: ClaimCategory;
   }[];
   overallRisk: OverallRisk;
+}
+
+// ---------------------------------------------------------------------------
+// IA 4 — check-page (página de vendas do produtor)
+// ---------------------------------------------------------------------------
+const RISK: OverallRisk[] = ["baixo", "medio", "alto"];
+
+export const checkPageSchema = {
+  type: "object",
+  properties: {
+    claims: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          text: { type: "string" },
+          status: { type: "string", enum: CLAIM_STATUS },
+          category: { type: "string", enum: CLAIM_CATEGORY },
+          refundRisk: { type: "string", enum: RISK },
+          evidence: { type: "string" },
+          reason: { type: "string" },
+          rewrite: { type: "string" }, // "" se sustentada
+        },
+        required: ["text", "status", "category", "refundRisk", "evidence", "reason", "rewrite"],
+        additionalProperties: false,
+      },
+    },
+    overallRisk: { type: "string", enum: RISK },
+    summary: { type: "string" },
+  },
+  required: ["claims", "overallRisk", "summary"],
+  additionalProperties: false,
+};
+
+export interface CheckPageRaw {
+  claims: (CheckClaimsRaw["claims"][number] & { refundRisk: OverallRisk })[];
+  overallRisk: OverallRisk;
+  summary: string;
+}
+
+export interface CheckPageResult {
+  claims: (CheckClaimsResult["claims"][number] & { refundRisk: OverallRisk })[];
+  overallRisk: OverallRisk;
+  summary: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -161,6 +205,15 @@ export function cleanCheckClaims(raw: CheckClaimsRaw): CheckClaimsResult {
       rewrite: c.status === "sustentada" ? undefined : opt(c.rewrite),
       category: c.category,
     })),
+  };
+}
+
+export function cleanCheckPage(raw: CheckPageRaw): CheckPageResult {
+  const base = cleanCheckClaims(raw);
+  return {
+    overallRisk: raw.overallRisk,
+    summary: raw.summary.trim(),
+    claims: base.claims.map((c, i) => ({ ...c, refundRisk: raw.claims[i].refundRisk })),
   };
 }
 

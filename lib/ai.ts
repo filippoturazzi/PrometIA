@@ -4,10 +4,14 @@ import "server-only";
 // Usadas pelos Route Handlers e pelo scripts/eval-demo.ts (o teste roda o mesmo código da tela).
 
 import { matchClaim } from "@/lib/claims-ui";
-import { generateJSON } from "@/lib/groq";
-import { caseInsightPrompt, checkClaimsPrompt, classifyFeedbackPrompt, creatorInsightPrompt } from "@/lib/prompts";
+import { generateJSON, groqPageModel } from "@/lib/groq";
+import { caseInsightPrompt, checkClaimsPrompt, checkPagePrompt, classifyFeedbackPrompt, creatorInsightPrompt } from "@/lib/prompts";
 import {
   checkClaimsSchema,
+  checkPageSchema,
+  cleanCheckPage,
+  type CheckPageRaw,
+  type CheckPageResult,
   classifyFeedbackSchema,
   cleanCheckClaims,
   cleanClassifyFeedback,
@@ -25,6 +29,18 @@ import type { Content, Product } from "@/lib/types";
 export async function runCheckClaims(product: Product, script: string): Promise<CheckClaimsResult> {
   return cleanCheckClaims(
     await generateJSON<CheckClaimsRaw>(checkClaimsPrompt(product, script), checkClaimsSchema, "check_claims"),
+  );
+}
+
+export async function runCheckPage(product: Product, pageText: string): Promise<CheckPageResult> {
+  return cleanCheckPage(
+    await generateJSON<CheckPageRaw>(
+      checkPagePrompt(product, pageText),
+      checkPageSchema,
+      "check_page",
+      undefined,
+      groqPageModel(),
+    ),
   );
 }
 

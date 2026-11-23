@@ -167,7 +167,8 @@ const BLOCK_TAGS =
 
 export function extractVisibleText(html: string): string {
   let s = html
-    .replace(/<!--[\s\S]*?-->/g, " ")
+    // sem espaço: o React separa textos vizinhos com <!-- -->
+    .replace(/<!--[\s\S]*?-->/g, "")
     .replace(/<(head|script|style|noscript|svg|template|iframe)\b[\s\S]*?<\/\1\s*>/gi, " ");
   s = removeIgnored(s);
   s = s
