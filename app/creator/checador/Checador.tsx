@@ -16,6 +16,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   Sparkles,
+  Upload,
   Video,
 } from "lucide-react";
 import { ClaimCard, type ClaimCardData } from "@/components/ClaimCard";
@@ -195,14 +196,42 @@ export function Checador({ creator, products, defaultProductId, exampleScript, n
             placeholder="Cole aqui o texto do seu vídeo, story ou legenda…"
             className="h-60 resize-none rounded-lg border-line bg-white p-3.5 text-[14px] leading-[22px] text-ink placeholder:text-[#94A0B2]"
           />
-          <div className="flex items-start justify-between gap-2 text-[12px] text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Video className="size-3.5" aria-hidden /> Envio de vídeo com transcrição em breve
-            </span>
-            <span>
-              {script.length} / {MAX_CHARS}
-            </span>
+          <div className="text-right text-[12px] text-muted-foreground">
+            {script.length} / {MAX_CHARS}
           </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+            <span className="h-px flex-1 bg-line" aria-hidden />
+            ou
+            <span className="h-px flex-1 bg-line" aria-hidden />
+          </div>
+          <button
+            id="btn-anexar-video"
+            type="button"
+            aria-disabled="true"
+            onClick={() =>
+              toast("Transcrição de vídeo em breve", {
+                description: "Por enquanto, cole o texto do roteiro no campo acima.",
+                icon: <Video className="size-4 text-navy" />,
+              })
+            }
+            className="flex cursor-not-allowed items-center gap-3 rounded-lg border border-dashed border-[#C9D1DD] bg-paper px-3.5 py-3 text-left"
+          >
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-navy/60">
+              <Upload className="size-4" aria-hidden />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="text-[14px] font-semibold text-ink/60">Anexar vídeo</span>
+              <span className="text-[12px] leading-[17px] text-muted-foreground">
+                A IA transcreve a fala e checa as promessas · MP4 ou MOV
+              </span>
+            </span>
+            <span className="shrink-0 rounded-full bg-navy px-2.5 py-1 text-[11px] font-semibold text-white">
+              Em breve
+            </span>
+          </button>
         </div>
 
         <button
