@@ -4,6 +4,7 @@ import { withAICache } from "@/lib/cache";
 import { getProduct } from "@/lib/data";
 import { checkPageFallback, pageOcrFallback } from "@/lib/fallbacks";
 import { validateImages } from "@/lib/page-images";
+import { imagesCacheInput } from "@/lib/page-ocr-cache";
 import {
   MAX_TEXT_CHARS,
   MIN_TEXT_CHARS,
@@ -50,7 +51,7 @@ export async function POST(req: Request) {
     try {
       const ocr = await withAICache({
         route: "page-ocr",
-        input: { images: v.images },
+        input: imagesCacheInput(v.images),
         call: () => runPageOcr(v.images),
         fallback: () => pageOcrFallback(v.images),
       });

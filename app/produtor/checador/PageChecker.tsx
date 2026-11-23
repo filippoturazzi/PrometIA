@@ -309,19 +309,13 @@ export function PageChecker({ products, defaultProductId, examplePath, examplePr
             </p>
           )}
 
+          {/* área de soltar (não é botão): os controles dentro dela são botões de verdade */}
           <div
             ref={dropZone}
-            role="button"
-            tabIndex={0}
+            role="group"
+            tabIndex={-1}
             aria-labelledby="prints-label"
             aria-describedby="prints-dica"
-            onClick={() => prints.length < MAX_IMAGES && fileInput.current?.click()}
-            onKeyDown={(e) => {
-              if ((e.key === "Enter" || e.key === " ") && prints.length < MAX_IMAGES) {
-                e.preventDefault();
-                fileInput.current?.click();
-              }
-            }}
             onDragOver={(e) => {
               e.preventDefault();
               setDragging(true);
@@ -333,13 +327,18 @@ export function PageChecker({ products, defaultProductId, examplePath, examplePr
               if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
             }}
             className={cn(
-              "flex cursor-pointer flex-col gap-3 rounded-lg border border-dashed border-[#C9D1DD] bg-paper px-3.5 py-3 outline-none focus-visible:ring-2 focus-visible:ring-navy/20",
+              "flex flex-col gap-3 rounded-lg border border-dashed border-[#C9D1DD] bg-paper px-3.5 py-3 outline-none",
               dragging && "border-navy bg-[#EEF2F8]",
               unreadable && "border-status-warn",
             )}
           >
             {prints.length === 0 ? (
-              <span className="flex items-center gap-3">
+              <button
+                id="btn-enviar-prints"
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                className="flex items-center gap-3 rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-navy/20"
+              >
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-navy">
                   {preparing ? (
                     <LoaderCircle className="size-4 animate-spin" aria-hidden />
@@ -353,7 +352,7 @@ export function PageChecker({ products, defaultProductId, examplePath, examplePr
                     Clique ou arraste · PNG, JPG ou WEBP
                   </span>
                 </span>
-              </span>
+              </button>
             ) : (
               <ul className="grid grid-cols-3 gap-2" aria-label="Prints enviados">
                 {prints.map((src, i) => (
@@ -363,8 +362,7 @@ export function PageChecker({ products, defaultProductId, examplePath, examplePr
                     <button
                       type="button"
                       aria-label={`Remover print ${i + 1}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         setPrints((cur) => cur.filter((_, j) => j !== i));
                         setResult(null);
                       }}
@@ -375,12 +373,20 @@ export function PageChecker({ products, defaultProductId, examplePath, examplePr
                   </li>
                 ))}
                 {prints.length < MAX_IMAGES && (
-                  <li className="flex aspect-[3/4] items-center justify-center rounded-md border border-dashed border-[#C9D1DD] bg-white text-navy">
-                    {preparing ? (
-                      <LoaderCircle className="size-4 animate-spin" aria-hidden />
-                    ) : (
-                      <ImagePlus className="size-5" aria-label="Adicionar print" />
-                    )}
+                  <li className="aspect-[3/4]">
+                    <button
+                      type="button"
+                      aria-label="Adicionar print"
+                      disabled={preparing}
+                      onClick={() => fileInput.current?.click()}
+                      className="flex size-full items-center justify-center rounded-md border border-dashed border-[#C9D1DD] bg-white text-navy outline-none hover:bg-[#EEF2F8] focus-visible:ring-2 focus-visible:ring-navy/20"
+                    >
+                      {preparing ? (
+                        <LoaderCircle className="size-4 animate-spin" aria-hidden />
+                      ) : (
+                        <ImagePlus className="size-5" aria-hidden />
+                      )}
+                    </button>
                   </li>
                 )}
               </ul>

@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { MAX_IMAGE_B64, ocrTextOrNull, validateImages } from "../lib/page-images";
+import { imagesCacheInput } from "../lib/page-ocr-cache";
 
 const png = "data:image/png;base64,iVBORw0KGgo=";
 
@@ -48,4 +51,17 @@ test("texto de OCR curto demais vira null", () => {
 
 test("texto de OCR é normalizado", () => {
   assert.equal(ocrTextOrNull("  A   b \n\n" + "x".repeat(90)), "A b\n" + "x".repeat(90));
+});
+
+test("imagesCacheInput guarda só um hash curto, sensível a maiúsculas do base64", () => {
+  const a = imagesCacheInput(["data:image/png;base64,QUJD"]);
+  const b = imagesCacheInput(["data:image/png;base64,qujd"]);
+  assert.match(a.images, /^[0-9a-f]{64}$/);
+  assert.notEqual(a.images, b.images);
+  assert.deepEqual(imagesCacheInput(["data:image/png;base64,QUJD"]), a);
+});
+
+test("o cache commitado não guarda imagens", () => {
+  const raw = readFileSync(join("data", "ai-cache.json"), "utf8");
+  assert.ok(!raw.includes("data:image"), "data/ai-cache.json contém data URLs de imagem");
 });
