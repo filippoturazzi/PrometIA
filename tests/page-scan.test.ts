@@ -44,6 +44,11 @@ test("parsePageUrl bloqueia endereços internos", () => {
     assert.throws(() => parsePageUrl(u, "app.test"), { code: "blocked" }, u);
 });
 
+test("parsePageUrl bloqueia host interno com ponto no final", () => {
+  for (const u of ["http://localhost./", "http://app.localhost./", "http://127.0.0.1./"])
+    assert.throws(() => parsePageUrl(u, "app.test"), { code: "blocked" }, u);
+});
+
 test("parsePageUrl libera o próprio host do app, mesmo local", () => {
   assert.equal(parsePageUrl("http://localhost:3000/paginavendas", "localhost:3000").pathname, "/paginavendas");
 });
@@ -74,6 +79,36 @@ test("extractVisibleText não cria espaço onde o React põe comentários", () =
 
 test("extractVisibleText separa blocos em linhas", () => {
   assert.equal(extractVisibleText("<h1>Um</h1><p>Dois</p><li>Três</li>"), "Um\nDois\nTrês");
+});
+
+test("extractVisibleText roda em tempo linear com tags sem fechar (sem travar o servidor)", () => {
+  for (const html of [
+    "<script ".repeat(40000),
+    "<a ".repeat(40000),
+    "<!--".repeat(40000),
+    "<div data-prometia-ignore".repeat(20000),
+    "<a ".repeat(40000) + ">",
+    "<style>".repeat(40000),
+  ]) {
+    const t = Date.now();
+    extractVisibleText(html);
+    assert.ok(Date.now() - t < 500, `${html.slice(0, 20)}… levou ${Date.now() - t} ms`);
+  }
+});
+
+test("extractVisibleText: elemento ignorado sem fechamento não apaga o resto", () => {
+  assert.equal(
+    extractVisibleText(`<div>antes</div><img data-prometia-ignore src=x><p>depois</p>`),
+    "antes\ndepois",
+  );
+});
+
+test("extractVisibleText: elemento ignorado com filhos da mesma tag", () => {
+  assert.equal(extractVisibleText(`<div data-prometia-ignore><div>x</div>y</div><p>z</p>`), "z");
+});
+
+test("extractVisibleText não confunde header com head", () => {
+  assert.equal(extractVisibleText(`<head><title>T</title></head><header><h1>Oferta</h1></header>`), "Oferta");
 });
 
 test("extractVisibleText corta em MAX_TEXT_CHARS", () => {

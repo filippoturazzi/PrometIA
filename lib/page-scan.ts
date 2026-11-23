@@ -62,7 +62,8 @@ function isPrivateIPv6(host: string) {
 }
 
 function isBlockedHost(hostname: string) {
-  const h = hostname.toLowerCase();
+  // "localhost." e "127.0.0.1." resolvem igual ao nome sem o ponto final
+  const h = hostname.toLowerCase().replace(/\.+$/, "");
   return h === "localhost" || h.endsWith(".localhost") || isPrivateIPv4(h) || isPrivateIPv6(h);
 }
 
@@ -139,43 +140,100 @@ function decodeEntities(s: string) {
   });
 }
 
-/** Remove cada elemento com data-prometia-ignore, com o conteúdo, respeitando tags aninhadas iguais. */
-function removeIgnored(html: string) {
-  const open = /<([a-z][a-z0-9-]*)\b[^>]*\sdata-prometia-ignore\b[^>]*>/i;
-  let out = html;
-  for (let m = out.match(open); m && m.index != null; m = out.match(open)) {
-    const tag = m[1].toLowerCase();
-    const start = m.index;
-    const tagRe = new RegExp(`<(/?)${tag}\\b[^>]*>`, "gi");
-    tagRe.lastIndex = start + m[0].length;
-    let depth = 1;
-    let end = out.length;
-    for (let t = tagRe.exec(out); t; t = tagRe.exec(out)) {
-      depth += t[1] ? -1 : t[0].endsWith("/>") ? 0 : 1;
-      if (depth === 0) {
-        end = t.index + t[0].length;
-        break;
-      }
+// Extração em uma passada (tempo linear): regex com [\s\S]*? ou [^>]* sobre o HTML inteiro
+// fica quadrática em tags sem fechar, e uma página maliciosa travaria o servidor.
+const SKIP_TAGS = new Set(["head", "script", "style", "noscript", "svg", "template", "iframe"]);
+const VOID_TAGS = new Set("area base br col embed hr img input link meta source track wbr".split(" "));
+const BLOCK_TAGS = new Set(
+  "address article aside blockquote br button dd div dl dt figcaption figure footer form h1 h2 h3 h4 h5 h6 header hr li main nav ol p pre section table td th tr ul".split(
+    " ",
+  ),
+);
+const TAG_NAME = /^(\/?)([a-z][a-z0-9-]*)/i;
+const IGNORE_ATTR = /\sdata-prometia-ignore(?![\w-])/i;
+
+/** Posição logo após o fechamento `</name>` que equilibra a abertura (conta aninhamento). -1 se não fecha. */
+function skipElement(html: string, lower: string, name: string, from: number) {
+  let depth = 1;
+  let i = from;
+  for (;;) {
+    const lt = lower.indexOf("<", i);
+    if (lt < 0) return -1;
+    const gt = html.indexOf(">", lt);
+    if (gt < 0) return -1;
+    const m = TAG_NAME.exec(html.slice(lt + 1, Math.min(gt, lt + 40)));
+    if (m && m[2].toLowerCase() === name) {
+      if (m[1]) depth--;
+      else if (html[gt - 1] !== "/") depth++;
+      if (depth === 0) return gt + 1;
     }
-    out = out.slice(0, start) + " " + out.slice(end);
+    i = gt + 1;
   }
-  return out;
 }
 
-const BLOCK_TAGS =
-  "address|article|aside|blockquote|br|button|dd|div|dl|dt|figcaption|figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|section|table|td|th|tr|ul";
+/** Posição logo após `</name ...>` (sem aninhamento: script, style...). -1 se não fecha. */
+function skipRaw(html: string, lower: string, name: string, from: number) {
+  let i = from;
+  for (;;) {
+    const close = lower.indexOf(`</${name}`, i);
+    if (close < 0) return -1;
+    const next = lower[close + 2 + name.length];
+    if (next === undefined || next === ">" || /\s/.test(next)) {
+      const gt = html.indexOf(">", close);
+      return gt < 0 ? -1 : gt + 1;
+    }
+    i = close + 2;
+  }
+}
 
 export function extractVisibleText(html: string): string {
-  let s = html
+  const lower = html.toLowerCase();
+  const parts: string[] = [];
+  let i = 0;
+  while (i < html.length) {
+    const lt = html.indexOf("<", i);
+    if (lt < 0) {
+      parts.push(html.slice(i));
+      break;
+    }
+    parts.push(html.slice(i, lt));
     // sem espaço: o React separa textos vizinhos com <!-- -->
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/<(head|script|style|noscript|svg|template|iframe)\b[\s\S]*?<\/\1\s*>/gi, " ");
-  s = removeIgnored(s);
-  s = s
-    .replace(new RegExp(`<\\/?(?:${BLOCK_TAGS})\\b[^>]*>`, "gi"), "\n")
-    .replace(/<[^>]+>/g, "");
-  s = decodeEntities(s);
-  const text = s
+    if (html.startsWith("<!--", lt)) {
+      const end = html.indexOf("-->", lt + 4);
+      if (end < 0) break;
+      i = end + 3;
+      continue;
+    }
+    const gt = html.indexOf(">", lt);
+    if (gt < 0) break; // tag sem fechar: o resto não é texto
+    const tag = html.slice(lt + 1, gt);
+    const m = TAG_NAME.exec(tag);
+    i = gt + 1;
+    if (!m) continue;
+    const name = m[2].toLowerCase();
+    const closing = !!m[1];
+    const selfClosing = tag.endsWith("/") || VOID_TAGS.has(name);
+
+    if (!closing && SKIP_TAGS.has(name) && !selfClosing) {
+      const end = skipRaw(html, lower, name, i);
+      if (end < 0) break;
+      i = end;
+      parts.push(" ");
+      continue;
+    }
+    if (!closing && IGNORE_ATTR.test(tag)) {
+      if (!selfClosing) {
+        const end = skipElement(html, lower, name, i);
+        if (end < 0) break;
+        i = end;
+      }
+      parts.push(" ");
+      continue;
+    }
+    parts.push(BLOCK_TAGS.has(name) ? "\n" : "");
+  }
+
+  const text = decodeEntities(parts.join(""))
     .split("\n")
     .map((line) => line.replace(/[\s ]+/g, " ").trim())
     .filter(Boolean)
@@ -232,7 +290,10 @@ export async function fetchPageText(url: URL, opts: FetchOptions): Promise<strin
         res = await fetchImpl(current.href, {
           redirect: "manual",
           signal: controller.signal,
-          headers: { "user-agent": "PrometIA/0.1 (prototipo)", accept: "text/html,application/xhtml+xml" },
+          headers: {
+            "user-agent": "PrometIA/0.1 (prototipo)",
+            accept: "text/html,application/xhtml+xml",
+          },
         });
       } catch {
         throw new PageScanError("fetch_failed");
