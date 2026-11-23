@@ -96,8 +96,7 @@ async function main() {
           checkPagePrompt(getProduct(DEMO_PRODUCER_PRODUCT_ID)!, pageText),
           checkPageSchema,
           "check_page",
-          undefined,
-          groqPageModel(),
+          { model: groqPageModel() },
         ),
       ),
     );

@@ -1,8 +1,9 @@
-import { runCheckPage } from "@/lib/ai";
+import { runCheckPage, runPageOcr } from "@/lib/ai";
 import { aiErrorResponse, errorResponse, readJSONBody, str } from "@/lib/api";
 import { withAICache } from "@/lib/cache";
 import { getProduct } from "@/lib/data";
-import { checkPageFallback } from "@/lib/fallbacks";
+import { checkPageFallback, pageOcrFallback } from "@/lib/fallbacks";
+import { validateImages } from "@/lib/page-images";
 import {
   MAX_TEXT_CHARS,
   MIN_TEXT_CHARS,
@@ -29,20 +30,37 @@ const normalizeText = (s: string) =>
     .filter(Boolean)
     .join("\n");
 
-// IA 4 — lê a página de vendas do produtor (por URL ou texto colado) e classifica as promessas.
+// IA 4 — lê a página de vendas do produtor (por URL, prints ou texto) e classifica as promessas.
 export async function POST(req: Request) {
   const body = await readJSONBody(req);
   if (!body) return errorResponse("Requisição inválida.", 400);
   const productId = str(body.productId);
   const url = str(body.url);
   const rawText = str(body.text);
+  const hasImages = body.images !== undefined;
 
   const product = getProduct(productId);
   if (!product) return errorResponse("Produto não encontrado.", 404);
-  if (!url && !rawText) return errorResponse("Informe a URL da página ou cole o texto dela.", 400);
+  if (!url && !rawText && !hasImages) return errorResponse("Informe a URL da página ou envie prints dela.", 400);
 
   let pageText: string;
-  if (url) {
+  if (hasImages) {
+    const v = validateImages(body.images);
+    if (!v.ok) return errorResponse(v.error, 400);
+    try {
+      const ocr = await withAICache({
+        route: "page-ocr",
+        input: { images: v.images },
+        call: () => runPageOcr(v.images),
+        fallback: () => pageOcrFallback(v.images),
+      });
+      pageText = ocr.data.slice(0, MAX_TEXT_CHARS);
+    } catch (err) {
+      return aiErrorResponse(err);
+    }
+    if (pageText.length < MIN_TEXT_CHARS)
+      return Response.json({ error: "Não conseguimos ler texto nesses prints.", code: "unreadable" }, { status: 422 });
+  } else if (url) {
     // o próprio app é liberado, para a página de exemplo funcionar em dev e em produção
     const appHost = new URL(req.url).host;
     try {

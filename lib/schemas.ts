@@ -123,6 +123,18 @@ export interface CheckPageResult {
   summary: string;
 }
 
+// IA 4 por imagem — OCR dos prints (só transcreve; a análise é a mesma do texto)
+export const pageOcrSchema = {
+  type: "object",
+  properties: { text: { type: "string" } },
+  required: ["text"],
+  additionalProperties: false,
+};
+
+export interface PageOcrRaw {
+  text: string;
+}
+
 // ---------------------------------------------------------------------------
 // IA 2 — classify-feedback
 // ---------------------------------------------------------------------------

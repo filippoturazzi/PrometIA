@@ -84,3 +84,9 @@ ${outline}
 PÁGINA DE VENDAS:
 ${pageText}`;
 }
+
+// IA 4 por imagem — OCR dos prints da página de vendas.
+export const PAGE_OCR_PROMPT = `Transcreva TODO o texto visível nestas imagens de uma página de vendas, na ordem de leitura (de cima para baixo, imagem por imagem).
+Um bloco de texto por linha (título, frase, item de lista, depoimento, botão). Copie exatamente como está escrito, com acentos, sem resumir, traduzir, corrigir ou comentar.
+Títulos em caixa alta: copie como estão. Ignore só elementos de interface do navegador ou do sistema (barra de endereço, abas, relógio).
+Responda no campo text.`;

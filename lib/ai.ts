@@ -4,11 +4,14 @@ import "server-only";
 // Usadas pelos Route Handlers e pelo scripts/eval-demo.ts (o teste roda o mesmo código da tela).
 
 import { matchClaim } from "@/lib/claims-ui";
-import { generateJSON, groqPageModel } from "@/lib/groq";
-import { caseInsightPrompt, checkClaimsPrompt, checkPagePrompt, classifyFeedbackPrompt, creatorInsightPrompt } from "@/lib/prompts";
+import { generateJSON, groqPageModel, groqVisionModel } from "@/lib/groq";
+import { ocrTextOrNull } from "@/lib/page-images";
+import { PAGE_OCR_PROMPT, caseInsightPrompt, checkClaimsPrompt, checkPagePrompt, classifyFeedbackPrompt, creatorInsightPrompt } from "@/lib/prompts";
 import {
   checkClaimsSchema,
   checkPageSchema,
+  pageOcrSchema,
+  type PageOcrRaw,
   cleanCheckPage,
   type CheckPageRaw,
   type CheckPageResult,
@@ -38,10 +41,23 @@ export async function runCheckPage(product: Product, pageText: string): Promise<
       checkPagePrompt(product, pageText),
       checkPageSchema,
       "check_page",
-      undefined,
-      groqPageModel(),
+      { model: groqPageModel() },
     ),
   );
+}
+
+/** Transcreve os prints da página. Devolve "" quando não há texto suficiente (a rota responde 422). */
+export async function runPageOcr(images: string[]): Promise<string> {
+  const raw = await generateJSON<PageOcrRaw>(
+    [
+      { type: "text", text: PAGE_OCR_PROMPT },
+      ...images.map((url) => ({ type: "image_url" as const, image_url: { url } })),
+    ],
+    pageOcrSchema,
+    "page_ocr",
+    { model: groqVisionModel(), fallbackModel: null, reasoning: false },
+  );
+  return ocrTextOrNull(raw.text) ?? "";
 }
 
 export async function runClassifyFeedback(

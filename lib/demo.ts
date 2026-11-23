@@ -33,3 +33,6 @@ export const ESCALATION_HOURS = 48;
 /** Produto da demo do Checador do Produtor (página de vendas fictícia). */
 export const DEMO_PRODUCER_PRODUCT_ID = "p_slim";
 export const DEMO_SALES_PAGE_PATH = "/paginavendas";
+
+/** Prints da página de vendas fictícia (botão "Usar prints de exemplo"), em public/. */
+export const DEMO_PRINT_PATHS = ["/demo/paginavendas-1.jpg", "/demo/paginavendas-2.jpg", "/demo/paginavendas-3.jpg"];

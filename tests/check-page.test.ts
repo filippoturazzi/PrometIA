@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { POST } from "../app/api/check-page/route";
+import { DEMO_PRINT_PATHS } from "../lib/demo";
 import { DEMO_PAGE } from "../lib/demo-page";
 import { cleanCheckPage } from "../lib/schemas";
 
@@ -59,6 +62,31 @@ test("validações de entrada", async () => {
   assert.equal((await post({ productId: "p_slim" })).status, 400);
   assert.equal((await post({ productId: "p_slim", text: "curto" })).status, 400);
   assert.equal((await post({ productId: "p_slim", text: "a ".repeat(4000) })).status, 400);
+});
+
+const demoPrints = DEMO_PRINT_PATHS.map(
+  (p) => `data:image/jpeg;base64,${readFileSync(join("public", p)).toString("base64")}`,
+);
+
+test("prints de exemplo: OCR e análise caem no plano B", async () => {
+  const res = await post({ productId: "p_slim", images: demoPrints });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  // o texto do plano B do OCR é igual ao lido pela URL: a análise reaproveita o cache da página
+  assert.ok(["cache", "fallback"].includes(data.source), data.source);
+  assert.equal(data.overallRisk, "alto");
+  assert.ok(data.pageText.includes(DEMO_PAGE.headline));
+});
+
+test("prints inválidos → 400 com mensagem", async () => {
+  const res = await post({ productId: "p_slim", images: ["data:image/gif;base64,R0lGODlh"] });
+  assert.equal(res.status, 400);
+  assert.ok((await res.json()).error);
+});
+
+test("print fora da demo sem IA → erro, não resultado inventado", async () => {
+  const res = await post({ productId: "p_slim", images: ["data:image/png;base64,iVBORw0KGgo="] });
+  assert.ok(res.status >= 500, `status ${res.status}`);
 });
 
 test("texto sem plano B e sem IA devolve erro, não resultado inventado", async () => {

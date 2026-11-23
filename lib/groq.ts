@@ -1,6 +1,7 @@
 import "server-only";
 
 import Groq from "groq-sdk";
+import type { ChatCompletionContentPart } from "groq-sdk/resources/chat/completions";
 
 /** Teto da seção 9: passou disso, a rota usa o fallback. */
 export const AI_TIMEOUT_MS = 15_000;
@@ -30,23 +31,37 @@ export const groqPageModel = () => process.env.GROQ_PAGE_MODEL ?? "openai/gpt-os
  */
 export const groqFallbackModel = () => process.env.GROQ_FALLBACK_MODEL ?? "openai/gpt-oss-120b";
 
+/** Modelo de visão do OCR dos prints (IA 4 por imagem). Em preview no Groq: por isso configurável. */
+export const groqVisionModel = () => process.env.GROQ_VISION_MODEL ?? "qwen/qwen3.8-27b";
+
 // "medium": com "low" o gpt-oss-20b gerou JSON fora do schema e omitiu promessas sustentadas nos testes.
 function reasoningEffort(): ReasoningEffort {
   const v = process.env.GROQ_REASONING_EFFORT;
   return v === "low" || v === "high" ? v : "medium";
 }
 
+export interface GenerateOptions {
+  timeoutMs?: number;
+  /** modelo da primeira tentativa (padrão: groqModel()) */
+  model?: string;
+  /** modelo usado quando o primeiro bate limite (429); null desliga (ex.: visão, que o reserva não suporta) */
+  fallbackModel?: string | null;
+  /** false: não envia reasoning_effort (modelos com valores próprios, como o de visão) */
+  reasoning?: boolean;
+}
+
 /**
  * Chama o Groq com Structured Outputs estritos e devolve o JSON já parseado.
- * `name`: identificador do schema (a-z, 0-9, _ ou -). `startModel`: modelo da primeira tentativa.
+ * `prompt`: texto ou partes (texto + imagens). `name`: identificador do schema (a-z, 0-9, _ ou -).
  */
 export async function generateJSON<T>(
-  prompt: string,
+  prompt: string | ChatCompletionContentPart[],
   schema: Record<string, unknown>,
   name: string,
-  timeoutMs = AI_TIMEOUT_MS,
-  startModel = groqModel(),
+  opts: GenerateOptions = {},
 ): Promise<T> {
+  const { timeoutMs = AI_TIMEOUT_MS, model: startModel = groqModel(), reasoning = true } = opts;
+  const fallback = opts.fallbackModel === undefined ? groqFallbackModel() : opts.fallbackModel;
   const deadline = Date.now() + timeoutMs;
   let model = startModel;
   const attempt = async () => {
@@ -58,7 +73,7 @@ export async function generateJSON<T>(
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_schema", json_schema: { name, schema, strict: true } },
         temperature: 0.2,
-        reasoning_effort: reasoningEffort(),
+        ...(reasoning ? { reasoning_effort: reasoningEffort() } : {}),
       },
       { timeout: remaining, maxRetries: 0 },
     );
@@ -73,7 +88,6 @@ export async function generateJSON<T>(
       return await attempt();
     } catch (err) {
       if (retry < MAX_JSON_RETRIES && isJSONGenerationError(err)) continue;
-      const fallback = groqFallbackModel();
       if (isRateLimitError(err) && fallback && model !== fallback) {
         console.warn(`[groq] limite de ${model} atingido; usando ${fallback}`);
         model = fallback;

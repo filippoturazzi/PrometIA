@@ -1,5 +1,8 @@
 import "server-only";
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 // Respostas pré-escritas do plano B (seção 9): usadas quando o Groq falha ou estoura 15 s.
 
 import {
@@ -10,8 +13,8 @@ import {
   hoursWithoutResponse,
   worstClaimStatus,
 } from "@/lib/data";
-import { DEMO_PRODUCER_PRODUCT_ID, DEMO_PRODUCT_ID, DEMO_REFUND_TEXT, DEMO_SCRIPT } from "@/lib/demo";
-import { DEMO_PAGE_SIGNATURE } from "@/lib/demo-page";
+import { DEMO_PRINT_PATHS, DEMO_PRODUCER_PRODUCT_ID, DEMO_PRODUCT_ID, DEMO_REFUND_TEXT, DEMO_SCRIPT } from "@/lib/demo";
+import { DEMO_PAGE, DEMO_PAGE_SIGNATURE } from "@/lib/demo-page";
 import type {
   CheckClaimsResult,
   CheckPageResult,
@@ -163,6 +166,39 @@ export const DEMO_CHECK_PAGE: CheckPageResult = {
 
 export function checkPageFallback(productId: string, pageText: string): CheckPageResult | null {
   return productId === DEMO_PRODUCER_PRODUCT_ID && pageText.includes(DEMO_PAGE_SIGNATURE) ? DEMO_CHECK_PAGE : null;
+}
+
+/** Texto dos prints de exemplo, na ordem de leitura (plano B do OCR). Contém a assinatura da IA 4. */
+export const DEMO_PRINTS_TEXT = [
+  `${DEMO_PAGE.brand} apresenta · ${DEMO_PAGE.product}`,
+  DEMO_PAGE.headline,
+  DEMO_PAGE.subheadline,
+  `Por que o ${DEMO_PAGE.product} funciona`,
+  ...DEMO_PAGE.bullets,
+  "Quem tomou, aprovou",
+  ...DEMO_PAGE.testimonials.flatMap((t) => [`“${t.text}”`, t.name]),
+  `De ${DEMO_PAGE.priceFrom} por apenas`,
+  DEMO_PAGE.priceTo,
+  DEMO_PAGE.cta,
+  DEMO_PAGE.guarantee,
+].join("\n");
+
+let demoPrints: string[] | null = null;
+/** Os prints de exemplo como o botão da tela envia (arquivo original, sem redimensionar). */
+function demoPrintDataUrls() {
+  demoPrints ??= DEMO_PRINT_PATHS.map(
+    (p) => `data:image/jpeg;base64,${readFileSync(join(process.cwd(), "public", p)).toString("base64")}`,
+  );
+  return demoPrints;
+}
+
+export function pageOcrFallback(images: string[]): string | null {
+  try {
+    const demo = demoPrintDataUrls();
+    return images.length === demo.length && images.every((img, i) => img === demo[i]) ? DEMO_PRINTS_TEXT : null;
+  } catch {
+    return null; // arquivos ausentes no ambiente: sem plano B
+  }
 }
 
 export function classifyFeedbackFallback(
