@@ -4,6 +4,8 @@
 
 PrometIA é um protótipo de uma camada de IA para o ecossistema da YouShop. Ela confere se **o que é prometido na divulgação** (o vídeo do creator ou a página do produtor) bate com **o que o comprador recebe** e fecha o ciclo quando não bate.
 
+**🔗 Demo ao vivo: [prometiayoushop.netlify.app](https://prometiayoushop.netlify.app/)**
+
 > Protótipo conceitual · Desafio de Inovação do Programa de Estágio YouShop 2027 · não oficial · todos os dados são fictícios.
 
 ![Landing do PrometIA](prints/01-landing.png)
@@ -150,7 +152,7 @@ Para popular o cache, rode a história da demo inteira uma vez com `npm run dev`
 - **driver.js** para o tour de boas-vindas
 - **Groq** (`groq-sdk`) com os modelos `openai/gpt-oss-20b` / `openai/gpt-oss-120b`
 - **Dados** em arquivos JSON na pasta `data/`, lidos no servidor (sem banco)
-- **Deploy** na Vercel
+- **Deploy** na Netlify ([prometiayoushop.netlify.app](https://prometiayoushop.netlify.app/))
 
 ---
 
