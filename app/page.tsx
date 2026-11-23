@@ -148,8 +148,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="solucao" aria-labelledby="solucao-titulo" className="scroll-mt-24 bg-white">
-        <div className={cn(container, "flex flex-col gap-16 py-20 lg:py-28")}>
+      <section id="solucao" aria-labelledby="solucao-titulo" className="scroll-mt-24 bg-white py-20 lg:py-28">
+        <div id="solucao-conteudo" className={cn(container, "flex flex-col gap-16")}>
           <div className="flex flex-wrap items-end justify-between gap-x-20 gap-y-6">
             <div data-reveal="blur" className="flex max-w-[640px] flex-col gap-4">
               <span className="text-[12px] font-semibold tracking-[1.6px] text-muted-foreground uppercase">

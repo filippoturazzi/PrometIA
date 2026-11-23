@@ -36,8 +36,9 @@ const STEPS: TourStep[] = [
   },
   {
     route: "/",
-    selector: "#solucao",
-    side: "top",
+    // só o conteúdo (sem o padding da seção) e o balão abaixo, para não cobrir os 3 passos
+    selector: "#solucao-conteudo",
+    side: "bottom",
     title: "A solução",
     description:
       "Checar a promessa antes de postar, ouvir o comprador depois da venda e transformar isso em aprendizado.",
@@ -81,6 +82,11 @@ const STEPS: TourStep[] = [
     description: "Explore livremente. Você pode rever este tour pelo “?”. Todos os dados são fictícios.",
   },
 ];
+
+/** Trava a rolagem do usuário durante o tour (o driver ainda rola via script). */
+function lockScroll(locked: boolean) {
+  document.documentElement.classList.toggle("tour-scroll-lock", locked);
+}
 
 function markDone() {
   try {
@@ -194,11 +200,13 @@ export function Tour() {
           popover.footer.prepend(skip);
         },
         onDestroyed: () => {
+          lockScroll(false);
           markDone();
           driverRef.current = null;
         },
       });
       driverRef.current = d;
+      lockScroll(true);
 
       if (window.location.pathname !== STEPS[0].route) router.push(STEPS[0].route);
       // dá tempo para a landing aparecer (ou para a hidratação terminar)
@@ -215,7 +223,13 @@ export function Tour() {
   }, [router]);
 
   // ao desmontar de vez, fecha o tour
-  useEffect(() => () => driverRef.current?.destroy(), []);
+  useEffect(
+    () => () => {
+      driverRef.current?.destroy();
+      lockScroll(false);
+    },
+    [],
+  );
 
   return null;
 }

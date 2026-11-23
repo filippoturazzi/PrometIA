@@ -179,6 +179,14 @@ html {
   background-image: linear-gradient(to right, rgb(159 239 20 / 0.1), transparent);
 }
 
+/* Durante o tour o usuário não rola a página (rolagem via script continua funcionando);
+   scrollbar-gutter evita que o layout "pule" quando a barra de rolagem some */
+html.tour-scroll-lock {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+  overscroll-behavior: none;
+}
+
 /* Tour (driver.js) com o visual do redesign (pen.dev) */
 .driver-popover.prometia-tour {
   background: #ffffff;
