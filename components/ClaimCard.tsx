@@ -1,7 +1,8 @@
 import { BookOpen, Lightbulb, Sparkles } from "lucide-react";
 import { CopyButton } from "@/components/CopyButton";
 import { StatusBadge } from "@/components/StatusBadge";
-import { CATEGORY_LABELS, STATUS_META } from "@/lib/claims-ui";
+import { CATEGORY_LABELS, RISK_META, STATUS_META } from "@/lib/claims-ui";
+import type { OverallRisk } from "@/lib/schemas";
 import type { ClaimCategory, ClaimStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +18,19 @@ export interface ClaimCardData {
 const label = "flex items-center gap-1.5 text-[11px] font-semibold tracking-[1.2px] uppercase";
 
 /** Uma promessa analisada; pensada para ficar empilhada dentro do painel de resultado. */
-export function ClaimCard({ claim, index }: { claim: ClaimCardData; index?: number }) {
+export function ClaimCard({
+  claim,
+  index,
+  evidenceLabel = "Página do produto",
+  refundRisk,
+}: {
+  claim: ClaimCardData;
+  index?: number;
+  /** de onde vem a evidência (no Checador do Produtor: "Ficha do produto") */
+  evidenceLabel?: string;
+  /** risco de reembolso estimado para esta promessa (IA 4) */
+  refundRisk?: OverallRisk;
+}) {
   const m = STATUS_META[claim.status];
   return (
     <article className="flex flex-col gap-[18px] border-b border-line px-6 py-7 sm:px-8">
@@ -34,6 +47,17 @@ export function ClaimCard({ claim, index }: { claim: ClaimCardData; index?: numb
         )}
         <StatusBadge status={claim.status} size="sm" />
         <span className="text-[13px] text-muted-foreground">{CATEGORY_LABELS[claim.category]}</span>
+        {refundRisk && (
+          <span
+            className={cn(
+              "ml-auto rounded-full px-2.5 py-1 text-[12px] font-semibold",
+              STATUS_META[RISK_META[refundRisk].status].bg,
+              STATUS_META[RISK_META[refundRisk].status].text,
+            )}
+          >
+            {RISK_META[refundRisk].label} de reembolso
+          </span>
+        )}
       </div>
 
       <p className="font-heading text-[20px] leading-[27px] font-medium text-ink">“{claim.text}”</p>
@@ -41,10 +65,10 @@ export function ClaimCard({ claim, index }: { claim: ClaimCardData; index?: numb
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <span className={cn(label, "text-muted-foreground")}>
-            <BookOpen className="size-3.5" aria-hidden /> Página do produto
+            <BookOpen className="size-3.5" aria-hidden /> {evidenceLabel}
           </span>
           <p className="text-[14px] leading-[22px] text-ink italic">
-            {claim.evidence ? `“${claim.evidence}”` : "A página do produto não diz nada que sustente isso."}
+            {claim.evidence ? `“${claim.evidence}”` : `A ${evidenceLabel.toLowerCase()} não diz nada que sustente isso.`}
           </p>
         </div>
         <div className="flex flex-col gap-2">

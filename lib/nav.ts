@@ -63,7 +63,10 @@ export const ROLES: Role[] = [
     prefix: "/produtor",
     icon: Store,
     area: "Área do produtor",
-    subnav: [{ href: "/produtor", label: "Saúde da promessa", icon: Activity }],
+    subnav: [
+      { href: "/produtor", label: "Saúde da promessa", icon: Activity },
+      { href: "/produtor/checador", label: "Checar página de vendas", icon: ScanSearch },
+    ],
   },
   {
     id: "operacoes",
