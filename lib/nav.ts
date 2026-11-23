@@ -32,6 +32,18 @@ export interface Role {
 
 export const ROLES: Role[] = [
   {
+    id: "produtor",
+    label: "Produtor",
+    href: "/produtor",
+    prefix: "/produtor",
+    icon: Store,
+    area: "Área do produtor",
+    subnav: [
+      { href: "/produtor", label: "Saúde da promessa", icon: Activity },
+      { href: "/produtor/checador", label: "Checar página de vendas", icon: ScanSearch },
+    ],
+  },
+  {
     id: "creator",
     label: "Creator",
     href: "/creator/checador",
@@ -54,18 +66,6 @@ export const ROLES: Role[] = [
       { href: "/comprador/obrigado", label: "Página de obrigado", icon: PartyPopper },
       { href: "/comprador/youclass", label: "YouClass", icon: GraduationCap },
       { href: "/comprador/reembolso", label: "Solicitar reembolso", icon: Undo2 },
-    ],
-  },
-  {
-    id: "produtor",
-    label: "Produtor",
-    href: "/produtor",
-    prefix: "/produtor",
-    icon: Store,
-    area: "Área do produtor",
-    subnav: [
-      { href: "/produtor", label: "Saúde da promessa", icon: Activity },
-      { href: "/produtor/checador", label: "Checar página de vendas", icon: ScanSearch },
     ],
   },
   {

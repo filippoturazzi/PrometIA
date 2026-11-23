@@ -36,32 +36,32 @@ const STEPS = [
 
 const PROFILES = [
   {
+    href: "/produtor",
+    icon: Store,
+    label: "Produtor",
+    text: "Checar a página de vendas e acompanhar a saúde da promessa",
+    stage: "Cria o produto",
+  },
+  {
     href: "/creator/checador",
     icon: Clapperboard,
     label: "Creator",
     text: "Checar um roteiro e ver o que gera reembolso",
-    stage: "Antes de postar",
+    stage: "Divulga",
   },
   {
     href: "/comprador/obrigado",
     icon: ShoppingBag,
     label: "Comprador",
     text: "Declarar expectativa e pedir reembolso",
-    stage: "Depois da venda",
-  },
-  {
-    href: "/produtor",
-    icon: Store,
-    label: "Produtor",
-    text: "Saúde da promessa dos seus produtos",
-    stage: "Aprendizado",
+    stage: "Compra",
   },
   {
     href: "/operacoes",
     icon: Building2,
     label: "Operações YouShop",
     text: "Painel geral e fila de escalonamento",
-    stage: "Aprendizado",
+    stage: "Monitora",
   },
 ];
 
@@ -199,7 +199,8 @@ export default function Home() {
               Escolha uma perspectiva
             </h2>
             <p className="text-[16px] text-muted-foreground">
-              Cada perfil vê o mesmo problema de um ângulo diferente.
+              Na ordem do ciclo: o produtor cria, o creator divulga, o comprador compra e a
+              operação monitora.
             </p>
           </div>
           <ul data-reveal="stagger" className="border-t border-line">
