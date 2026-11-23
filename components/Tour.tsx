@@ -19,6 +19,8 @@ interface TourStep {
   side?: "top" | "right" | "bottom" | "left";
   /** onde o elemento deve ficar na tela antes de destacar (abre espaço para o balão) */
   scrollBlock?: ScrollLogicalPosition;
+  /** volta ao topo da página antes de destacar */
+  scrollTop?: boolean;
 }
 
 const STEPS: TourStep[] = [
@@ -80,8 +82,10 @@ const STEPS: TourStep[] = [
       "Casos com frustração alta e produtor sem resposta aparecem aqui antes de virarem reclamação pública.",
   },
   {
-    route: "/operacoes",
+    // termina na landing, no topo, e não no meio de Operações
+    route: "/",
     selector: "#btn-tour",
+    scrollTop: true,
     side: "bottom",
     title: "Pronto!",
     description: "Explore livremente. Você pode rever este tour pelo “?”. Todos os dados são fictícios.",
@@ -145,6 +149,7 @@ export function Tour() {
         router.push(step.route);
       }
       const el = step.selector ? await waitForVisible(step.selector) : null;
+      if (step.scrollTop) window.scrollTo({ top: 0, behavior: "instant" });
       // o driver só rola se o elemento estiver fora da tela; aqui forçamos a posição
       if (el && step.scrollBlock) {
         el.scrollIntoView({ block: step.scrollBlock, behavior: "instant" });
