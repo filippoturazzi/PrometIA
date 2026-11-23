@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   BookOpen,
@@ -10,6 +10,8 @@ import {
   ExternalLink,
   FileText,
   Globe,
+  ImagePlus,
+  Images,
   LoaderCircle,
   Quote,
   ScanSearch,
@@ -17,12 +19,14 @@ import {
   ShieldCheck,
   TriangleAlert,
   Undo2,
+  X,
 } from "lucide-react";
 import { ClaimCard, type ClaimCardData } from "@/components/ClaimCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toastAIError, toastDemoMode } from "@/lib/ai-toast";
 import { RISK_META, STATUS_META, compareByRisk } from "@/lib/claims-ui";
+import { fetchAsDataUrl, resizeImage } from "@/lib/image-resize";
+import { MAX_IMAGES, MAX_IMAGE_B64 } from "@/lib/page-images";
 import type { OverallRisk } from "@/lib/schemas";
 import type { ClaimStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -32,6 +36,8 @@ interface Props {
   defaultProductId: string;
   /** caminho da página de vendas fictícia (ex.: "/paginavendas") */
   examplePath: string;
+  /** prints da página fictícia (ex.: "/demo/paginavendas-1.jpg") */
+  examplePrints: string[];
 }
 
 type PageClaim = ClaimCardData & { refundRisk: OverallRisk };
@@ -43,9 +49,13 @@ interface Result {
   pageText: string;
 }
 
-const MAX_TEXT = 6000;
+const ACCEPTED = ["image/png", "image/jpeg", "image/webp"];
 const STATUSES = ["proibida", "exagerada", "sustentada"] as const;
-const LOADING_STEPS = ["Lendo a página", "Extraindo promessas", "Estimando risco de reembolso"];
+const LOADING_STEPS = {
+  url: ["Lendo a página", "Extraindo promessas", "Estimando risco de reembolso"],
+  prints: ["Lendo os prints", "Extraindo promessas", "Estimando risco de reembolso"],
+};
+const UNREADABLE_URL = "Não conseguimos ler essa página. Envie prints dela.";
 
 const fieldLabel = "text-[13px] font-semibold text-ink";
 const panel = "rounded-[14px] border border-line bg-white";
@@ -53,6 +63,7 @@ const input =
   "w-full rounded-lg border border-line bg-white px-3.5 py-3 text-[14px] text-ink outline-none placeholder:text-[#94A0B2] focus-visible:border-navy focus-visible:ring-2 focus-visible:ring-navy/15";
 
 const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
+const b64Length = (dataUrl: string) => dataUrl.length - dataUrl.indexOf(",") - 1;
 
 function countLine(counts: Record<ClaimStatus, number>, total: number) {
   const found = `${total} ${plural(total, "promessa encontrada", "promessas encontradas")}`;
@@ -61,45 +72,107 @@ function countLine(counts: Record<ClaimStatus, number>, total: number) {
   return total > 0 ? `${found} · tudo confere com a ficha do produto` : found;
 }
 
-export function PageChecker({ products, defaultProductId, examplePath }: Props) {
+export function PageChecker({ products, defaultProductId, examplePath, examplePrints }: Props) {
   const [productId, setProductId] = useState(defaultProductId);
   const [url, setUrl] = useState("");
-  const [pastedText, setPastedText] = useState("");
-  /** a URL não pôde ser lida: a tela passa a checar o texto colado */
+  /** prints como data URL; um ou outro: com prints, a URL fica vazia */
+  const [prints, setPrints] = useState<string[]>([]);
+  const [preparing, setPreparing] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  /** aviso de leitura (URL ou prints), mostrado junto da área de prints */
   const [unreadable, setUnreadable] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
+  const [mode, setMode] = useState<"url" | "prints">("url");
   const [result, setResult] = useState<Result | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const dropZone = useRef<HTMLDivElement>(null);
 
   // Progresso ilustrativo enquanto a IA responde.
   useEffect(() => {
     if (!loading) return;
-    const timers = [setTimeout(() => setLoadingStep(1), 1500), setTimeout(() => setLoadingStep(2), 4000)];
+    const timers = [setTimeout(() => setLoadingStep(1), 2500), setTimeout(() => setLoadingStep(2), 6000)];
     return () => timers.forEach(clearTimeout);
   }, [loading]);
 
+  function changeUrl(value: string) {
+    setUrl(value);
+    if (value) setPrints([]);
+    setUnreadable(null);
+  }
+
   function fillExample() {
     setProductId(defaultProductId);
-    setUrl(`${window.location.origin}${examplePath}`);
-    setUnreadable(null);
-    setPastedText("");
+    changeUrl(`${window.location.origin}${examplePath}`);
     setResult(null);
   }
 
+  async function addFiles(files: FileList | File[]) {
+    const list = [...files];
+    if (list.some((f) => !ACCEPTED.includes(f.type))) {
+      toast.error("Envie imagens PNG, JPG ou WEBP.");
+      return;
+    }
+    if (prints.length + list.length > MAX_IMAGES) {
+      toast.error(`Envie no máximo ${MAX_IMAGES} prints.`);
+      return;
+    }
+    setPreparing(true);
+    try {
+      const resized = await Promise.all(list.map((f) => resizeImage(f)));
+      const ok = resized.filter((d) => b64Length(d) <= MAX_IMAGE_B64);
+      if (ok.length < resized.length) toast.error("Um print ficou grande demais mesmo reduzido e foi descartado.");
+      if (ok.length) {
+        setPrints((cur) => [...cur, ...ok].slice(0, MAX_IMAGES));
+        setUrl("");
+        setUnreadable(null);
+        setResult(null);
+      }
+    } catch {
+      toast.error("Não foi possível abrir essa imagem.");
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  async function fillExamplePrints() {
+    setPreparing(true);
+    try {
+      // sem redimensionar: os bytes precisam bater com o cache e o plano B da demo
+      const imgs = await Promise.all(examplePrints.map(fetchAsDataUrl));
+      setProductId(defaultProductId);
+      setPrints(imgs);
+      setUrl("");
+      setUnreadable(null);
+      setResult(null);
+    } catch {
+      toast.error("Não foi possível carregar os prints de exemplo.");
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  function showUnreadable(message: string) {
+    setUnreadable(message);
+    dropZone.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+    dropZone.current?.focus({ preventScroll: true });
+  }
+
   async function check() {
+    const usingPrints = prints.length > 0;
+    setMode(usingPrints ? "prints" : "url");
     setLoadingStep(0);
     setLoading(true);
     setResult(null);
-    const usingText = !!unreadable;
     try {
       const res = await fetch("/api/check-page", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(usingText ? { productId, text: pastedText } : { productId, url }),
+        body: JSON.stringify(usingPrints ? { productId, images: prints } : { productId, url }),
       });
       const data = await res.json();
       if (res.status === 422) {
-        setUnreadable(data.error ?? "Não conseguimos ler essa página. Cole o texto dela abaixo.");
+        showUnreadable(usingPrints ? (data.error ?? "Não conseguimos ler texto nesses prints.") : UNREADABLE_URL);
         return;
       }
       if (!res.ok) {
@@ -124,7 +197,7 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
     (acc, c) => ({ ...acc, [c.status]: acc[c.status] + 1 }),
     { proibida: 0, exagerada: 0, sustentada: 0 },
   );
-  const canCheck = !loading && (unreadable ? pastedText.trim().length >= 80 : url.trim().length >= 4);
+  const canCheck = !loading && !preparing && (prints.length > 0 || url.trim().length >= 4);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[400px_minmax(0,1fr)]">
@@ -179,17 +252,17 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
             </button>
           </div>
           <div className="relative">
-            <Globe className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            <Globe
+              className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
             <input
               id="url-pagina"
               type="text"
               inputMode="url"
               autoComplete="url"
               value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setUnreadable(null);
-              }}
+              onChange={(e) => changeUrl(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && canCheck && check()}
               placeholder="https://sualoja.com.br/oferta"
               className={cn(input, "pl-10")}
@@ -205,8 +278,28 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
           </a>
         </div>
 
-        {unreadable && (
-          <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+          <span className="h-px flex-1 bg-line" aria-hidden />
+          ou
+          <span className="h-px flex-1 bg-line" aria-hidden />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <span className={fieldLabel} id="prints-label">
+              Prints da página
+            </span>
+            <button
+              id="btn-prints-exemplo"
+              type="button"
+              className="flex items-center gap-1.5 text-[13px] font-medium text-navy hover:underline"
+              onClick={fillExamplePrints}
+            >
+              <Images className="size-3.5" aria-hidden /> Usar prints de exemplo
+            </button>
+          </div>
+
+          {unreadable && (
             <p
               role="alert"
               className="flex items-start gap-2 rounded-lg border border-status-warn/30 bg-status-warn-bg px-3.5 py-3 text-[13px] text-ink"
@@ -214,27 +307,103 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
               <TriangleAlert className="mt-0.5 size-4 shrink-0 text-status-warn" aria-hidden />
               {unreadable}
             </p>
-            <label className={fieldLabel} htmlFor="texto-pagina">
-              Cole o texto da página
-            </label>
-            <Textarea
-              id="texto-pagina"
-              value={pastedText}
-              onChange={(e) => setPastedText(e.target.value)}
-              maxLength={MAX_TEXT}
-              placeholder="Copie os textos da página (título, benefícios, depoimentos, garantia) e cole aqui…"
-              className="h-48 resize-none rounded-lg border-line bg-white p-3.5 text-[14px] leading-[22px] text-ink placeholder:text-[#94A0B2]"
-            />
-            <div className="flex items-center justify-between text-[12px] text-muted-foreground">
-              <button type="button" className="hover:text-navy hover:underline" onClick={() => setUnreadable(null)}>
-                Tentar a URL de novo
-              </button>
-              <span>
-                {pastedText.length} / {MAX_TEXT}
+          )}
+
+          <div
+            ref={dropZone}
+            role="button"
+            tabIndex={0}
+            aria-labelledby="prints-label"
+            aria-describedby="prints-dica"
+            onClick={() => prints.length < MAX_IMAGES && fileInput.current?.click()}
+            onKeyDown={(e) => {
+              if ((e.key === "Enter" || e.key === " ") && prints.length < MAX_IMAGES) {
+                e.preventDefault();
+                fileInput.current?.click();
+              }
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+            }}
+            className={cn(
+              "flex cursor-pointer flex-col gap-3 rounded-lg border border-dashed border-[#C9D1DD] bg-paper px-3.5 py-3 outline-none focus-visible:ring-2 focus-visible:ring-navy/20",
+              dragging && "border-navy bg-[#EEF2F8]",
+              unreadable && "border-status-warn",
+            )}
+          >
+            {prints.length === 0 ? (
+              <span className="flex items-center gap-3">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-navy">
+                  {preparing ? (
+                    <LoaderCircle className="size-4 animate-spin" aria-hidden />
+                  ) : (
+                    <ImagePlus className="size-4" aria-hidden />
+                  )}
+                </span>
+                <span className="flex min-w-0 flex-col gap-0.5">
+                  <span className="text-[14px] font-semibold text-ink">Enviar prints da página</span>
+                  <span className="text-[12px] leading-[17px] text-muted-foreground">
+                    Clique ou arraste · PNG, JPG ou WEBP
+                  </span>
+                </span>
               </span>
-            </div>
+            ) : (
+              <ul className="grid grid-cols-3 gap-2" aria-label="Prints enviados">
+                {prints.map((src, i) => (
+                  <li key={i} className="relative aspect-[3/4] overflow-hidden rounded-md border border-line bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- data URL local */}
+                    <img src={src} alt={`Print ${i + 1}`} className="size-full object-cover object-top" />
+                    <button
+                      type="button"
+                      aria-label={`Remover print ${i + 1}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPrints((cur) => cur.filter((_, j) => j !== i));
+                        setResult(null);
+                      }}
+                      className="absolute top-1 right-1 flex size-6 items-center justify-center rounded-full bg-navy-deep/80 text-white hover:bg-navy-deep"
+                    >
+                      <X className="size-3.5" aria-hidden />
+                    </button>
+                  </li>
+                ))}
+                {prints.length < MAX_IMAGES && (
+                  <li className="flex aspect-[3/4] items-center justify-center rounded-md border border-dashed border-[#C9D1DD] bg-white text-navy">
+                    {preparing ? (
+                      <LoaderCircle className="size-4 animate-spin" aria-hidden />
+                    ) : (
+                      <ImagePlus className="size-5" aria-label="Adicionar print" />
+                    )}
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
-        )}
+          <input
+            ref={fileInput}
+            type="file"
+            accept={ACCEPTED.join(",")}
+            multiple
+            hidden
+            onChange={(e) => {
+              if (e.target.files?.length) addFiles(e.target.files);
+              e.target.value = "";
+            }}
+          />
+          <p id="prints-dica" className="flex justify-between gap-3 text-[12px] text-muted-foreground">
+            <span>Até {MAX_IMAGES} prints. Para páginas longas, tire um print por parte da página.</span>
+            <span className="shrink-0">
+              {prints.length} de {MAX_IMAGES}
+            </span>
+          </p>
+        </div>
 
         <button
           id="btn-checar-pagina"
@@ -243,8 +412,12 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
           onClick={check}
           className="flex items-center justify-center gap-2 rounded-lg bg-lime px-5 py-3.5 text-[15px] font-semibold text-navy-deep transition-colors hover:bg-lime/85 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <ScanSearch className="size-4" aria-hidden />}
-          {loading ? "Checando a página…" : unreadable ? "Checar texto colado" : "Checar página"}
+          {loading ? (
+            <LoaderCircle className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <ScanSearch className="size-4" aria-hidden />
+          )}
+          {loading ? "Checando a página…" : prints.length ? "Checar prints" : "Checar página"}
         </button>
       </section>
 
@@ -257,7 +430,7 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
             </span>
             <div className="flex flex-col gap-2">
               <p className="font-heading text-[22px] font-semibold text-ink">As promessas da sua página aparecem aqui</p>
-              <p className="text-[15px] text-muted-foreground">Cole a URL da sua página ou use a página de exemplo.</p>
+              <p className="text-[15px] text-muted-foreground">Cole a URL da sua página ou envie prints dela.</p>
             </div>
             <ul className="flex flex-wrap justify-center gap-x-8 gap-y-3 border-t border-line pt-6 text-[13px] text-muted-foreground">
               {[
@@ -282,7 +455,7 @@ export function PageChecker({ products, defaultProductId, examplePath }: Props) 
               <div className="flex flex-col gap-1.5">
                 <p className="font-heading text-[20px] font-semibold text-ink">Analisando a página…</p>
                 <ul className="flex flex-wrap gap-x-[18px] gap-y-1 text-[13px]">
-                  {LOADING_STEPS.map((s, i) => {
+                  {LOADING_STEPS[mode].map((s, i) => {
                     const Icon = i < loadingStep ? CircleCheck : i === loadingStep ? LoaderCircle : Circle;
                     return (
                       <li

@@ -1,7 +1,7 @@
 import { Info } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { getProducts } from "@/lib/data";
-import { DEMO_PRODUCER_PRODUCT_ID, DEMO_SALES_PAGE_PATH } from "@/lib/demo";
+import { DEMO_PRINT_PATHS, DEMO_PRODUCER_PRODUCT_ID, DEMO_SALES_PAGE_PATH } from "@/lib/demo";
 import { PageChecker } from "./PageChecker";
 
 export default function ChecadorProdutorPage() {
@@ -16,7 +16,7 @@ export default function ChecadorProdutorPage() {
         actions={
           <p className="flex items-center gap-2 text-[13px] text-muted-foreground">
             <Info className="size-4 shrink-0" aria-hidden />
-            O PrometIA lê só o texto da página. Nada é publicado ou alterado.
+            O PrometIA lê só o texto da página ou dos prints. Nada é publicado ou guardado.
           </p>
         }
       />
@@ -24,6 +24,7 @@ export default function ChecadorProdutorPage() {
         products={products}
         defaultProductId={DEMO_PRODUCER_PRODUCT_ID}
         examplePath={DEMO_SALES_PAGE_PATH}
+        examplePrints={DEMO_PRINT_PATHS}
       />
     </>
   );
