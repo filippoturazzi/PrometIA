@@ -79,7 +79,7 @@ const STEPS: TourStep[] = [
     side: "right",
     title: "O produtor também promete",
     description:
-      "Ele cola a URL da <strong>página de vendas</strong> e a IA mostra quais promessas viram reembolso. Use a <strong>página de exemplo</strong> para testar.",
+      "Ele cola a URL da <strong>página de vendas</strong> ou envia <strong>prints</strong>, e a IA mostra quais promessas viram reembolso. Use os exemplos para testar.",
   },
   {
     route: "/operacoes",

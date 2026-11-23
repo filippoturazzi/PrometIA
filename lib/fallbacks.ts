@@ -165,7 +165,9 @@ export const DEMO_CHECK_PAGE: CheckPageResult = {
 };
 
 export function checkPageFallback(productId: string, pageText: string): CheckPageResult | null {
-  return productId === DEMO_PRODUCER_PRODUCT_ID && pageText.includes(DEMO_PAGE_SIGNATURE) ? DEMO_CHECK_PAGE : null;
+  // sem diferenciar maiúsculas: o OCR dos prints copia títulos em caixa alta
+  const found = pageText.toLowerCase().includes(DEMO_PAGE_SIGNATURE.toLowerCase());
+  return productId === DEMO_PRODUCER_PRODUCT_ID && found ? DEMO_CHECK_PAGE : null;
 }
 
 /** Texto dos prints de exemplo, na ordem de leitura (plano B do OCR). Contém a assinatura da IA 4. */

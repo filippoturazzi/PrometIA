@@ -2,7 +2,10 @@
  * Teste real das 4 chamadas de IA com as entradas da demo (usa GROQ_API_KEY do .env.local).
  * Uso: npm run try-ai            (GROQ_REASONING_EFFORT e GROQ_MODEL opcionais)
  */
-import { generateJSON, groqModel, groqPageModel } from "../lib/groq";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { runPageOcr } from "../lib/ai";
+import { generateJSON, groqModel, groqPageModel, groqVisionModel } from "../lib/groq";
 import {
   caseInsightPrompt,
   checkClaimsPrompt,
@@ -29,6 +32,7 @@ import {
   DEMO_CONTENT_ID,
   DEMO_CREATOR_ID,
   DEMO_FEEDBACK_ID,
+  DEMO_PRINT_PATHS,
   DEMO_PRODUCER_PRODUCT_ID,
   DEMO_PRODUCT_ID,
   DEMO_REFUND_TEXT,
@@ -36,7 +40,7 @@ import {
 } from "../lib/demo";
 import { DEMO_PAGE } from "../lib/demo-page";
 
-const only = process.argv[2]; // "1" | "2" | "3" | "4" para rodar só uma
+const only = process.argv[2]; // "1" | "2" | "3" | "4" | "ocr" para rodar só uma
 
 async function timed<T>(label: string, fn: () => Promise<T>) {
   const t = Date.now();
@@ -100,6 +104,13 @@ async function main() {
         ),
       ),
     );
+  }
+
+  if (!only || only === "ocr") {
+    const images = DEMO_PRINT_PATHS.map(
+      (p) => `data:image/jpeg;base64,${readFileSync(join("public", p)).toString("base64")}`,
+    );
+    await timed(`IA 4 por imagem — OCR dos prints de exemplo (${groqVisionModel()})`, () => runPageOcr(images));
   }
 }
 

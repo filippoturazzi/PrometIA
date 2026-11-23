@@ -111,9 +111,9 @@ Usa os mesmos componentes, filtrados pelos produtos de um produtor (Studio Viral
 
 ### Produtor: Checador da página de vendas (`/produtor/checador`)
 
-O produtor também pode prometer demais. Ele cola a URL da própria página de vendas, o PrometIA lê os textos da página e a IA mostra cada promessa com status, **risco de reembolso** e uma versão verdadeira. Se a página não puder ser lida (montada por JavaScript, fora do ar, endereço interno), a tela pede o texto colado.
+O produtor também pode prometer demais. Ele cola a URL da própria página de vendas **ou envia até 3 prints dela**. O PrometIA lê os textos (da página ou dos prints, com OCR) e a IA mostra cada promessa com status, **risco de reembolso** e uma versão verdadeira. Se a página não puder ser lida (montada por JavaScript, fora do ar, endereço interno), a tela sugere enviar prints.
 
-Para a demo existe uma página de vendas fictícia do TermoSlim em [`/paginavendas`](https://prometiayoushop.netlify.app/paginavendas), com visual de "infoproduto" bem diferente do PrometIA. O botão **"Usar página de exemplo"** preenche a URL dela.
+Para a demo existe uma página de vendas fictícia do TermoSlim em [`/paginavendas`](https://prometiayoushop.netlify.app/paginavendas), com visual de "infoproduto" bem diferente do PrometIA. O botão **"Usar página de exemplo"** preenche a URL dela, e **"Usar prints de exemplo"** carrega 3 capturas dela (`public/demo/`).
 
 > Todas as capturas estão na pasta [`prints/`](prints/).
 
@@ -127,7 +127,7 @@ A IA real roda em **4 pontos**, sempre em **Route Handlers do servidor**. A chav
 |---|---|---|---|
 | `POST /api/check-claims` | Extrai e classifica as promessas do roteiro em relação à página de vendas | `productId`, `script` | risco geral + lista de promessas (status, evidência, motivo, reescrita, categoria) |
 | `POST /api/classify-feedback` | Classifica o pedido de reembolso e liga a uma promessa do conteúdo de origem | `productId`, `contentId`, `text`, `reason?` | tipo de frustração, gravidade, promessa relacionada, resumo, oferta de ajuda opcional |
-| `POST /api/check-page` | Lê a página de vendas do produtor (URL ou texto) e classifica as promessas contra a ficha do produto | `productId` + `url` ou `text` | risco geral, resumo, promessas com risco de reembolso + o texto lido |
+| `POST /api/check-page` | Lê a página de vendas do produtor (URL, prints ou texto) e classifica as promessas contra a ficha do produto | `productId` + `url`, `images` (até 3) ou `text` | risco geral, resumo, promessas com risco de reembolso + o texto lido |
 | `POST /api/insight` | Gera insights para o creator ou para um caso da fila | `scope` (`creator` ou `case`) + `id`; o servidor monta os dados agregados | até 3 insights (creator) ou 2 insights + ação sugerida (caso) |
 
 Regras importantes:
@@ -136,6 +136,7 @@ Regras importantes:
 - Em *expectativa desalinhada* e *arrependimento pessoal*, o caminho é o reembolso: a IA não oferece "ajuda" no lugar dele.
 - A leitura da URL (`lib/page-scan.ts`) aceita só `http(s)`, bloqueia endereços internos (exceto o próprio app), segue no máximo 3 redirects, para em 8 s ou 1 MB e ignora trechos marcados com `data-prometia-ignore`.
 - A IA 4 usa o `openai/gpt-oss-120b` (`GROQ_PAGE_MODEL`): com o schema maior, o 20b gerava JSON inválido.
+- Prints: o navegador reduz cada imagem (até 1280 × 2400 px, JPEG), o servidor aceita até 3 (1,5 MB cada, 4 MB no total) e o modelo de visão `qwen/qwen3.8-27b` (`GROQ_VISION_MODEL`, em preview no Groq) só transcreve o texto. A análise é a mesma do link. No plano gratuito, esse modelo aceita 7.000 tokens de entrada por minuto e 3 prints pedem cerca de 6.300: cabe uma leitura de prints ao vivo por minuto (a demo usa o cache).
 - Prompts em `lib/prompts.ts`, schemas em `lib/schemas.ts`, pós-processamento em `lib/ai.ts`.
 
 ---
@@ -184,6 +185,7 @@ GROQ_MODEL=openai/gpt-oss-20b         # modelo principal (padrão)
 GROQ_FALLBACK_MODEL=openai/gpt-oss-120b  # usado quando o principal bate o limite; "" desliga
 GROQ_REASONING_EFFORT=medium          # low | medium | high (padrão: medium)
 GROQ_PAGE_MODEL=openai/gpt-oss-120b   # modelo da IA 4 (página de vendas)
+GROQ_VISION_MODEL=qwen/qwen3.8-27b    # OCR dos prints da página de vendas
 ```
 
 Crie uma chave gratuita em [console.groq.com](https://console.groq.com/keys).
@@ -206,7 +208,7 @@ Abra http://localhost:3000.
 | `npm run build` | Build de produção |
 | `npm run start` | Sobe o build de produção |
 | `npm run lint` | ESLint |
-| `npm test` | Testes (`node:test`): leitura da página, página de exemplo e rota da IA 4 |
+| `npm test` | Testes (`node:test`): leitura da página, prints, página de exemplo e rota da IA 4 |
 | `npm run seed` | Gera `data/sales.json` e `data/feedback.json` de forma determinística (`seedrandom("prometia")`) |
 | `npm run check-data` | Imprime as agregações de `lib/data.ts` para conferir os padrões do seed |
 | `npm run try-ai` | Testa as chamadas de IA com as entradas da demo (usa o `.env.local`) |
@@ -236,6 +238,7 @@ lib/
 ├─ ai.ts                       # chamadas + pós-processamento
 ├─ cache.ts · fallbacks.ts     # cache da demo e plano B
 ├─ page-scan.ts                # leitura segura da página de vendas
+├─ page-images.ts · image-resize.ts  # prints: validação (servidor) e redução (navegador)
 ├─ demo-page.ts                # texto da página de vendas fictícia
 ├─ data.ts                     # leitura dos JSON + agregações
 └─ types.ts                    # tipos do domínio

@@ -75,7 +75,14 @@ test("prints de exemplo: OCR e análise caem no plano B", async () => {
   // o texto do plano B do OCR é igual ao lido pela URL: a análise reaproveita o cache da página
   assert.ok(["cache", "fallback"].includes(data.source), data.source);
   assert.equal(data.overallRisk, "alto");
-  assert.ok(data.pageText.includes(DEMO_PAGE.headline));
+  assert.ok(data.pageText.toLowerCase().includes(DEMO_PAGE.headline.toLowerCase()));
+});
+
+test("plano B reconhece a página de exemplo com título em caixa alta (texto de OCR)", async () => {
+  const text = [DEMO_PAGE.headline.toUpperCase(), ...DEMO_PAGE.bullets, "POR QUE O TERMOSLIM FUNCIONA"].join("\n");
+  const res = await post({ productId: "p_slim", text });
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).source, "fallback");
 });
 
 test("prints inválidos → 400 com mensagem", async () => {

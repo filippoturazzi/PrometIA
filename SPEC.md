@@ -363,11 +363,13 @@ export const insightSchema = {
 ---
  
 ### IA 4 — `POST /api/check-page`
-**Entrada:** `{ productId, url }` ou `{ productId, text }`. Com `url`, o servidor (`lib/page-scan.ts`) valida (só `http(s)`; bloqueia localhost, IPs privados, loopback e link-local, exceto o próprio host do app), busca a página (timeout 8 s, até 1 MB, só `text/html`, até 3 redirects revalidados) e extrai o texto visível (sem `script`/`style` e sem elementos com `data-prometia-ignore`; corta em 6000 caracteres). Texto com menos de 80 caracteres → `422 { code: "unreadable" }` e a tela pede o texto colado.
+**Entrada:** `{ productId, url }`, `{ productId, images }` (prints) ou `{ productId, text }`. Com `url`, o servidor (`lib/page-scan.ts`) valida (só `http(s)`; bloqueia localhost, IPs privados, loopback e link-local, exceto o próprio host do app), busca a página (timeout 8 s, até 1 MB, só `text/html`, até 3 redirects revalidados) e extrai o texto visível (sem `script`/`style` e sem elementos com `data-prometia-ignore`; corta em 6000 caracteres). Texto com menos de 80 caracteres → `422 { code: "unreadable" }` e a tela pede o texto colado.
 
 **Fontes:** a ficha cadastrada do produto (`salesPageText`) + `contentOutline` + regras CONAR/ANVISA. Prompt em `checkPagePrompt` (`lib/prompts.ts`): mesmas regras de "SEMPRE proibida" da IA 1, depoimentos também contam como promessa, a reescrita usa só o que a ficha sustenta e nunca fica vazia em promessa não sustentada.
 
 **Schema:** igual ao da IA 1, com `refundRisk` (`baixo|medio|alto`) em cada promessa e `summary` (1 frase) no topo. Modelo: `GROQ_PAGE_MODEL` (padrão `openai/gpt-oss-120b`; o 20b gerou JSON inválido com este schema).
+
+**Prints (OCR):** `images` = 1 a 3 data URLs PNG/JPEG/WEBP (até 1,5 MB de base64 cada, 4 MB no total; `lib/page-images.ts`), já reduzidas no navegador (até 1280 × 2400 px, JPEG 0,85). O modelo de visão (`GROQ_VISION_MODEL`, padrão `qwen/qwen3.8-27b`, em preview; no plano gratuito, 7.000 tokens de entrada/min, e 3 prints ≈ 6.300) só transcreve o texto (`PAGE_OCR_PROMPT`, schema `{ text }`, cache `page-ocr` pelo conteúdo das imagens, plano B para os prints de exemplo). O texto segue para a mesma análise. Menos de 80 caracteres → `422 { code: "unreadable" }`.
 
 **Resposta:** `{ claims, overallRisk, summary, pageText, source, notice }`. Chave do cache: `{ productId, text }` (URL ou texto colado caem no mesmo cache). Fallback: `DEMO_CHECK_PAGE` para o texto da página de exemplo.
 
@@ -417,7 +419,7 @@ Uma frase do problema, uma frase da solução, um diagrama de 3 passos (Antes de
 ---
  
 ### M5 — Checador da página de vendas (`/produtor/checador`) + página fictícia (`/paginavendas`)
-- Para o produtor testar a própria página antes de divulgar. Campo **URL da página de vendas**, botão **"Usar página de exemplo"** (preenche `{origin}/paginavendas` e seleciona TermoSlim) e link para abrir a página de exemplo. Se a página não puder ser lida → aviso + textarea para colar o texto.
+- Para o produtor testar a própria página antes de divulgar. **Link ou prints, um ou outro** (como o creator: roteiro ou vídeo). Campo **URL da página de vendas** com **"Usar página de exemplo"** (preenche `{origin}/paginavendas` e seleciona TermoSlim) e link para abrir a página; divisor "ou"; área **"Enviar prints da página"** (até 3, clicar ou arrastar, miniaturas removíveis) com **"Usar prints de exemplo"** (`public/demo/paginavendas-{1,2,3}.jpg`, enviados sem redimensionar para bater com o cache). Se a URL não puder ser lida → aviso "Envie prints dela" na área de prints.
 - Resultado no visual do M1: risco geral, contagem por status, resumo da IA, "Promessas assim geram reembolso por expectativa desalinhada.", um `ClaimCard` por promessa (evidência rotulada "Ficha do produto" + badge de risco de reembolso) e "Texto lido da página" recolhido.
 - `/paginavendas`: página de vendas **fictícia** do TermoSlim (NutriMax), visual de infoproduto apelativo, sem header/rodapé/tour do PrometIA, com faixa "Página fictícia criada para a demonstração do PrometIA" (fora da leitura). Mistura planejada: 5 promessas proibidas, 2 exageradas, 2 sustentadas (+ depoimentos).
 - Atalho "Checar minha página de vendas" em `/produtor` e item na subnav do produtor.
@@ -426,7 +428,7 @@ Uma frase do problema, uma frase da solução, um diagrama de 3 passos (Antes de
  
 ## 11. Fora do escopo (não implementar)
  
-Login e autenticação, banco de dados, integração com a API real da YouShop, envio real de WhatsApp/e-mail, pagamentos, upload e transcrição de vídeo (P2, só se sobrar tempo), testes automatizados extensivos, internacionalização.
+Login e autenticação, banco de dados, integração com a API real da YouShop, envio real de WhatsApp/e-mail, pagamentos, upload e transcrição de vídeo (P2, só se sobrar tempo; prints da página de vendas entram via M5), testes automatizados extensivos, internacionalização.
  
 ---
  
@@ -538,7 +540,7 @@ html { font-size: var(--font-size); scroll-behavior: smooth; }
 | 4 | Header | RoleSwitcher | **Troque de perspectiva aqui.** Creator, Comprador, Produtor e Operações YouShop. Cada um vê o mesmo problema de um ângulo. |
 | 5 | /creator/checador | Botão "Usar roteiro de exemplo" + "Checar promessas" | **Comece pelo creator.** Use o roteiro de exemplo e veja a IA classificar cada promessa. |
 | 6 | /comprador/reembolso | PhoneFrame | **Depois, o comprador.** Simulação do pedido de reembolso: a IA entende o motivo e liga ao conteúdo que gerou a venda. O reembolso nunca é escondido. |
-| 7 | /produtor/checador | Painel de entrada | **O produtor também promete.** Ele cola a URL da página de vendas e a IA mostra quais promessas viram reembolso. |
+| 7 | /produtor/checador | Painel de entrada | **O produtor também promete.** Ele cola a URL da página de vendas ou envia prints, e a IA mostra quais promessas viram reembolso. |
 | 8 | /operacoes | Fila de escalonamento | **E a YouShop enxerga antes.** Casos com frustração alta e produtor sem resposta aparecem aqui antes de virarem reclamação pública. |
 | 9 | Header | Botão "?" | **Pronto!** Explore livremente. Você pode rever este tour pelo "?". Todos os dados são fictícios. |
  
