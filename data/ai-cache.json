@@ -234,5 +234,20 @@
       ]
     },
     "savedAt": "2026-11-22T17:27:12.400Z"
+  },
+  "e4da643bf96d73c2": {
+    "route": "classify-feedback",
+    "input": {
+      "productId": "p_reels",
+      "contentId": "ct_001",
+      "text": "falaram que a bateria dura 3 dias mas durou só 1 dia",
+      "reason": "Não era o que eu esperava"
+    },
+    "output": {
+      "type": "expectativa_desalinhada",
+      "severity": "alta",
+      "summary": "O comprador se sentiu enganado por uma promessa de bateria de 3 dias que durou apenas 1 dia"
+    },
+    "savedAt": "2026-11-23T01:08:44.986Z"
   }
 }
