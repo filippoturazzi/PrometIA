@@ -109,24 +109,33 @@ Usa os mesmos componentes, filtrados pelos produtos de um produtor (Studio Viral
 
 ![Visão do produtor](prints/22-produtor-studio-viral.png)
 
+### Produtor: Checador da página de vendas (`/produtor/checador`)
+
+O produtor também pode prometer demais. Ele cola a URL da própria página de vendas, o PrometIA lê os textos da página e a IA mostra cada promessa com status, **risco de reembolso** e uma versão verdadeira. Se a página não puder ser lida (montada por JavaScript, fora do ar, endereço interno), a tela pede o texto colado.
+
+Para a demo existe uma página de vendas fictícia do TermoSlim em [`/paginavendas`](https://prometiayoushop.netlify.app/paginavendas), com visual de "infoproduto" bem diferente do PrometIA. O botão **"Usar página de exemplo"** preenche a URL dela.
+
 > Todas as capturas estão na pasta [`prints/`](prints/).
 
 ---
 
 ## Como a IA é usada
 
-A IA real roda em **3 pontos**, sempre em **Route Handlers do servidor**. A chave `GROQ_API_KEY` nunca chega ao navegador. As respostas usam **Structured Outputs estritos** (JSON Schema) e passam por uma limpeza antes de chegar à tela.
+A IA real roda em **4 pontos**, sempre em **Route Handlers do servidor**. A chave `GROQ_API_KEY` nunca chega ao navegador. As respostas usam **Structured Outputs estritos** (JSON Schema) e passam por uma limpeza antes de chegar à tela.
 
 | Rota | O que faz | Entrada | Saída |
 |---|---|---|---|
 | `POST /api/check-claims` | Extrai e classifica as promessas do roteiro em relação à página de vendas | `productId`, `script` | risco geral + lista de promessas (status, evidência, motivo, reescrita, categoria) |
 | `POST /api/classify-feedback` | Classifica o pedido de reembolso e liga a uma promessa do conteúdo de origem | `productId`, `contentId`, `text`, `reason?` | tipo de frustração, gravidade, promessa relacionada, resumo, oferta de ajuda opcional |
+| `POST /api/check-page` | Lê a página de vendas do produtor (URL ou texto) e classifica as promessas contra a ficha do produto | `productId` + `url` ou `text` | risco geral, resumo, promessas com risco de reembolso + o texto lido |
 | `POST /api/insight` | Gera insights para o creator ou para um caso da fila | `scope` (`creator` ou `case`) + `id`; o servidor monta os dados agregados | até 3 insights (creator) ou 2 insights + ação sugerida (caso) |
 
 Regras importantes:
 
 - A promessa relacionada só vale se for uma promessa real do conteúdo de origem, e só para *expectativa desalinhada*.
 - Em *expectativa desalinhada* e *arrependimento pessoal*, o caminho é o reembolso: a IA não oferece "ajuda" no lugar dele.
+- A leitura da URL (`lib/page-scan.ts`) aceita só `http(s)`, bloqueia endereços internos (exceto o próprio app), segue no máximo 3 redirects, para em 8 s ou 1 MB e ignora trechos marcados com `data-prometia-ignore`.
+- A IA 4 usa o `openai/gpt-oss-120b` (`GROQ_PAGE_MODEL`): com o schema maior, o 20b gerava JSON inválido.
 - Prompts em `lib/prompts.ts`, schemas em `lib/schemas.ts`, pós-processamento em `lib/ai.ts`.
 
 ---
@@ -174,6 +183,7 @@ GROQ_API_KEY=sua_chave_aqui          # obrigatória para a IA ao vivo
 GROQ_MODEL=openai/gpt-oss-20b         # modelo principal (padrão)
 GROQ_FALLBACK_MODEL=openai/gpt-oss-120b  # usado quando o principal bate o limite; "" desliga
 GROQ_REASONING_EFFORT=medium          # low | medium | high (padrão: medium)
+GROQ_PAGE_MODEL=openai/gpt-oss-120b   # modelo da IA 4 (página de vendas)
 ```
 
 Crie uma chave gratuita em [console.groq.com](https://console.groq.com/keys).
@@ -196,9 +206,10 @@ Abra http://localhost:3000.
 | `npm run build` | Build de produção |
 | `npm run start` | Sobe o build de produção |
 | `npm run lint` | ESLint |
+| `npm test` | Testes (`node:test`): leitura da página, página de exemplo e rota da IA 4 |
 | `npm run seed` | Gera `data/sales.json` e `data/feedback.json` de forma determinística (`seedrandom("prometia")`) |
 | `npm run check-data` | Imprime as agregações de `lib/data.ts` para conferir os padrões do seed |
-| `npm run try-ai` | Testa as 3 chamadas de IA com as entradas da demo (usa o `.env.local`) |
+| `npm run try-ai` | Testa as chamadas de IA com as entradas da demo (usa o `.env.local`) |
 | `npm run eval-demo -- [N] [filtro]` | Roda a IA 1 e a IA 2 N vezes, sem cache, e mede a consistência dos resultados |
 
 ---
@@ -215,17 +226,22 @@ app/
 ├─ comprador/reembolso/        # pedido de reembolso (IA 2)
 ├─ operacoes/                  # Saúde da Promessa + fila de escalonamento
 ├─ produtor/                   # visão filtrada por produtor
-└─ api/                        # check-claims · classify-feedback · insight
+├─ produtor/checador/          # Checador da página de vendas (IA 4)
+├─ paginavendas/               # página de vendas fictícia (demo)
+└─ api/                        # check-claims · classify-feedback · insight · check-page
 components/                    # ClaimCard, PhoneFrame, EscalationQueue, Tour, dashboard/, ui/ …
 lib/
 ├─ groq.ts                     # cliente Groq + generateJSON (structured outputs, timeout, modelo reserva)
-├─ prompts.ts · schemas.ts     # prompts e JSON Schemas das 3 chamadas
+├─ prompts.ts · schemas.ts     # prompts e JSON Schemas das 4 chamadas
 ├─ ai.ts                       # chamadas + pós-processamento
 ├─ cache.ts · fallbacks.ts     # cache da demo e plano B
+├─ page-scan.ts                # leitura segura da página de vendas
+├─ demo-page.ts                # texto da página de vendas fictícia
 ├─ data.ts                     # leitura dos JSON + agregações
 └─ types.ts                    # tipos do domínio
 data/                          # products, creators, contents, sales, feedback, ai-cache
 scripts/                       # seed, check-data, try-ai, eval-demo
+tests/                         # npm test
 prints/                        # capturas das telas
 SPEC.md                        # especificação completa (fonte de verdade)
 ```

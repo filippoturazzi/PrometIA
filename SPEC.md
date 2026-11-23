@@ -8,10 +8,10 @@
  
 **PrometIA** é uma camada de IA para o ecossistema da YouShop que confere se **o que é prometido na divulgação** (creator / página do produtor) bate com **o que o comprador recebe**, e fecha o ciclo quando não bate.
  
-- **Antes de postar:** o creator passa o roteiro pelo checador, que extrai as promessas, classifica cada uma e sugere reescrita. Cada conteúdo checado ganha um **link exclusivo** (link do creator + id do conteúdo).
+- **Antes de postar:** o creator passa o roteiro pelo checador, que extrai as promessas, classifica cada uma e sugere reescrita. Cada conteúdo checado ganha um **link exclusivo** (link do creator + id do conteúdo). O **produtor** também checa a própria página de vendas: cola a URL e a IA mostra quais promessas podem gerar reembolso.
 - **Depois da venda:** o comprador declara a expectativa (página de obrigado), responde um check-in (card no YouClass) e, se pedir reembolso, diz o que esperava e o que recebeu. A IA classifica.
 - **Ciclo de aprendizado:** painéis mostram quais conteúdos e promessas geram reembolso, e uma fila de escalonamento mostra os casos antes de virarem reclamação pública.
-É um **protótipo de demonstração**: dados fictícios, IA real em 3 pontos, sem login, sem integração real com a YouShop.
+É um **protótipo de demonstração**: dados fictícios, IA real em 4 pontos, sem login, sem integração real com a YouShop.
  
 ---
  
@@ -55,15 +55,20 @@ prometia/
 │  │  └─ reembolso/page.tsx      # M2a
 │  ├─ operacoes/page.tsx         # M4 (YouShop)
 │  ├─ produtor/page.tsx          # M4 (visão do produtor, mesmo componente filtrado)
+│  ├─ produtor/checador/page.tsx # M5 (Checador da página de vendas)
+│  ├─ paginavendas/page.tsx      # página de vendas fictícia (demo do M5)
 │  └─ api/
 │     ├─ check-claims/route.ts   # IA 1
 │     ├─ classify-feedback/route.ts # IA 2
-│     └─ insight/route.ts        # IA 3
+│     ├─ insight/route.ts        # IA 3
+│     └─ check-page/route.ts     # IA 4
 ├─ components/                   # ClaimCard, StatusBadge, RoleSwitcher, PhoneFrame, EscalationQueue, ...
 ├─ lib/
 │  ├─ groq.ts                    # cliente + helper generateJSON(prompt, schema)
-│  ├─ prompts.ts                 # os 3 prompts (seção 8)
-│  ├─ schemas.ts                 # os 3 response schemas (seção 8)
+│  ├─ prompts.ts                 # os 4 prompts (seção 8)
+│  ├─ schemas.ts                 # os 4 response schemas (seção 8)
+│  ├─ page-scan.ts               # leitura segura da URL da página de vendas (IA 4)
+│  ├─ demo-page.ts               # texto da página de vendas fictícia
 │  ├─ data.ts                    # leitura dos JSON + funções de agregação
 │  ├─ cache.ts                   # cache das respostas da IA (seção 9)
 │  └─ types.ts                   # tipos da seção 5
@@ -225,7 +230,7 @@ A classificação dos feedbacks do seed é preenchida pelo próprio script (é d
  
 ---
  
-## 8. As 3 chamadas de IA
+## 8. As 4 chamadas de IA
  
 Helper em `lib/groq.ts`:
  
@@ -357,6 +362,17 @@ export const insightSchema = {
  
 ---
  
+### IA 4 — `POST /api/check-page`
+**Entrada:** `{ productId, url }` ou `{ productId, text }`. Com `url`, o servidor (`lib/page-scan.ts`) valida (só `http(s)`; bloqueia localhost, IPs privados, loopback e link-local, exceto o próprio host do app), busca a página (timeout 8 s, até 1 MB, só `text/html`, até 3 redirects revalidados) e extrai o texto visível (sem `script`/`style` e sem elementos com `data-prometia-ignore`; corta em 6000 caracteres). Texto com menos de 80 caracteres → `422 { code: "unreadable" }` e a tela pede o texto colado.
+
+**Fontes:** a ficha cadastrada do produto (`salesPageText`) + `contentOutline` + regras CONAR/ANVISA. Prompt em `checkPagePrompt` (`lib/prompts.ts`): mesmas regras de "SEMPRE proibida" da IA 1, depoimentos também contam como promessa, a reescrita usa só o que a ficha sustenta e nunca fica vazia em promessa não sustentada.
+
+**Schema:** igual ao da IA 1, com `refundRisk` (`baixo|medio|alto`) em cada promessa e `summary` (1 frase) no topo. Modelo: `GROQ_PAGE_MODEL` (padrão `openai/gpt-oss-120b`; o 20b gerou JSON inválido com este schema).
+
+**Resposta:** `{ claims, overallRisk, summary, pageText, source, notice }`. Chave do cache: `{ productId, text }` (URL ou texto colado caem no mesmo cache). Fallback: `DEMO_CHECK_PAGE` para o texto da página de exemplo.
+
+---
+ 
 ## 9. Cache e plano B da demo (`lib/cache.ts`)
  
 - Chave do cache = hash de (`rota` + entrada normalizada).
@@ -398,6 +414,14 @@ Uma frase do problema, uma frase da solução, um diagrama de 3 passos (Antes de
 - Gráfico: tipos de frustração (barras).
 - **Fila de escalonamento:** feedbacks com gravidade alta **e** (produtor sem resposta ou >48h). Cada linha: comprador (anonimizado), produto, creator/conteúdo, horas sem resposta, badge de gravidade, botão "Ver caso" → Dialog com o resumo da IA 3 (scope=case) + ação sugerida + botões mock ("Acionar produtor", "Reembolsar proativamente", "Revisar conteúdo").
 - `/produtor` reaproveita os componentes, filtrando pelos produtos do produtor (sem a fila global; mostra "casos dos seus produtos").
+---
+ 
+### M5 — Checador da página de vendas (`/produtor/checador`) + página fictícia (`/paginavendas`)
+- Para o produtor testar a própria página antes de divulgar. Campo **URL da página de vendas**, botão **"Usar página de exemplo"** (preenche `{origin}/paginavendas` e seleciona TermoSlim) e link para abrir a página de exemplo. Se a página não puder ser lida → aviso + textarea para colar o texto.
+- Resultado no visual do M1: risco geral, contagem por status, resumo da IA, "Promessas assim geram reembolso por expectativa desalinhada.", um `ClaimCard` por promessa (evidência rotulada "Ficha do produto" + badge de risco de reembolso) e "Texto lido da página" recolhido.
+- `/paginavendas`: página de vendas **fictícia** do TermoSlim (NutriMax), visual de infoproduto apelativo, sem header/rodapé/tour do PrometIA, com faixa "Página fictícia criada para a demonstração do PrometIA" (fora da leitura). Mistura planejada: 5 promessas proibidas, 2 exageradas, 2 sustentadas (+ depoimentos).
+- Atalho "Checar minha página de vendas" em `/produtor` e item na subnav do produtor.
+
 ---
  
 ## 11. Fora do escopo (não implementar)
@@ -500,7 +524,7 @@ html { font-size: var(--font-size); scroll-behavior: smooth; }
  
 **Comportamento:**
 - Abre automaticamente na primeira visita (flag `prometia_tour_done` no `localStorage`, dentro de try/catch; se falhar, simplesmente mostra o tour).
-- Botões: "Próximo", "Voltar", "Pular tour". Barra de progresso ("3 de 8").
+- Botões: "Próximo", "Voltar", "Pular tour". Barra de progresso ("3 de 9").
 - Botão **"?"** no header reabre o tour a qualquer momento.
 - Popovers com o visual da seção 14: fundo branco, título azul-marinho, botão "Próximo" verde-limão.
 - Steps que apontam para outra página navegam antes de destacar (`router.push` + aguardar o elemento existir).
@@ -514,8 +538,9 @@ html { font-size: var(--font-size); scroll-behavior: smooth; }
 | 4 | Header | RoleSwitcher | **Troque de perspectiva aqui.** Creator, Comprador, Produtor e Operações YouShop. Cada um vê o mesmo problema de um ângulo. |
 | 5 | /creator/checador | Botão "Usar roteiro de exemplo" + "Checar promessas" | **Comece pelo creator.** Use o roteiro de exemplo e veja a IA classificar cada promessa. |
 | 6 | /comprador/reembolso | PhoneFrame | **Depois, o comprador.** Simulação do pedido de reembolso: a IA entende o motivo e liga ao conteúdo que gerou a venda. O reembolso nunca é escondido. |
-| 7 | /operacoes | Fila de escalonamento | **E a YouShop enxerga antes.** Casos com frustração alta e produtor sem resposta aparecem aqui antes de virarem reclamação pública. |
-| 8 | Header | Botão "?" | **Pronto!** Explore livremente. Você pode rever este tour pelo "?". Todos os dados são fictícios. |
+| 7 | /produtor/checador | Painel de entrada | **O produtor também promete.** Ele cola a URL da página de vendas e a IA mostra quais promessas viram reembolso. |
+| 8 | /operacoes | Fila de escalonamento | **E a YouShop enxerga antes.** Casos com frustração alta e produtor sem resposta aparecem aqui antes de virarem reclamação pública. |
+| 9 | Header | Botão "?" | **Pronto!** Explore livremente. Você pode rever este tour pelo "?". Todos os dados são fictícios. |
  
 **Bônus (P1):** na landing, um botão **"Ver a demo guiada"** que roda a história da seção 2 passo a passo (o mesmo tour, mas preenchendo os exemplos automaticamente). Útil se o avaliador não quiser clicar em nada.
  

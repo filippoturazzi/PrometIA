@@ -1,22 +1,26 @@
 /**
- * Teste real das 3 chamadas de IA com as entradas da demo (usa GROQ_API_KEY do .env.local).
+ * Teste real das 4 chamadas de IA com as entradas da demo (usa GROQ_API_KEY do .env.local).
  * Uso: npm run try-ai            (GROQ_REASONING_EFFORT e GROQ_MODEL opcionais)
  */
-import { generateJSON, groqModel } from "../lib/groq";
+import { generateJSON, groqModel, groqPageModel } from "../lib/groq";
 import {
   caseInsightPrompt,
   checkClaimsPrompt,
+  checkPagePrompt,
   classifyFeedbackPrompt,
   creatorInsightPrompt,
 } from "../lib/prompts";
 import {
   checkClaimsSchema,
+  checkPageSchema,
   classifyFeedbackSchema,
   cleanCheckClaims,
+  cleanCheckPage,
   cleanClassifyFeedback,
   cleanInsight,
   insightSchema,
   type CheckClaimsRaw,
+  type CheckPageRaw,
   type ClassifyFeedbackRaw,
   type InsightRaw,
 } from "../lib/schemas";
@@ -25,12 +29,14 @@ import {
   DEMO_CONTENT_ID,
   DEMO_CREATOR_ID,
   DEMO_FEEDBACK_ID,
+  DEMO_PRODUCER_PRODUCT_ID,
   DEMO_PRODUCT_ID,
   DEMO_REFUND_TEXT,
   DEMO_SCRIPT,
 } from "../lib/demo";
+import { DEMO_PAGE } from "../lib/demo-page";
 
-const only = process.argv[2]; // "1" | "2" | "3" para rodar só uma
+const only = process.argv[2]; // "1" | "2" | "3" | "4" para rodar só uma
 
 async function timed<T>(label: string, fn: () => Promise<T>) {
   const t = Date.now();
@@ -72,6 +78,27 @@ async function main() {
     await timed("IA 3 — insight creator (Ana)", async () =>
       cleanInsight(
         await generateJSON<InsightRaw>(creatorInsightPrompt(getCreatorInsightData(DEMO_CREATOR_ID)), insightSchema, "insight"),
+      ),
+    );
+  }
+
+  if (!only || only === "4") {
+    const pageText = [
+      DEMO_PAGE.headline,
+      DEMO_PAGE.subheadline,
+      ...DEMO_PAGE.bullets,
+      ...DEMO_PAGE.testimonials.map((t) => `“${t.text}” ${t.name}`),
+      DEMO_PAGE.guarantee,
+    ].join("\n");
+    await timed(`IA 4 — check-page (página de exemplo, ${groqPageModel()})`, async () =>
+      cleanCheckPage(
+        await generateJSON<CheckPageRaw>(
+          checkPagePrompt(getProduct(DEMO_PRODUCER_PRODUCT_ID)!, pageText),
+          checkPageSchema,
+          "check_page",
+          undefined,
+          groqPageModel(),
+        ),
       ),
     );
   }

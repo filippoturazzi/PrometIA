@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/generate-seed.ts",
-    "check-data": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/check-data.ts",
-    "try-ai": "tsx --env-file=.env.local --conditions=react-server --tsconfig tsconfig.json scripts/try-ai.ts",
-    "eval-demo": "tsx --env-file=.env.local --conditions=react-server --tsconfig tsconfig.json scripts/eval-demo.ts",
+    "check-data": "tsx --tsconfig tsconfig.json --require ./tests/setup.cjs scripts/check-data.ts",
+    "try-ai": "tsx --env-file=.env.local --tsconfig tsconfig.json --require ./tests/setup.cjs scripts/try-ai.ts",
+    "eval-demo": "tsx --env-file=.env.local --tsconfig tsconfig.json --require ./tests/setup.cjs scripts/eval-demo.ts",
     "test": "tsx --tsconfig tsconfig.json --require ./tests/setup.cjs --test tests/*.test.ts"
   },
   "dependencies": {

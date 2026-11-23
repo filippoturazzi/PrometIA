@@ -74,6 +74,14 @@ const STEPS: TourStep[] = [
       "Simulação do pedido de reembolso: a IA entende o motivo e liga ao conteúdo que gerou a venda. O reembolso nunca é escondido.",
   },
   {
+    route: "/produtor/checador",
+    selector: "#checador-produtor-entrada",
+    side: "right",
+    title: "O produtor também promete",
+    description:
+      "Ele cola a URL da <strong>página de vendas</strong> e a IA mostra quais promessas viram reembolso. Use a <strong>página de exemplo</strong> para testar.",
+  },
+  {
     route: "/operacoes",
     selector: "#fila-escalonamento",
     side: "top",
