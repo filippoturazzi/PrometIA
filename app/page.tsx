@@ -92,11 +92,13 @@ export default function Home() {
             >
               <RevealWords
                 parts={[
-                  "O que foi ",
+                  "A diferença entre o ",
                   { text: "prometido", className: "text-lime" },
-                  " na divulgação quase nunca é ",
-                  { text: "conferido", className: "text-lime" },
-                  " com o que o comprador recebe.",
+                  " e o ",
+                  { text: "entregue", className: "text-lime" },
+                  " só aparece quando já virou ",
+                  { text: "prejuízo", className: "text-lime" },
+                  ".",
                 ]}
               />
             </h1>
