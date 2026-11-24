@@ -41,7 +41,7 @@ const STEPS = [
 
 const PROFILES = [
   {
-    href: "/produtor",
+    href: "/produtor/checador",
     icon: Store,
     label: "Produtor",
     text: "Checar a página de vendas e acompanhar a saúde da promessa",
@@ -109,7 +109,7 @@ export default function Home() {
             </p>
             <div data-reveal="up" style={{ "--reveal-delay": "550ms" } as React.CSSProperties} className="flex flex-wrap items-center gap-6 pt-2">
               <Link
-                href="/produtor"
+                href="/produtor/checador"
                 className="inline-flex items-center gap-2.5 rounded-lg bg-lime px-6 py-4 text-[15px] font-semibold text-navy-deep transition-colors hover:bg-lime/85"
               >
                 Começar pelo produtor <ArrowRight className="size-4" />
